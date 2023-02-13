@@ -1,0 +1,39 @@
+\input{Setup/Preamble.tex}
+\input{Setup/Macros.tex}
+
+\begin{document}
+\footnotesize
+
+\twocolumn
+
+\pagenumbering{arabic}
+\rfoot{\footnotesize{Page \thepage \hspace{1pt} of \pageref{Content:End}}}
+\rhead{\footnotesize{February-May 2023}}
+\lhead{\footnotesize{P8}}
+
+\subfile{Sections/FrontMatter/HeaderPage}
+
+\subfile{Sections/FrontMatter/Abstract}
+
+\subfile{Sections/Introduction/Introduction}
+
+\subfile{Sections/Background/Background}
+
+\subfile{Sections/TheoryAndMethod/Method}
+
+\subfile{Sections/Experiments/Experiments}
+
+\subfile{Sections/Results/Results}
+
+\subfile{Sections/Conclusion/Conclusion}
+
+\printbibliography[title = {References}, heading=bibintoc]\label{Content:End}
+
+\newpage
+
+\subfile{Sections/Appendix/Appendix.tex}
+
+\rfoot{Appendix \thepage \hspace{1pt}}
+
+\end{document}
+    
