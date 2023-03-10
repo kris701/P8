@@ -2,8 +2,10 @@
 from prototypical_batch_sampler import PrototypicalBatchSampler
 from prototypical_loss import prototypical_loss as loss_fn
 from omniglot_dataset import OmniglotDataset
+from swedishleaf_dataset import SwedishLeafDataset
 from protonet import ProtoNet
 from parser_util import get_parser
+from slprotonet import slProtoNet
 
 from tqdm import tqdm
 import numpy as np
@@ -21,14 +23,14 @@ def init_seed(opt):
     torch.cuda.manual_seed(opt.manual_seed)
 
 
-def init_dataset(opt, mode):
-    dataset = OmniglotDataset(mode=mode, root=opt.dataset_root)
-    n_classes = len(np.unique(dataset.y))
+def init_dataset(opt, mode, dataset):
+    dataset_ = dataset(mode=mode, root=opt.dataset_root)
+    n_classes = len(np.unique(dataset_.y))
     if n_classes < opt.classes_per_it_tr or n_classes < opt.classes_per_it_val:
         raise(Exception('There are not enough classes in the dataset in order ' +
                         'to satisfy the chosen classes_per_it. Decrease the ' +
                         'classes_per_it_{tr/val} option and try again.'))
-    return dataset
+    return dataset_
 
 
 def init_sampler(opt, labels, mode):
@@ -45,19 +47,19 @@ def init_sampler(opt, labels, mode):
                                     iterations=opt.iterations)
 
 
-def init_dataloader(opt, mode):
-    dataset = init_dataset(opt, mode)
-    sampler = init_sampler(opt, dataset.y, mode)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_sampler=sampler)
+def init_dataloader(opt, mode, dataset):
+    dataset_ = init_dataset(opt, mode, dataset=dataset)
+    sampler = init_sampler(opt, dataset_.y, mode)
+    dataloader = torch.utils.data.DataLoader(dataset_, batch_sampler=sampler)
     return dataloader
 
 
-def init_protonet(opt):
+def init_protonet(opt, protonet):
     '''
     Initialize the ProtoNet
     '''
     device = 'cuda:0' if torch.cuda.is_available() and opt.cuda else 'cpu'
-    model = ProtoNet().to(device)
+    model = protonet().to(device)
     return model
 
 
@@ -207,17 +209,17 @@ def main():
 
     init_seed(options)
 
-    tr_dataloader = init_dataloader(options, 'train')
-    val_dataloader = init_dataloader(options, 'val')
-    # trainval_dataloader = init_dataloader(options, 'trainval')
-    test_dataloader = init_dataloader(options, 'test')
+    tr_dataloader = init_dataloader(options, 'train', SwedishLeafDataset)
+    #val_dataloader = init_dataloader(options, 'val', SwedishLeafDataset) #
+    trainval_dataloader = init_dataloader(options, 'trainval', SwedishLeafDataset)
+    test_dataloader = init_dataloader(options, 'test', SwedishLeafDataset)
 
-    model = init_protonet(options)
+    model = init_protonet(options, slProtoNet)
     optim = init_optim(options, model)
     lr_scheduler = init_lr_scheduler(options, optim)
     res = train(opt=options,
                 tr_dataloader=tr_dataloader,
-                val_dataloader=val_dataloader,
+                val_dataloader=trainval_dataloader, #or it will bug out. For some reason, simply using the val dataloader causes a bug. Presumably there are too few samples in the validation data set
                 model=model,
                 optim=optim,
                 lr_scheduler=lr_scheduler)
