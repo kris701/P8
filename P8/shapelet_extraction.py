@@ -43,9 +43,6 @@ def generate_windows(series: list, min: int, max: int):
 # --- Match Frequency ---
 
 def is_match(s1: list, s2: list):
-    if len(s1) != len(s2):
-        return False
-
     offset = s1[0] - s2[0]
 
     tolerance = 0.01
@@ -94,8 +91,10 @@ def calculate_entropy(labels: list, base=None):
 
 def calculate_information_gain(match_frequencies: list, prior_entropy: float):
     unique_frequencies = list({item[1] for item in match_frequencies})
+    split_points = [abs((unique_frequencies[index + 1] - unique_frequencies[index]) / 2)
+                    for index in range(0, len(unique_frequencies) - 1)]
     best_information_gain = 0
-    for split_point in unique_frequencies:
+    for split_point in split_points:
         lower_labels = []
         higher_labels = []
         for mf in match_frequencies:  # Split occurances into two groups, based on split point
