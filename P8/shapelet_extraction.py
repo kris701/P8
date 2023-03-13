@@ -23,8 +23,13 @@ def load_data(fp):
 
 def generate_windows2(series: list, length: int):
     windows = []
+
     for i in range(len(series) - length + 1):
-        windows.append(series[i:i+length])
+        offset = series[i]
+        window = []
+        for w in range(i, i + length):
+            window.append(series[w] - offset)
+        windows.append(window)
     return windows
 
 
@@ -35,7 +40,8 @@ def generate_windows(series: list, min: int, max: int):
     for s in series:
         for length in range(min, max + 1):
             for w in generate_windows2(s, length):
-                windows.append(w)
+                if w not in windows:
+                    windows.append(w)
     print("Total Windows: ", len(windows))
     print("---Finished Generating Windows---")
     return windows
@@ -46,7 +52,7 @@ def is_match(s1: list, s2: list):
     offset = s1[0] - s2[0]
 
     tolerance = 0.01
-    for i in range(0, len(s1)):
+    for i in range(1, len(s1)):
         if abs(s1[i] - s2[i] - offset) > tolerance:
             return False
 
@@ -90,8 +96,8 @@ def calculate_entropy(labels: list, base=None):
     return ent
 
 def calculate_information_gain(match_frequencies: list, prior_entropy: float):
-    unique_frequencies = list({item[1] for item in match_frequencies})
-    split_points = [abs((unique_frequencies[index + 1] - unique_frequencies[index]) / 2)
+    unique_frequencies = sorted(list({item[1] for item in match_frequencies}))
+    split_points = [unique_frequencies[index] + abs((unique_frequencies[index + 1] - unique_frequencies[index]) / 2)
                     for index in range(0, len(unique_frequencies) - 1)]
     best_information_gain = 0
     for split_point in split_points:
@@ -131,7 +137,7 @@ def generate_best_shaplet(series: list, labels: list):
     print("---Generating Shapelet---")
     best_shapelet = []
     best_score = 0
-    windows = generate_windows(series, 20, 30)
+    windows = generate_windows(series, 2, 10)
     print("Evaluating each possible shapelet")
     for window in tqdm(windows):
         score = evaluate_shapelet(series, labels, window)
