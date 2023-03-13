@@ -40,8 +40,7 @@ def generate_windows(series: list, min: int, max: int):
     for s in series:
         for length in range(min, max + 1):
             for w in generate_windows2(s, length):
-                if w not in windows:
-                    windows.append(w)
+                windows.append(w)
     print("Total Windows: ", len(windows))
     print("---Finished Generating Windows---")
     return windows
@@ -136,7 +135,7 @@ def evaluate_shapelet(series: list, labels: list, window: list):
 def generate_best_shaplets(series: list, labels: list, count: int):
     print("---Generating Shapelets---")
     shapelets = []
-    windows = generate_windows(series, 2, 10)
+    windows = generate_windows(series, 2, 80)
     print("Evaluating each possible shapelet")
     for window in tqdm(windows):
         score = evaluate_shapelet(series, labels, window)
