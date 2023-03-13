@@ -72,7 +72,7 @@ class DataWriter():
         if not os.path.isdir("formated"):
             formated = self.formatData(trainName, testName)
             self.write_data(formated, "formated")
-            self.create_splits("formated", len(formated))
+            self.create_splits("formated", len(formated) - 5)
         else:
             print("Dataset already formated!")
 

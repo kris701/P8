@@ -205,6 +205,12 @@ def main(dataset):
         print("WARNING: You have a CUDA device, so you should probably run with --cuda")
 
     init_seed(options)
+    
+    options.cude = True
+    options.dataset_root = "formated"
+    options.classes_per_it_tr = 5
+    options.classes_per_it_val = 5
+    options.epochs = 10;
 
     tr_dataloader = init_dataloader(options, 'train', dataset)
     #val_dataloader = init_dataloader(options, 'val', dataset) #

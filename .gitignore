@@ -368,3 +368,4 @@ P8Report/**/build
 *.pdf
 
 P8/formated/*
+output/*
