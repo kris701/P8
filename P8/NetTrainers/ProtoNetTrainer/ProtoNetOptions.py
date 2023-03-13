@@ -2,11 +2,6 @@ import torch.nn as nn
 from .Backbones.slprotonet import slProtoNet
 
 class ProtoNetOptions():
-    # do train
-    do_train : bool = True;
-    # do test
-    do_test : bool = True;
-
     # path to dataset
     dataset_root : str = "formated";
     # root where to store models, losses and accuracies

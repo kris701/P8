@@ -12,5 +12,5 @@ options.classes_per_it_val = 5
 options.epochs = 10;
 
 net = pnt(options)
-net.Run(SwedishLeafDataset);
+net.Train(SwedishLeafDataset);
 
