@@ -32,13 +32,7 @@ class ProtoNetTrainer():
 
 
     def _init_dataset(self, mode : str, dataset : data.Dataset) -> data.Dataset:
-        dataset_ : data.Dataset = dataset(mode=mode, root=self._options.dataset_root)
-        #n_classes = len(np.unique(dataset_.y))
-        #if n_classes < self._options.classes_per_it_tr or n_classes < self._options.classes_per_it_val:
-        #    raise(Exception('There are not enough classes in the dataset in order ' +
-        #                    'to satisfy the chosen classes_per_it. Decrease the ' +
-        #                    'classes_per_it_{tr/val} option and try again.'))
-        return dataset_
+        return dataset(mode=mode, root=self._options.dataset_root)
 
 
     def _init_sampler(self, labels : list, mode : str) -> PrototypicalBatchSampler:

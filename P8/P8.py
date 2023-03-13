@@ -11,7 +11,7 @@ options.classes_per_it_tr = 10
 options.classes_per_it_val = 10
 options.classes_per_it_test = 3
 options.train_epochs = 5;
-options.test_epochs = 3;
+options.test_epochs = 1;
 
 net = pnt(options)
 bestModel = net.Train(SwedishLeafDataset);
