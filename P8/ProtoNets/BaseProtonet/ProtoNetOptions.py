@@ -36,5 +36,12 @@ class ProtoNetOptions():
     # enables cuda
     cuda : bool = True;
 
+    # input dimensions
+    x_dim : int = 1;
+    # hidden dimensions
+    hid_dim : int = 8;
+    # output dimensions
+    z_dim = int = 8;
+
 
 

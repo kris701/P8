@@ -11,6 +11,6 @@ options.classes_per_it_tr = 5
 options.classes_per_it_val = 5
 options.epochs = 10;
 
-net = bpn()
-net.Run(SwedishLeafDataset, options);
+net = bpn(options)
+net.Run(SwedishLeafDataset);
 

@@ -1,8 +1,8 @@
 # coding=utf-8
 from .prototypical_batch_sampler import PrototypicalBatchSampler
 from .prototypical_loss import prototypical_loss as loss_fn
-from .slprotonet import slProtoNet
 from .ProtoNetOptions import ProtoNetOptions
+from .slprotonet import slProtoNet
 
 import torch.utils.data as data
 from tqdm import tqdm
@@ -10,8 +10,22 @@ import numpy as np
 import torch
 import os
 
-class BaseProtoNet(slProtoNet):
+import torch.nn as nn
+
+class BaseProtoNet():
     _options : ProtoNetOptions = None;
+
+    def __init__(self, options : ProtoNetOptions):
+        self._options = options;
+        if not os.path.exists(self._options.experiment_root):
+            os.makedirs(self._options.experiment_root)
+        if torch.cuda.is_available() and not self._options.cuda:
+            print("WARNING: You have a CUDA device, so you should probably run with --cuda")
+
+    def forward(self, x):
+        x = x.unsqueeze(1)  # Add a channel dimension
+        x = self.encoder(x)
+        return x.view(x.size(0), -1)
 
     def init_seed(self, opt):
         '''
@@ -59,7 +73,11 @@ class BaseProtoNet(slProtoNet):
         Initialize the ProtoNet
         '''
         device = 'cuda:0' if torch.cuda.is_available() and opt.cuda else 'cpu'
-        model = protonet().to(device)
+        model = protonet(
+            self._options.x_dim,
+            self._options.hid_dim,
+            self._options.z_dim
+            ).to(device)
         return model
 
 
@@ -196,43 +214,37 @@ class BaseProtoNet(slProtoNet):
              model=model)
 
 
-    def Run(self, dataset : data.Dataset, options : ProtoNetOptions):
+    def Run(self, dataset : data.Dataset):
         '''
         Initialize everything and train
         '''
-        self._options = options
-        if not os.path.exists(options.experiment_root):
-            os.makedirs(options.experiment_root)
-        if torch.cuda.is_available() and not options.cuda:
-            print("WARNING: You have a CUDA device, so you should probably run with --cuda")
+        self.init_seed(self._options)
 
-        self.init_seed(options)
-
-        tr_dataloader = self.init_dataloader(options, 'train', dataset)
+        tr_dataloader = self.init_dataloader(self._options, 'train', dataset)
         #val_dataloader = init_dataloader(options, 'val', dataset) #
-        trainval_dataloader = self.init_dataloader(options, 'trainval', dataset)
-        test_dataloader = self.init_dataloader(options, 'test', dataset)
+        trainval_dataloader = self.init_dataloader(self._options, 'trainval', dataset)
+        test_dataloader = self.init_dataloader(self._options, 'test', dataset)
 
-        model = self.init_protonet(options, slProtoNet)
-        optim = self.init_optim(options, model)
-        lr_scheduler = self.init_lr_scheduler(options, optim)
-        res = self.train(opt=options,
+        model = self.init_protonet(self._options, slProtoNet)
+        optim = self.init_optim(self._options, model)
+        lr_scheduler = self.init_lr_scheduler(self._options, optim)
+        res = self.train(opt=self._options,
                     tr_dataloader=tr_dataloader,
                     val_dataloader=trainval_dataloader, #or it will bug out. For some reason, simply using the val dataloader causes a bug. Presumably there are too few samples in the validation data set
                     model=model,
                     optim=optim,
                     lr_scheduler=lr_scheduler)
         best_state, best_acc, train_loss, train_acc, val_loss, val_acc = res
-        if options.do_train == True:
+        if self._options.do_train == True:
             print('Testing with last model..')
-            self.test(opt=options,
+            self.test(opt=self._options,
                  test_dataloader=test_dataloader,
                  model=model)
 
-        if options.do_test == True:
+        if self._options.do_test == True:
             model.load_state_dict(best_state)
             print('Testing with best model..')
-            self.test(opt=options,
+            self.test(opt=self._options,
                  test_dataloader=test_dataloader,
                  model=model)
 
