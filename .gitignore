@@ -366,3 +366,6 @@ P8Report/build
 P8Report/**/build
 
 *.pdf
+
+# pycharm
+.idea
