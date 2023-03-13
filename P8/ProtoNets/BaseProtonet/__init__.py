@@ -1,7 +1,6 @@
 # coding=utf-8
 from .prototypical_batch_sampler import PrototypicalBatchSampler
 from .prototypical_loss import prototypical_loss as loss_fn
-from .parser_util import get_parser
 from .slprotonet import slProtoNet
 from .ProtoNetOptions import ProtoNetOptions
 

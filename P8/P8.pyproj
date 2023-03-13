@@ -29,7 +29,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="P8.py" />
-    <Compile Include="ProtoNets\BaseProtonet\parser_util.py" />
     <Compile Include="ProtoNets\BaseProtonet\protonet.py" />
     <Compile Include="ProtoNets\BaseProtonet\ProtoNetOptions.py" />
     <Compile Include="ProtoNets\BaseProtonet\prototypical_batch_sampler.py" />
