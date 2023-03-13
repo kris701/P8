@@ -1,11 +1,10 @@
 # coding=utf-8
-from prototypical_batch_sampler import PrototypicalBatchSampler
-from prototypical_loss import prototypical_loss as loss_fn
-from omniglot_dataset import OmniglotDataset
-from swedishleaf_dataset import SwedishLeafDataset
-from protonet import ProtoNet
-from parser_util import get_parser
-from slprotonet import slProtoNet
+from .prototypical_batch_sampler import PrototypicalBatchSampler
+from .prototypical_loss import prototypical_loss as loss_fn
+#from ...Datasets.SwedishLeaf import SwedishLeafDataset
+from .protonet import ProtoNet
+from .parser_util import get_parser
+from .slprotonet import slProtoNet
 
 from tqdm import tqdm
 import numpy as np
@@ -196,7 +195,7 @@ def eval(opt):
          model=model)
 
 
-def main():
+def main(dataset):
     '''
     Initialize everything and train
     '''
@@ -209,10 +208,10 @@ def main():
 
     init_seed(options)
 
-    tr_dataloader = init_dataloader(options, 'train', SwedishLeafDataset)
-    #val_dataloader = init_dataloader(options, 'val', SwedishLeafDataset) #
-    trainval_dataloader = init_dataloader(options, 'trainval', SwedishLeafDataset)
-    test_dataloader = init_dataloader(options, 'test', SwedishLeafDataset)
+    tr_dataloader = init_dataloader(options, 'train', dataset)
+    #val_dataloader = init_dataloader(options, 'val', dataset) #
+    trainval_dataloader = init_dataloader(options, 'trainval', dataset)
+    test_dataloader = init_dataloader(options, 'test', dataset)
 
     model = init_protonet(options, slProtoNet)
     optim = init_optim(options, model)

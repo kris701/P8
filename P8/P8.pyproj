@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>7c9633b0-acff-451d-ab8a-c9ce2724b9d8</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>ProtoNets\BaseProtonet\train.py</StartupFile>
+    <StartupFile>P8.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -22,6 +22,12 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DataConverters\DataConverter\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Datasets\SwedishLeaf\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="P8.py" />
     <Compile Include="ProtoNets\BaseProtonet\omniglot_dataset.py" />
     <Compile Include="ProtoNets\BaseProtonet\parser_util.py" />
@@ -29,22 +35,25 @@
     <Compile Include="ProtoNets\BaseProtonet\prototypical_batch_sampler.py" />
     <Compile Include="ProtoNets\BaseProtonet\prototypical_loss.py" />
     <Compile Include="ProtoNets\BaseProtonet\slprotonet.py" />
-    <Compile Include="ProtoNets\BaseProtonet\swedishleaf_dataset.py" />
     <Compile Include="ProtoNets\BaseProtonet\train.py" />
     <Compile Include="ProtoNets\BaseProtonet\__init__.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Datasets\" />
+    <Folder Include="DataConverters\DataConverter\" />
     <Folder Include="Datasets\SwedishLeaf\" />
+    <Folder Include="Data\" />
+    <Folder Include="Data\SwedishLeaf\" />
+    <Folder Include="DataConverters\" />
+    <Folder Include="Datasets\" />
     <Folder Include="ProtoNets\" />
     <Folder Include="ProtoNets\BaseProtonet\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Datasets\SwedishLeaf\README.md" />
-    <Content Include="Datasets\SwedishLeaf\SwedishLeaf_TEST.tsv" />
-    <Content Include="Datasets\SwedishLeaf\SwedishLeaf_TRAIN.tsv" />
+    <Content Include="Data\SwedishLeaf\README.md" />
+    <Content Include="Data\SwedishLeaf\SwedishLeaf_TEST.tsv" />
+    <Content Include="Data\SwedishLeaf\SwedishLeaf_TRAIN.tsv" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.9" />
