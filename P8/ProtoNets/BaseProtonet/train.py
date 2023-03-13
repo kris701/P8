@@ -206,7 +206,7 @@ def main(dataset):
 
     init_seed(options)
     
-    options.cude = True
+    options.cuda = True
     options.dataset_root = "formated"
     options.classes_per_it_tr = 5
     options.classes_per_it_val = 5

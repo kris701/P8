@@ -3,7 +3,6 @@ import torch
 from torch.nn import functional as F
 from torch.nn.modules import Module
 
-
 class PrototypicalLoss(Module):
     '''
     Loss class deriving from Module for the prototypical loss function defined below

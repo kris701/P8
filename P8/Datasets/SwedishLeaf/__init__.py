@@ -1,10 +1,5 @@
-# coding=utf-8
 from __future__ import print_function
 import torch.utils.data as data
-from PIL import Image
-import numpy as np
-import shutil
-import errno
 import torch
 import os
 
@@ -30,7 +25,7 @@ class SwedishLeafDataset(data.Dataset):
         self.transform = transform
         self.target_transform = target_transform
 
-        self.classes = get_current_classes(os.path.join(self.root, self.splits_folder, mode + '.txt'))
+        self.classes = self._get_current_classes(os.path.join(self.root, self.splits_folder, mode + '.txt'))
         item_file = open(os.path.join(root, self.splits_folder, mode) + '.txt', 'r')
         self.all_items = item_file.read().split('\n')
         item_file.close()
@@ -41,7 +36,7 @@ class SwedishLeafDataset(data.Dataset):
         self.x = list(self.x)
         self.x = torch.tensor(self.x)
 
-        self.y = list(map(find_y, self.all_items))
+        self.y = list(map(self.find_y, self.all_items))
         print(mode, len(self.x), len(self.y))
 
     def __getitem__(self, idx):
@@ -71,12 +66,12 @@ class SwedishLeafDataset(data.Dataset):
         f.close()
         result = list(map(float, result))
         return result
-    
-def find_y(item):
-        return int(item.split(os.sep)[1])
 
-def get_current_classes(fname):
-    with open(fname) as f:
-        paths = f.read().split("\n")
-    classes = [path.split(os.sep)[1] for path in paths]
-    return classes
+    def get_current_classes(self, fname):
+        with open(fname) as f:
+            paths = f.read().split("\n")
+        classes = [path.split(os.sep)[1] for path in paths]
+        return classes
+
+    def find_y(self, item):
+            return int(item.split(os.sep)[1])
