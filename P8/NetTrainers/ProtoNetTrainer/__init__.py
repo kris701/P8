@@ -18,6 +18,7 @@ class ProtoNetTrainer():
         self._options = options;
         if os.path.exists(self._options.experiment_root):
             shutil.rmtree(self._options.experiment_root)
+            os.makedirs(self._options.experiment_root)
         else:
             os.makedirs(self._options.experiment_root)
         if torch.cuda.is_available() and not self._options.cuda:
@@ -32,21 +33,24 @@ class ProtoNetTrainer():
 
     def _init_dataset(self, mode : str, dataset : data.Dataset) -> data.Dataset:
         dataset_ : data.Dataset = dataset(mode=mode, root=self._options.dataset_root)
-        n_classes = len(np.unique(dataset_.y))
-        if n_classes < self._options.classes_per_it_tr or n_classes < self._options.classes_per_it_val:
-            raise(Exception('There are not enough classes in the dataset in order ' +
-                            'to satisfy the chosen classes_per_it. Decrease the ' +
-                            'classes_per_it_{tr/val} option and try again.'))
+        #n_classes = len(np.unique(dataset_.y))
+        #if n_classes < self._options.classes_per_it_tr or n_classes < self._options.classes_per_it_val:
+        #    raise(Exception('There are not enough classes in the dataset in order ' +
+        #                    'to satisfy the chosen classes_per_it. Decrease the ' +
+        #                    'classes_per_it_{tr/val} option and try again.'))
         return dataset_
 
 
     def _init_sampler(self, labels : list, mode : str) -> PrototypicalBatchSampler:
-        if 'train' in mode:
+        if 'train' == mode:
             classes_per_it = self._options.classes_per_it_tr
             num_samples = self._options.num_support_tr + self._options.num_query_tr
-        else:
+        elif 'val' == mode:
             classes_per_it = self._options.classes_per_it_val
             num_samples = self._options.num_support_val + self._options.num_query_val
+        else:
+            classes_per_it = self._options.classes_per_it_test
+            num_samples = self._options.num_support_test + self._options.num_query_test
 
         return PrototypicalBatchSampler(labels=labels,
                                         classes_per_it=classes_per_it,
@@ -103,6 +107,7 @@ class ProtoNetTrainer():
         for epoch in pbar1:
             pbar1.set_description('Epoch {}, (Best Acc: {:0.2f})'.format(epoch + 1, best_acc), refresh=True);
             tr_iter = iter(tr_dataloader)
+            # Train
             model.train()
             pbar2 = tqdm(tr_iter, desc='Initializing model...', leave=False, position=1, colour="green")
             for batch in pbar2:
@@ -122,6 +127,8 @@ class ProtoNetTrainer():
             if val_dataloader is None:
                 continue
             val_iter = iter(val_dataloader)
+
+            # Eval
             model.eval()
             pbar2 = tqdm(val_iter, desc='Initializing model...', leave=False, position=1, colour="blue")
             for batch in pbar2:
@@ -149,7 +156,6 @@ class ProtoNetTrainer():
 
         return best_state, best_acc, train_loss, train_acc, val_loss, val_acc
 
-
     def _test(self, test_dataloader : data.DataLoader, model : nn.Module):
         device = 'cuda:0' if torch.cuda.is_available() and self._options.cuda else 'cpu'
         avg_acc = list()
@@ -162,31 +168,18 @@ class ProtoNetTrainer():
                 x, y = x.to(device), y.to(device)
                 model_output = model(x)
                 _, acc = loss_fn(model_output, target=y,
-                                 n_support=self._options.num_support_val)
+                                 n_support=self._options.num_support_test)
                 avg_acc.append(acc.item())
         avg_acc = np.mean(avg_acc)
         print('Avr Test Acc: {}'.format(avg_acc))
 
         return avg_acc
 
-
-    def _eval(self):
-        self._init_seed()
-        test_dataloader = self._init_dataset(self._options)[-1]
-        model = self._init_protonet()
-        model_path = os.path.join(self._options.experiment_root, 'best_model.pth')
-        model.load_state_dict(torch.load(model_path))
-
-        self._test(
-             test_dataloader=test_dataloader,
-             model=model)
-
-
     def Train(self, dataset : data.Dataset) -> nn.Module:
         self._init_seed()
 
         tr_dataloader = self._init_dataloader('train', dataset)
-        trainval_dataloader = self._init_dataloader('trainval', dataset)
+        trainval_dataloader = self._init_dataloader('val', dataset)
 
         model = self._init_protonet(self._options.backbone)
         optim = self._init_optim(model)

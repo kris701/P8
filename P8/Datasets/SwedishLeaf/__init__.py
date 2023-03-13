@@ -52,11 +52,14 @@ class SwedishLeafDataset(data.Dataset):
         return os.path.exists(os.path.join(self.root, self.processed_folder))
     
     def _index_classes(self, items):
-        if self.mode == 'train':
-            classes = {1: 0, 2: 1, 3: 2, 4: 3, 10: 4, 11: 5, 12: 6, 13: 7, 14: 8, 15: 9}
-        else:
-            classes = {5: 0, 6: 1, 7: 2, 8: 3, 9: 4}
-        return classes
+        idx = {}
+        for i in items:
+            index = i[i.find("data\\")+len("data\\"):i.rfind("\\")]
+            if not index in idx:
+                idx[index] = 1
+            else:
+                idx[index] = idx[index] + 1
+        return idx
     
     def _load_item(self, item):
         item_path = os.path.join(self.root, item)

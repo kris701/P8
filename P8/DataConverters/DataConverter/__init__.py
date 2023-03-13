@@ -43,12 +43,12 @@ class DataWriter():
         trainval_files = self._get_filepaths(dataset_root, trainval_folders)
         train, val = self._split_trainval(trainval_files, 0.8)
         test_files = self._get_filepaths(dataset_root, test_folders)
+        random.shuffle(test_files)
         split_path = dataset_root + os.sep + "split"
         os.mkdir(split_path)
     
         self._writer("train.txt", train, split_path)
         self._writer("val.txt", val, split_path)
-        self._writer("trainval.txt", trainval_files, split_path)
         self._writer("test.txt", test_files, split_path)
 
     def _writer(self, fname, paths, split_path):
@@ -69,9 +69,10 @@ class DataWriter():
 
     def Convert(self, trainName : str, testName : str, testClassesPercent : float):
         if not os.path.isdir("formated"):
+            print("Formating dataset...")
             formated = self._formatData(trainName, testName)
             self._write_data(formated, "formated")
-            self._create_splits("formated", len(formated) * testClassesPercent)
+            self._create_splits("formated", int(len(formated) * (1 - testClassesPercent)))
         else:
             print("Dataset already formated!")
 
