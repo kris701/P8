@@ -133,25 +133,33 @@ def evaluate_shapelet(series: list, labels: list, window: list):
     return calculate_information_gain(match_frequencies, prior_entropy)
 
 
-def generate_best_shaplet(series: list, labels: list):
-    print("---Generating Shapelet---")
-    best_shapelet = []
-    best_score = 0
+def generate_best_shaplets(series: list, labels: list, count: int):
+    print("---Generating Shapelets---")
+    shapelets = []
     windows = generate_windows(series, 2, 10)
     print("Evaluating each possible shapelet")
     for window in tqdm(windows):
         score = evaluate_shapelet(series, labels, window)
-        if score > best_score:
-            best_shapelet = window
-            best_score = score
-    print("---Finished Generating Shapelet---")
-    return best_shapelet, best_score
+        if len(shapelets) < count:
+            shapelets.append((score, window))
+            shapelets = sorted(shapelets)
+        else:
+            for i in range(0, len(shapelets)):
+                if score > shapelets[i][0]:
+                    shapelets.insert(i, (score, window))
+                    shapelets.pop()
+                    break
+    print("---Finished Generating Shapelets---")
+    return shapelets
 
 
 data_series, data_labels = load_data(filename + os.sep + "Temp.tsv")
 
-shapelet, score = generate_best_shaplet(data_series, data_labels)
-print("Best Score: ", score)
-plt.plot(shapelet)
-plt.xticks(range(0, len(shapelet), 1))
+shapelets = generate_best_shaplets(data_series, data_labels, 10)
+max_length = 0
+for shapelet in shapelets:
+    if len(shapelet[1]) > max_length:
+        max_length = len(shapelet[1])
+    plt.plot(shapelet[1])
+plt.xticks(range(0, max_length, 1))
 plt.show()
