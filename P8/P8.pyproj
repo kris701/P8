@@ -4,7 +4,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>7c9633b0-acff-451d-ab8a-c9ce2724b9d8</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>ProtoNets\BaseProtoNet\__init__.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -23,30 +24,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="P8.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\Data\base.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\Data\omniglot.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\Data\__init__.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\Engine.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\Models\factory.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\Models\few_shot.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\Models\utils.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\Models\__init__.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\Utils\data.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\Utils\log.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\Utils\model.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\Utils\__init__.py" />
-    <Compile Include="ProtoNets\BaseProtoNet\__init__.py">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Datasets\" />
     <Folder Include="Datasets\SwedishLeaf\" />
     <Folder Include="ProtoNets\" />
-    <Folder Include="ProtoNets\BaseProtoNet\" />
-    <Folder Include="ProtoNets\BaseProtoNet\Models\" />
-    <Folder Include="ProtoNets\BaseProtoNet\Data\" />
-    <Folder Include="ProtoNets\BaseProtoNet\Utils\" />
+    <Folder Include="ProtoNets\BaseProtonet\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Datasets\SwedishLeaf\README.md" />
