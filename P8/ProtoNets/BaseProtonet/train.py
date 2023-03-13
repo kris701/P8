@@ -254,6 +254,3 @@ def main(dataset):
     #      test_dataloader=test_dataloader,
     #      model=model)
 
-
-if __name__ == '__main__':
-    main()

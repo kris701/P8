@@ -32,7 +32,6 @@
     <Compile Include="ProtoNets\BaseProtonet\parser_util.py" />
     <Compile Include="ProtoNets\BaseProtonet\protonet.py" />
     <Compile Include="ProtoNets\BaseProtonet\prototypical_batch_sampler.py" />
-    <Compile Include="ProtoNets\BaseProtonet\prototypical_loss.py" />
     <Compile Include="ProtoNets\BaseProtonet\slprotonet.py" />
     <Compile Include="ProtoNets\BaseProtonet\train.py" />
     <Compile Include="ProtoNets\BaseProtonet\__init__.py">

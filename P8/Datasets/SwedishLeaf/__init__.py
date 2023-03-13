@@ -30,13 +30,13 @@ class SwedishLeafDataset(data.Dataset):
         self.all_items = item_file.read().split('\n')
         item_file.close()
 
-        self.idx_classes = self.index_classes(self.all_items)
+        self.idx_classes = self._index_classes(self.all_items)
 
-        self.x = map(self.load_item, self.all_items)
+        self.x = map(self._load_item, self.all_items)
         self.x = list(self.x)
         self.x = torch.tensor(self.x)
 
-        self.y = list(map(self.find_y, self.all_items))
+        self.y = list(map(self._find_y, self.all_items))
         print(mode, len(self.x), len(self.y))
 
     def __getitem__(self, idx):
@@ -51,14 +51,14 @@ class SwedishLeafDataset(data.Dataset):
     def _check_exists(self):
         return os.path.exists(os.path.join(self.root, self.processed_folder))
     
-    def index_classes(self, items):
+    def _index_classes(self, items):
         if self.mode == 'train':
             classes = {1: 0, 2: 1, 3: 2, 4: 3, 10: 4, 11: 5, 12: 6, 13: 7, 14: 8, 15: 9}
         else:
             classes = {5: 0, 6: 1, 7: 2, 8: 3, 9: 4}
         return classes
     
-    def load_item(self, item):
+    def _load_item(self, item):
         item_path = os.path.join(self.root, item)
         f = open(item_path, 'r')
         result = f.read().split('\n')
@@ -67,11 +67,11 @@ class SwedishLeafDataset(data.Dataset):
         result = list(map(float, result))
         return result
 
-    def get_current_classes(self, fname):
+    def _get_current_classes(self, fname):
         with open(fname) as f:
             paths = f.read().split("\n")
         classes = [path.split(os.sep)[1] for path in paths]
         return classes
 
-    def find_y(self, item):
+    def _find_y(self, item):
             return int(item.split(os.sep)[1])
