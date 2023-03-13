@@ -3,7 +3,9 @@ from .prototypical_batch_sampler import PrototypicalBatchSampler
 from .prototypical_loss import prototypical_loss as loss_fn
 from .parser_util import get_parser
 from .slprotonet import slProtoNet
+from .ProtoNetOptions import ProtoNetOptions
 
+import torch.utils.data as data
 from tqdm import tqdm
 import numpy as np
 import torch
@@ -193,24 +195,16 @@ class BaseProtoNet(slProtoNet):
              model=model)
 
 
-    def main(self, dataset):
+    def Run(self, dataset : data.Dataset, options : ProtoNetOptions):
         '''
         Initialize everything and train
         '''
-        options = get_parser().parse_args()
         if not os.path.exists(options.experiment_root):
             os.makedirs(options.experiment_root)
-
         if torch.cuda.is_available() and not options.cuda:
             print("WARNING: You have a CUDA device, so you should probably run with --cuda")
 
         self.init_seed(options)
-    
-        options.cuda = True
-        options.dataset_root = "formated"
-        options.classes_per_it_tr = 5
-        options.classes_per_it_val = 5
-        options.epochs = 10;
 
         tr_dataloader = self.init_dataloader(options, 'train', dataset)
         #val_dataloader = init_dataloader(options, 'val', dataset) #
@@ -227,16 +221,18 @@ class BaseProtoNet(slProtoNet):
                     optim=optim,
                     lr_scheduler=lr_scheduler)
         best_state, best_acc, train_loss, train_acc, val_loss, val_acc = res
-        print('Testing with last model..')
-        self.test(opt=options,
-             test_dataloader=test_dataloader,
-             model=model)
+        if options.do_train == True:
+            print('Testing with last model..')
+            self.test(opt=options,
+                 test_dataloader=test_dataloader,
+                 model=model)
 
-        model.load_state_dict(best_state)
-        print('Testing with best model..')
-        self.test(opt=options,
-             test_dataloader=test_dataloader,
-             model=model)
+        if options.do_test == True:
+            model.load_state_dict(best_state)
+            print('Testing with best model..')
+            self.test(opt=options,
+                 test_dataloader=test_dataloader,
+                 model=model)
 
         # optim = init_optim(options, model)
         # lr_scheduler = init_lr_scheduler(options, optim)
