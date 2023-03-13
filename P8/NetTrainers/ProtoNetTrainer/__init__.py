@@ -9,7 +9,7 @@ import numpy as np
 import torch
 import os
 
-class BaseProtoNet():
+class ProtoNetTrainer():
     _options : ProtoNetOptions = None;
 
     def __init__(self, options : ProtoNetOptions):
