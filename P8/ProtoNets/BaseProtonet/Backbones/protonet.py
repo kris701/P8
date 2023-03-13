@@ -1,6 +1,5 @@
 import torch.nn as nn
 
-
 def conv_block(in_channels, out_channels):
     '''
     returns a block conv-bn-relu-pool

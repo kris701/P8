@@ -2,15 +2,12 @@
 from .prototypical_batch_sampler import PrototypicalBatchSampler
 from .prototypical_loss import prototypical_loss as loss_fn
 from .ProtoNetOptions import ProtoNetOptions
-from .slprotonet import slProtoNet
 
 import torch.utils.data as data
 from tqdm import tqdm
 import numpy as np
 import torch
 import os
-
-import torch.nn as nn
 
 class BaseProtoNet():
     _options : ProtoNetOptions = None;
@@ -225,7 +222,7 @@ class BaseProtoNet():
         trainval_dataloader = self.init_dataloader(self._options, 'trainval', dataset)
         test_dataloader = self.init_dataloader(self._options, 'test', dataset)
 
-        model = self.init_protonet(self._options, slProtoNet)
+        model = self.init_protonet(self._options, self._options.backbone)
         optim = self.init_optim(self._options, model)
         lr_scheduler = self.init_lr_scheduler(self._options, optim)
         res = self.train(opt=self._options,

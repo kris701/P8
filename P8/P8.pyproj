@@ -29,10 +29,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="P8.py" />
-    <Compile Include="ProtoNets\BaseProtonet\protonet.py" />
+    <Compile Include="ProtoNets\BaseProtonet\Backbones\protonet.py" />
     <Compile Include="ProtoNets\BaseProtonet\ProtoNetOptions.py" />
     <Compile Include="ProtoNets\BaseProtonet\prototypical_batch_sampler.py" />
-    <Compile Include="ProtoNets\BaseProtonet\slprotonet.py" />
+    <Compile Include="ProtoNets\BaseProtonet\Backbones\slprotonet.py" />
     <Compile Include="ProtoNets\BaseProtonet\__init__.py">
       <SubType>Code</SubType>
     </Compile>
@@ -46,6 +46,7 @@
     <Folder Include="Datasets\" />
     <Folder Include="ProtoNets\" />
     <Folder Include="ProtoNets\BaseProtonet\" />
+    <Folder Include="ProtoNets\BaseProtonet\Backbones\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\SwedishLeaf\README.md" />

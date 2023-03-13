@@ -1,3 +1,6 @@
+import torch.nn as nn
+from .Backbones.slprotonet import slProtoNet
+
 class ProtoNetOptions():
     # do train
     do_train : bool = True;
@@ -42,6 +45,8 @@ class ProtoNetOptions():
     hid_dim : int = 8;
     # output dimensions
     z_dim = int = 8;
+    # Backbone protonet to use
+    backbone : nn.Module = slProtoNet;
 
 
 
