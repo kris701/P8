@@ -1,6 +1,7 @@
 from .prototypical_batch_sampler import PrototypicalBatchSampler
 from .prototypical_loss import prototypical_loss as loss_fn
 from .ProtoNetOptions import ProtoNetOptions
+from .DataloaderVerifier import DataLoaderVerifier
 
 import torch.utils.data as data
 from tqdm import tqdm
@@ -36,6 +37,8 @@ class ProtoNetTrainer():
         self.ValDataloader = self._init_dataloader('val', self.Dataset)
         self.TrainDataloader = self._init_dataloader('train', self.Dataset)
         self.TestDataloader = self._init_dataloader('test', self.Dataset)
+
+        DataLoaderVerifier.Verify([self.ValDataloader, self.TrainDataloader, self.TestDataloader])
 
 
     def _init_seed(self) -> None:
@@ -199,7 +202,7 @@ class ProtoNetTrainer():
 
     def Test(self) -> float:
         if self._isTrained == False:
-            Exception("Model is not trained! Cannot test on it.")
+            raise Exception("Model is not trained! Cannot test on it.")
 
         return self._test(
                 test_dataloader=self.TestDataloader,
