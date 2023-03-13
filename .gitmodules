@@ -1,3 +1,0 @@
-[submodule "protonets"]
-	path = protonets
-	url = https://github.com/orobix/Prototypical-Networks-for-Few-shot-Learning-PyTorch.git
