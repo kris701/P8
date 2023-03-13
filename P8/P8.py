@@ -9,8 +9,8 @@ res = dataWriter.Convert("./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv", "./Data/Swe
 options = pntOpt()
 options.classes_per_it_tr = 5
 options.classes_per_it_val = 5
-options.epochs = 10;
+options.train_epochs = 10;
 
 net = pnt(options)
-net.Train(SwedishLeafDataset);
+bestModel = net.Train(SwedishLeafDataset);
 

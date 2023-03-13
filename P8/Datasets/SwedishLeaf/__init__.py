@@ -37,7 +37,7 @@ class SwedishLeafDataset(data.Dataset):
         self.x = torch.tensor(self.x)
 
         self.y = list(map(self._find_y, self.all_items))
-        print(mode, len(self.x), len(self.y))
+        #print(mode, len(self.x), len(self.y))
 
     def __getitem__(self, idx):
         x = self.x[idx]

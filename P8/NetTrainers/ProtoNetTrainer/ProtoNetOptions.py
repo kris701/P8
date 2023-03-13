@@ -7,7 +7,9 @@ class ProtoNetOptions():
     # root where to store models, losses and accuracies
     experiment_root : str = "output";
     # number of epochs to train for
-    epochs : int = 10;
+    train_epochs : int = 10;
+    # number of epochs to test for
+    test_epochs : int = 10;
     # learning rate for the model
     learning_rate : float = 0.001;
     # StepLR learning rate scheduler step
