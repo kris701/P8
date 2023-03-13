@@ -11,6 +11,8 @@ import torch
 import os
 
 class BaseProtoNet(slProtoNet):
+    _options : ProtoNetOptions = None;
+
     def init_seed(self, opt):
         '''
         Disable cudnn to maximize reproducibility
@@ -178,7 +180,7 @@ class BaseProtoNet(slProtoNet):
         '''
         Initialize everything and train
         '''
-        options = get_parser().parse_args()
+        options = self._options;
 
         if torch.cuda.is_available() and not options.cuda:
             print("WARNING: You have a CUDA device, so you should probably run with --cuda")
@@ -198,6 +200,7 @@ class BaseProtoNet(slProtoNet):
         '''
         Initialize everything and train
         '''
+        self._options = options
         if not os.path.exists(options.experiment_root):
             os.makedirs(options.experiment_root)
         if torch.cuda.is_available() and not options.cuda:
