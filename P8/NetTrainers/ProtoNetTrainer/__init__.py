@@ -30,10 +30,8 @@ class ProtoNetTrainer():
         torch.manual_seed(self._options.manual_seed)
         torch.cuda.manual_seed(self._options.manual_seed)
 
-
     def _init_dataset(self, mode : str, dataset : data.Dataset) -> data.Dataset:
         return dataset(mode=mode, root=self._options.dataset_root)
-
 
     def _init_sampler(self, labels : list, mode : str) -> PrototypicalBatchSampler:
         if 'train' == mode:
@@ -51,13 +49,11 @@ class ProtoNetTrainer():
                                         num_samples=num_samples,
                                         iterations=self._options.iterations)
 
-
     def _init_dataloader(self, mode : str, dataset : data.Dataset) -> data.DataLoader:
         dataset_ = self._init_dataset(mode, dataset=dataset)
         sampler = self._init_sampler(dataset_.y, mode)
         dataloader = data.DataLoader(dataset_, batch_sampler=sampler)
         return dataloader
-
 
     def _init_protonet(self, protonet : nn.Module) -> nn.Module:
         device = 'cuda:0' if torch.cuda.is_available() and self._options.cuda else 'cpu'
