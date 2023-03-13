@@ -367,4 +367,4 @@ P8Report/**/build
 
 *.pdf
 
-P8/Data/**_Formated
+P8/formated/*

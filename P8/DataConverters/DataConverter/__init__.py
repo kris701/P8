@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import random
 import math
+import shutil
 
 class DataWriter():
     def load_data(self, fp): #load the data and sort into a list of classes, each class containing a list of dataframes, each of which is a time series
@@ -38,7 +39,7 @@ class DataWriter():
         test_folders = class_folders[n_trainval_classes:]
         trainval_files = []
 
-        trainval_files = self.get_filepaths(trainval_folders)
+        trainval_files = self.get_filepaths(dataset_root, trainval_folders)
         train, val = self.split_trainval(trainval_files, 0.8)
         test_files = self.get_filepaths(dataset_root, test_folders)
         split_path = dataset_root + os.sep + "split"
@@ -66,5 +67,14 @@ class DataWriter():
         print("Train samples:", sum(len(train_data[i]) for i in range(len(train_data))))
         print("Test samples", sum(len(test_data[i]) for i in range(len(test_data))))
         return [train_data[i] + test_data[i] for i in range(len(train_data))]
+
+    def Convert(self, trainName : str, testName : str):
+        if not os.path.isdir("formated"):
+            formated = self.formatData(trainName, testName)
+            self.write_data(formated, "formated")
+            self.create_splits("formated", len(formated))
+        else:
+            print("Dataset already formated!")
+
 
 
