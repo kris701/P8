@@ -11,6 +11,18 @@ filename = os.path.join(dirname, "data", "UCRArchive_2018", "SwedishLeaf")
 
 # --- Data Loading ---
 
+def load_and_format_data(fp): #load the data and sort into a list of classes, each class containing a list of dataframes, each of which is a time series
+    df = pd.read_csv(fp, delimiter="\t", header=None)
+    X = df.iloc[:, 1:]
+    y = df.iloc[:, 0]
+    classes = []
+    for c in set(y):
+        classes.append([X.iloc[i] for i in range(len(y)) if y[i] == c])
+    result = []
+    for c in classes:
+        result.append([ts.tolist() for ts in c])
+    return result
+
 def load_data(fp):
     df = pd.read_csv(fp, delimiter="\t", header=None)
     X = df.iloc[:, 1:]
@@ -33,15 +45,18 @@ def generate_windows2(series: list, length: int):
     return windows
 
 
-def generate_windows(series: list, min: int, max: int):
+def generate_windows(data: list, min: int, max: int):
     print("---Generating Windows---")
-    print("Total Series: ", len(series))
     windows = []
-    for s in series:
+    windowCount = 0
+    for class_series in data:
+        windows.append([])
         for length in range(min, max + 1):
-            for w in generate_windows2(s, length):
-                windows.append(w)
-    print("Total Windows: ", len(windows))
+            for series in class_series:
+                for w in generate_windows2(series, length):
+                    windows[len(windows) - 1].append(w)
+                    windowCount += 1
+    print("Total Windows: ", windowCount)
     print("---Finished Generating Windows---")
     return windows
 
@@ -50,7 +65,7 @@ def generate_windows(series: list, min: int, max: int):
 def is_match(s1: list, s2: list):
     offset = s1[0] - s2[0]
 
-    tolerance = 0.01
+    tolerance = 0.1
     for i in range(1, len(s1)):
         if abs(s1[i] - s2[i] - offset) > tolerance:
             return False
@@ -69,6 +84,19 @@ def match_frequency(series: list, window: list):
 
 
 # --- Information Gain ---
+def calculate_entropy_set(class_series: list):
+    total = 0
+    for cs in class_series:
+        total += len(cs)
+
+    inverse_entropy = 0
+
+    for set in class_series:
+        prob = len(set) / total
+        inverse_entropy += prob * log(prob)
+
+    return -inverse_entropy
+
 # From: https://stackoverflow.com/questions/15450192/fastest-way-to-compute-entropy-in-python
 def calculate_entropy(labels: list, base=None):
     """ Computes entropy of label distribution. """
@@ -123,42 +151,46 @@ def calculate_information_gain(match_frequencies: list, prior_entropy: float):
 
 # --- Shapelet Eval ---
 
-def evaluate_shapelet(series: list, labels: list, window: list):
-    prior_entropy = calculate_entropy(labels)
-    match_frequencies = []  # (label, frequency)
-    for label_series in zip(series, labels):
-        frequency = match_frequency(label_series[0], window)
-        match_frequencies.append((label_series[1], frequency))
+def evaluate_shapelet(class_series: list, window: list):
+    prior_entropy = calculate_entropy_set(class_series)
+    match_frequencies = []  # [[]]
+    for class_index in range(0, len(class_series)):
+        for series in class_series[class_index]:
+            frequency = match_frequency(series, window)
+            match_frequencies.append((class_index, frequency))
     return calculate_information_gain(match_frequencies, prior_entropy)
 
 
-def generate_best_shaplets(series: list, labels: list, count: int):
+def generate_best_shaplets(data: list):
     print("---Generating Shapelets---")
     shapelets = []
-    windows = generate_windows(series, 2, 80)
-    print("Evaluating each possible shapelet")
-    for window in tqdm(windows):
-        score = evaluate_shapelet(series, labels, window)
-        if len(shapelets) < count:
-            shapelets.append((score, window))
-            shapelets = sorted(shapelets)
-        else:
-            for i in range(0, len(shapelets)):
-                if score > shapelets[i][0]:
-                    shapelets.insert(i, (score, window))
-                    shapelets.pop()
-                    break
+    windows = generate_windows(data, 2, 20)
+    index_pairs = []
+    for i in range(0, len(data)):
+        for t in range(i + 1, len(data)):
+            index_pairs.append((i, t))
+    for pair in tqdm(index_pairs):
+        #print("Generating optimal shapelet for classes (", pair[0], ",", pair[1], ")")
+        best_score = 0
+        best_shapelet = []
+        for window in windows[pair[0]] + windows[pair[1]]:
+            score = evaluate_shapelet([data[i] for i in pair], window)
+            if score > best_score:
+                best_score = score
+                best_shapelet = window
+        if best_score != 0:
+            shapelets.append(best_shapelet)
+         
     print("---Finished Generating Shapelets---")
     return shapelets
 
+data = load_and_format_data(filename + os.sep + "Temp.tsv")
+shapelets = generate_best_shaplets(data)
 
-data_series, data_labels = load_data(filename + os.sep + "Temp.tsv")
-
-shapelets = generate_best_shaplets(data_series, data_labels, 10)
 max_length = 0
 for shapelet in shapelets:
-    if len(shapelet[1]) > max_length:
-        max_length = len(shapelet[1])
-    plt.plot(shapelet[1])
+    if len(shapelet) > max_length:
+        max_length = len(shapelet)
+    plt.plot(shapelet)
 plt.xticks(range(0, max_length, 1))
 plt.show()
