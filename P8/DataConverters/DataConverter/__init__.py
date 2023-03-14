@@ -1,11 +1,15 @@
 import os
-from tokenize import Double
 import pandas as pd
 import random
 import math
-import shutil
 
 class DataWriter():
+
+    TargetDir : str = "";
+
+    def __init__(self, targetDir : str) -> None:
+        self.TargetDir = targetDir
+
     def _load_data(self, fp): #load the data and sort into a list of classes, each class containing a list of dataframes, each of which is a time series
         df = pd.read_csv(fp, delimiter="\t", header=None)
         X = df.iloc[:, 1:]
@@ -68,11 +72,11 @@ class DataWriter():
         return [train_data[i] + test_data[i] for i in range(len(train_data))]
 
     def Convert(self, trainName : str, testName : str, testClassesPercent : float):
-        if not os.path.isdir("formated"):
-            print("Formating dataset...")
+        if not os.path.isdir(self.TargetDir):
+            print("Formating dataset. This may take a while...")
             formated = self._formatData(trainName, testName)
-            self._write_data(formated, "formated")
-            self._create_splits("formated", int(len(formated) * (1 - testClassesPercent)))
+            self._write_data(formated, self.TargetDir)
+            self._create_splits(self.TargetDir, int(len(formated) * (1 - testClassesPercent)))
         else:
             print("Dataset already formated!")
 

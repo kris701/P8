@@ -34,8 +34,8 @@ class ProtoNetTrainer():
 
         self._init_seed()
 
-        self.ValDataloader = self._init_dataloader('val', self.Dataset)
         self.TrainDataloader = self._init_dataloader('train', self.Dataset)
+        self.ValDataloader = self._init_dataloader('val', self.Dataset)
         self.TestDataloader = self._init_dataloader('test', self.Dataset)
 
         DataLoaderVerifier.Verify([self.ValDataloader, self.TrainDataloader, self.TestDataloader])
