@@ -29,6 +29,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="NetTrainers\ProtoNetTrainer\DataloaderVerifier.py" />
+    <Compile Include="NetTrainers\ProtoNetTrainer\prototypical_loss.py" />
     <Compile Include="P8.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\Backbones\protonet.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\ProtoNetOptions.py" />
