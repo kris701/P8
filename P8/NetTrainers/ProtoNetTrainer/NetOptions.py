@@ -1,7 +1,7 @@
 import torch.nn as nn
 from .Backbones.slprotonet import slProtoNet
 
-class ProtoNetOptions():
+class NetOptions():
     # path to dataset
     dataset_root : str = "formated";
     # root where to store models, losses and accuracies
@@ -44,6 +44,8 @@ class ProtoNetOptions():
     manual_seed : int = 7;
     # enables cuda
     cuda : bool = True;
+    # option to select other cuda devices to run on
+    cudaDevice : str = "cuda:0";
 
     # input dimensions
     x_dim : int = 1;
@@ -53,6 +55,3 @@ class ProtoNetOptions():
     z_dim = int = 8;
     # Backbone protonet to use
     backbone : nn.Module = slProtoNet;
-
-
-

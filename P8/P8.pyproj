@@ -28,11 +28,13 @@
     <Compile Include="Datasets\SwedishLeaf\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NetTrainers\ProtoNetTrainer\BaseNetTrainer.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\DataloaderVerifier.py" />
+    <Compile Include="NetTrainers\ProtoNetTrainer\NetTrainer.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\prototypical_loss.py" />
     <Compile Include="P8.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\Backbones\protonet.py" />
-    <Compile Include="NetTrainers\ProtoNetTrainer\ProtoNetOptions.py" />
+    <Compile Include="NetTrainers\ProtoNetTrainer\NetOptions.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\prototypical_batch_sampler.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\Backbones\slprotonet.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\__init__.py">
