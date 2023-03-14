@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import random
 import math
+from tqdm import tqdm
 
 class DataWriter():
 
@@ -23,9 +24,9 @@ class DataWriter():
         destination_folder = dataset_root + os.sep + "data"
         if not os.path.isdir(destination_folder):
             os.makedirs(destination_folder)
-        for j, c in enumerate(classes):
+        for (j, c) in tqdm(enumerate(classes), total=len(classes), desc="Converting class", position=0, colour="red"):
             os.makedirs(destination_folder + os.sep + str(j+1))
-            for i, item in enumerate(c):
+            for i, item in tqdm(enumerate(c), total=len(c), desc="Converting file", position=1, colour="green", leave=False):
                 item.to_csv(path_or_buf=destination_folder + os.sep + str(j+1) + os.sep + str(i) + ".csv", sep=',', header=False, index=False)
 
     def _split_trainval(self, data, percentage_train):
@@ -35,7 +36,7 @@ class DataWriter():
         val = data[split:]
         return train, val
 
-    def _create_splits(self, dataset_root, n_trainval_classes):
+    def _create_splits(self, dataset_root, n_trainval_classes, trainValSplit : float):
         data_folder = "data"
         if not os.path.isdir(dataset_root + os.sep + data_folder):
             os.makedirs(dataset_root + os.sep + data_folder)
@@ -45,7 +46,7 @@ class DataWriter():
         trainval_files = []
 
         trainval_files = self._get_filepaths(dataset_root, trainval_folders)
-        train, val = self._split_trainval(trainval_files, 0.8)
+        train, val = self._split_trainval(trainval_files, trainValSplit)
         test_files = self._get_filepaths(dataset_root, test_folders)
         random.shuffle(test_files)
         split_path = dataset_root + os.sep + "split"
@@ -71,12 +72,13 @@ class DataWriter():
         test_data = self._load_data(testName)
         return [train_data[i] + test_data[i] for i in range(len(train_data))]
 
-    def Convert(self, trainName : str, testName : str, testClassesPercent : float):
+    def Convert(self, trainName : str, testName : str, testClassesPercent : float, trainValSplit : float):
         if not os.path.isdir(self.TargetDir):
             print("Formating dataset. This may take a while...")
             formated = self._formatData(trainName, testName)
             self._write_data(formated, self.TargetDir)
-            self._create_splits(self.TargetDir, int(len(formated) * (1 - testClassesPercent)))
+            self._create_splits(self.TargetDir, int(len(formated) * (1 - testClassesPercent)), trainValSplit)
+            print("Formating complete!")
         else:
             print("Dataset already formated!")
 

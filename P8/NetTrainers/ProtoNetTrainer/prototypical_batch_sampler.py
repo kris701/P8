@@ -61,6 +61,7 @@ class PrototypicalBatchSampler(object):
                 # FIXME when torch.argwhere will exists
                 label_idx = torch.arange(len(self.classes)).long()[self.classes == c].item()
                 sample_idxs = torch.randperm(self.numel_per_class[label_idx])[:spc]
+                # Note: If you get an error here, its most likely because that there arent a large enough validation set compared to the train set.
                 batch[s] = self.indexes[label_idx][sample_idxs]
             batch = batch[torch.randperm(len(batch))]
             yield batch

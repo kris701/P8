@@ -9,13 +9,12 @@ targetDataDir = "formated" + os.sep + "swedishLeaf"
 targetOutputDir = "output" + os.sep + "swedishLeaf"
 
 dataWriter = dw(targetDataDir);
-dataWriter.Convert("./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv", "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv", 0.2)
+dataWriter.Convert("./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv", "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv", 0.2, 0.7)
 
 options = pntOpt.NetOptions
 options.dataset_root = targetDataDir
 options.experiment_root = targetOutputDir;
 options.classes_per_it_tr = 10
-options.classes_per_it_val = 10
 options.classes_per_it_test = 3
 options.train_epochs = 5;
 options.test_epochs = 1;
