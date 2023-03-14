@@ -366,3 +366,11 @@ P8Report/build
 P8Report/**/build
 
 *.pdf
+
+P8/formated/**
+P8/output/**
+
+P8/Data/*
+!P8/Data/readme.md
+# PyCharm
+.idea
