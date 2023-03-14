@@ -5,7 +5,7 @@ from NetTrainers.ProtoNetTrainer import ProtoNetTrainer as pnt
 from NetTrainers.ProtoNetTrainer import ProtoNetOptions as pntOpt
 from Datasets.SwedishLeaf import SwedishLeafDataset
 
-targetDir = "formatted" + os.sep + "swedishLeaf"
+targetDir = "formated" + os.sep + "swedishLeaf"
 
 dataWriter = dw(targetDir);
 dataWriter.Convert("./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv", "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv", 0.2)
