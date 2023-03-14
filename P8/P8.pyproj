@@ -50,7 +50,7 @@
     <Folder Include="NetTrainers\ProtoNetTrainer\Backbones\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="readme.md" />
+    <Content Include="Data\readme.md" />
     <Content Include="Data\SwedishLeaf\README.md" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TEST.tsv" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TRAIN.tsv" />
