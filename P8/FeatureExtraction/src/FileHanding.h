@@ -53,6 +53,15 @@ namespace FileHanding {
         }
         out.close();
     }
+
+    static void WriteFile(const std::string &path, const std::vector<std::string> &data) {
+        std::filesystem::create_directories(std::filesystem::path(path).parent_path());
+        std::ofstream out(path);
+        for (const auto &point : data) {
+            out << point << '\n';
+        }
+        out.close();
+    }
 };
 
 #endif //FEATUREEXTRACTION_FILEHANDING_H

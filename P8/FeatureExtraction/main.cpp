@@ -94,17 +94,32 @@ int main(int argc, char **argv) {
         mappedData[d.label].push_back(d.series);
     Logger::End(id);
 
-    id = Logger::Begin("Writing to Files");
+    id = Logger::Begin("Writing Features to Files");
     if (std::filesystem::is_directory("out"))
         std::filesystem::remove_all("out");
+    std::unordered_map<int, std::vector<std::string>> paths;
     for (const auto &seriesSet : mappedData) {
         const std::string dirPath = "out/data/" + std::to_string(seriesSet.first) + "/";
         for (uint i = 0; i < seriesSet.second.size(); i++) {
             const std::string filePath = dirPath + std::to_string(i);
+            paths[seriesSet.first].push_back(filePath);
             const auto featureSeries = FeatureFinding::GenerateFeatureSeries(seriesSet.second.at(i), featureSet);
             FileHanding::WriteFile(filePath, featureSeries);
         }
     }
+    Logger::End(id);
+    id = Logger::Begin("Writing Split Files");
+    std::vector<std::string> trainPaths;
+    std::vector<std::string> testPaths;
+    for (const auto &pathSet : paths) {
+        const uint testIndex = (uint) (arguments.split.value() * (double) pathSet.second.size());
+        for (uint i = 0; i < testIndex; i++)
+            trainPaths.push_back(pathSet.second.at(i));
+        for (uint i = testIndex; i < pathSet.second.size(); i++)
+            testPaths.push_back(pathSet.second.at(i));
+    }
+    FileHanding::WriteFile("out/split/train.txt", trainPaths);
+    FileHanding::WriteFile("out/split/test.txt", testPaths);
     Logger::End(id);
 
     return 0;
