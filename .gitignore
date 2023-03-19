@@ -369,3 +369,5 @@ P8Report/**/build
 
 # pycharm
 .idea
+*cmake-build-debug*
+*cmake-build-release*
