@@ -11,6 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>P8</Name>
     <RootNamespace>P8</RootNamespace>
+    <InterpreterId>Global|PythonCore|3.9</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +22,44 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DataConverters\DataConverter\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Datasets\SwedishLeaf\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NetTrainers\ProtoNetTrainer\BaseNetTrainer.py" />
+    <Compile Include="NetTrainers\ProtoNetTrainer\DataloaderVerifier.py" />
+    <Compile Include="NetTrainers\ProtoNetTrainer\NetTrainer.py" />
+    <Compile Include="NetTrainers\ProtoNetTrainer\prototypical_loss.py" />
     <Compile Include="P8.py" />
+    <Compile Include="NetTrainers\ProtoNetTrainer\Backbones\protonet.py" />
+    <Compile Include="NetTrainers\ProtoNetTrainer\NetOptions.py" />
+    <Compile Include="NetTrainers\ProtoNetTrainer\prototypical_batch_sampler.py" />
+    <Compile Include="NetTrainers\ProtoNetTrainer\Backbones\slprotonet.py" />
+    <Compile Include="NetTrainers\ProtoNetTrainer\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DataConverters\DataConverter\" />
+    <Folder Include="Datasets\SwedishLeaf\" />
+    <Folder Include="Data\" />
+    <Folder Include="Data\SwedishLeaf\" />
+    <Folder Include="DataConverters\" />
+    <Folder Include="Datasets\" />
+    <Folder Include="NetTrainers\" />
+    <Folder Include="NetTrainers\ProtoNetTrainer\" />
+    <Folder Include="NetTrainers\ProtoNetTrainer\Backbones\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Data\readme.md" />
+    <Content Include="Data\SwedishLeaf\README.md" />
+    <Content Include="Data\SwedishLeaf\SwedishLeaf_TEST.tsv" />
+    <Content Include="Data\SwedishLeaf\SwedishLeaf_TRAIN.tsv" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|PythonCore|3.9" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

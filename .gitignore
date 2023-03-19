@@ -367,7 +367,13 @@ P8Report/**/build
 
 *.pdf
 
-# pycharm
+P8/formated/**
+P8/output/**
+
+P8/Data/*
+!P8/Data/readme.md
+
+# pycharm / clion
 .idea
 *cmake-build-debug*
 *cmake-build-release*
