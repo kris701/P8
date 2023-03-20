@@ -3,13 +3,12 @@ import pandas as pd
 import random
 import math
 from tqdm import tqdm
+from ..BaseDataConverter import BaseDataConverter
+from ..DataConverterOptions import DataConverterOptions
 
-class DataWriter():
-
-    TargetDir : str = "";
-
-    def __init__(self, targetDir : str) -> None:
-        self.TargetDir = targetDir
+class DataWriter(BaseDataConverter):
+    def __init__(self, options: DataConverterOptions) -> None:
+        super().__init__(options)
 
     def _load_data(self, fp): #load the data and sort into a list of classes, each class containing a list of dataframes, each of which is a time series
         df = pd.read_csv(fp, delimiter="\t", header=None)
@@ -72,12 +71,12 @@ class DataWriter():
         test_data = self._load_data(testName)
         return [train_data[i] + test_data[i] for i in range(len(train_data))]
 
-    def Convert(self, trainName : str, testName : str, testClassesPercent : float, trainValSplit : float):
+    def ConvertData(self):
         if not os.path.isdir(self.TargetDir):
             print("Formating dataset. This may take a while...")
-            formated = self._formatData(trainName, testName)
+            formated = self._formatData(self.Options.SourceTrainData, self.Options.SourceTestData)
             self._write_data(formated, self.TargetDir)
-            self._create_splits(self.TargetDir, int(len(formated) * (1 - testClassesPercent)), trainValSplit)
+            self._create_splits(self.TargetDir, int(len(formated) * (1 - self.Options.TestClassesSplit)), self.Options.TrainValSplit)
             print("Formating complete!")
         else:
             print("Dataset already formated!")

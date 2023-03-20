@@ -1,6 +1,7 @@
 import os
 
 from DataConverters.DataConverter import DataWriter as dw
+from DataConverters.DataConverterOptions import DataConverterOptions as dwo
 from NetTrainers.ProtoNetTrainer import NetTrainer as pnt
 from NetTrainers.ProtoNetTrainer import NetOptions as pntOpt
 from Datasets.SwedishLeaf import SwedishLeafDataset
@@ -8,9 +9,18 @@ from Datasets.SwedishLeaf import SwedishLeafDataset
 targetDataDir = "formated" + os.sep + "swedishLeaf"
 targetOutputDir = "output" + os.sep + "swedishLeaf"
 
-dataWriter = dw(targetDataDir);
-dataWriter.Convert("./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv", "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv", 0.2, 0.7)
+# Convert data into a new format
+dataOptions = dwo()
+dataOptions.FormatedFolder = targetDataDir
+dataOptions.TrainValSplit = 0.7;
+dataOptions.TestClassesSplit = 0.2;
+dataOptions.SourceTrainData = "./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv";
+dataOptions.SourceTestData = "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv";
 
+dataConverter = dw(dataOptions);
+dataConverter.ConvertData()
+
+# Setup protonet 
 options = pntOpt.NetOptions
 options.dataset_root = targetDataDir
 options.experiment_root = targetOutputDir;

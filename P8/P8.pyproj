@@ -22,12 +22,15 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DataConverters\BaseDataConverter.py" />
     <Compile Include="DataConverters\DataConverter\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DataConverters\ShapeletHistograms\__init__.py" />
     <Compile Include="Datasets\SwedishLeaf\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DataConverters\DataConverterOptions.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\BaseNetTrainer.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\DataloaderVerifier.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\NetTrainer.py" />
@@ -48,11 +51,13 @@
     <Folder Include="Data\SwedishLeaf\" />
     <Folder Include="DataConverters\" />
     <Folder Include="Datasets\" />
+    <Folder Include="DataConverters\ShapeletHistograms\" />
     <Folder Include="NetTrainers\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\Backbones\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataConverters\readme.md" />
     <Content Include="Data\readme.md" />
     <Content Include="Data\SwedishLeaf\README.md" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TEST.tsv" />
