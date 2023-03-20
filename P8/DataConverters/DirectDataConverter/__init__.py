@@ -6,7 +6,7 @@ from tqdm import tqdm
 from ..BaseDataConverter import BaseDataConverter
 from ..DataConverterOptions import DataConverterOptions
 
-class DataWriter(BaseDataConverter):
+class DirectDataConverter(BaseDataConverter):
     def __init__(self, options: DataConverterOptions) -> None:
         super().__init__(options)
 

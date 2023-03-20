@@ -23,7 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DataConverters\BaseDataConverter.py" />
-    <Compile Include="DataConverters\DataConverter\__init__.py">
+    <Compile Include="DataConverters\DirectDataConverter\__init__.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataConverters\ShapeletHistograms\__init__.py" />
@@ -45,7 +45,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataConverters\DataConverter\" />
+    <Folder Include="DataConverters\DirectDataConverter\" />
     <Folder Include="Datasets\SwedishLeaf\" />
     <Folder Include="Data\" />
     <Folder Include="Data\SwedishLeaf\" />
