@@ -2,7 +2,7 @@ import cppyy
 from ..DataConverterOptions import DataConverterOptions
 from ..BaseDataConverter import BaseDataConverter
 
-class ShapeletHistograms(BaseDataConverter):
+class ShapeletHistogramConverter(BaseDataConverter):
     def __init__(self, options: DataConverterOptions) -> None:
         super().__init__(options)
         self._Initialize()
@@ -13,6 +13,9 @@ class ShapeletHistograms(BaseDataConverter):
         cppyy.include('FeatureExtraction/src/Types.h')
 
     def ConvertData(self):
+
+        raise Exception("Not implemented yet!")
+
         s = cppyy.gbl.abc()
         b = cppyy.gbl.LabelledSeries(1, [1,2,3,4])
         print(s.MinValue([b]))

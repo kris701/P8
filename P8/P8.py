@@ -1,7 +1,7 @@
 import os
 
 from DataConverters.DirectDataConverter import DirectDataConverter
-from DataConverters.ShapeletHistograms import ShapeletHistograms
+from DataConverters.ShapeletHistogramConverter import ShapeletHistogramConverter
 from DataConverters.DataConverterOptions import DataConverterOptions
 from NetTrainers.ProtoNetTrainer import NetTrainer
 from NetTrainers.ProtoNetTrainer import NetOptions
