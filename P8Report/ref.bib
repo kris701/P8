@@ -1,9 +1,3 @@
-@online{TestRef,
-  author = {Thiago P. Bueno},
-  title = {pddlparser-pp},
-  url = {https://github.com/thiagopbueno/pddlparser-pp},
-  urldate = {2022-12-05}
-}
 @article{inpr_DBLP2020,
   author    = {Wensi Tang and
                Lu Liu and
@@ -101,4 +95,22 @@ keywords = {Deep learning, Interpretability, Electronic health records},
   timestamp = {Mon, 13 Aug 2018 16:46:05 +0200},
   biburl    = {https://dblp.org/rec/journals/corr/SnellSZ17.bib},
   bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{narwariya2020,
+author = {Narwariya, Jyoti and Malhotra, Pankaj and Vig, Lovekesh and Shroff, Gautam and Vishnu, T. V.},
+title = {Meta-Learning for Few-Shot Time Series Classification},
+year = {2020},
+isbn = {9781450377386},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3371158.3371162},
+doi = {10.1145/3371158.3371162},
+abstract = {Deep neural networks (DNNs) have achieved state-of-the-art results on time series classification (TSC) tasks. In this work, we focus on leveraging DNNs in the often-encountered practical scenario where access to labeled training data is difficult, and where DNNs would be prone to overfitting. We leverage recent advancements in gradient-based meta-learning, and propose an approach to train a residual neural network with convolutional layers as a meta-learning agent for few-shot TSC. The network is trained on a diverse set of few-shot tasks sampled from various domains (e.g. healthcare, activity recognition, etc.) such that it can solve a target task from another domain using only a small number of training samples from the target task. Most existing meta-learning approaches are limited in practice as they assume a fixed number of target classes across tasks. We overcome this limitation in order to train a common agent across domains with each domain having different number of target classes, we utilize a triplet-loss based learning procedure that does not require any constraints to be enforced on the number of classes for the few-shot TSC tasks. To the best of our knowledge, we are the first to use meta-learning based pre-training for TSC. Our approach sets a new benchmark for few-shot TSC, outperforming several strong baselines on few-shot tasks sampled from 41 datasets in UCR TSC Archive. We observe that pre-training under the meta-learning paradigm allows the network to quickly adapt to new unseen tasks with small number of labeled instances.},
+booktitle = {Proceedings of the 7th ACM IKDD CoDS and 25th COMAD},
+pages = {28–36},
+numpages = {9},
+keywords = {Few-Shot Learning, Meta-Learning, Convolutional Neural Networks, Time Series Classification},
+location = {Hyderabad, India},
+series = {CoDS COMAD 2020}
 }
