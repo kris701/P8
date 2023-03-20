@@ -69,58 +69,91 @@ int main(int argc, char **argv) {
     const auto tempTestData = FileHanding::ReadCSV(arguments.testPath, "\t");
     Logger::End(id);
 
-    id = Logger::Begin("Generating Data based on Split.");
     if (!arguments.split.has_value())
         arguments.split = (double) tempTrainData.size() / (double) tempTestData.size();
+    
 
-    std::vector<LabelledSeries> combinedData;
-    for (const auto &seriesSet : { tempTrainData, tempTestData })
-        for (const auto &s : seriesSet)
-            combinedData.push_back(s);
-    std::vector<LabelledSeries> trainData;
-    const uint trainCount = (uint) std::round((double) combinedData.size() * arguments.split.value());
-    for (uint i = 0; i < trainCount; i++)
-        trainData.push_back(combinedData.at(i));
-    Logger::End(id);
+    id = Logger::Begin("Generating Data based on Split.");
+    
 
-
-    id = Logger::Begin("Generating Feature Set");
-    const auto featureSet = FeatureFinding::GenerateFeatureTree(3, trainData, SeriesUtils::GetCount(trainData));
-    Logger::End(id);
-
-    id = Logger::Begin("Generating Data Map");
     std::unordered_map<int, std::vector<Series>> mappedData;
-    for (const auto &d : combinedData)
-        mappedData[d.label].push_back(d.series);
+    std::unordered_set<int> classes;
+    for (const auto &seriesSet : { tempTrainData, tempTestData })
+        for (const auto &s : seriesSet) {
+            mappedData[s.label].push_back(s.series);
+            classes.emplace(s.label);
+        }
+
+    const uint trainClassCount = (uint) (arguments.split.value() * (double) mappedData.size());
+    
+    std::unordered_map<int, std::vector<Series>> trainMap;
+    std::unordered_map<int, std::vector<Series>> testMap;
+    for (uint i = 0; i < trainClassCount; i++) {
+        const auto map = (*std::next(mappedData.begin(), i));
+        for (const auto &s : map.second)
+            trainMap[map.first].push_back(s);
+    }
+    for (uint i = trainClassCount; i < classes.size(); i++) {
+        const auto map = (*std::next(mappedData.begin(), i));
+        for (const auto &s : map.second)
+            testMap[map.first].push_back(s);
+    }
+
+    std::vector<LabelledSeries> trainData;
+    for (const auto &seriesSet : trainMap)
+        for (const auto &s : seriesSet.second)
+            trainData.emplace_back(seriesSet.first, s);
+
+    std::vector<LabelledSeries> testData;
+    for (const auto &seriesSet : testMap)
+        for (const auto &s : seriesSet.second)
+            testData.emplace_back(seriesSet.first, s);
+
+    Logger::End(id);
+    
+    id = Logger::Begin("Generating Feature Set");
+    std::vector<Feature> features = FeatureFinding::GenerateFeatureTree(3, trainData, SeriesUtils::GetCount(trainData));
+    Logger::End(id);
+
+    id = Logger::Begin("Generating Feature Pairs");
+    for (const auto &feature : FeatureFinding::GenerateFeaturePairs(trainMap, testMap))
+        features.push_back(feature);
     Logger::End(id);
 
     id = Logger::Begin("Writing Features to Files");
-    if (std::filesystem::is_directory("out"))
-        std::filesystem::remove_all("out");
     std::unordered_map<int, std::vector<std::string>> paths;
+    std::vector<std::string> trainPaths;
+    std::vector<std::string> testPaths;
     for (const auto &seriesSet : mappedData) {
-        const std::string dirPath = "out/data/" + std::to_string(seriesSet.first) + "/";
+        const std::string dirPath = "data/" + std::to_string(seriesSet.first) + "/";
         for (uint i = 0; i < seriesSet.second.size(); i++) {
             const std::string filePath = dirPath + std::to_string(i);
             paths[seriesSet.first].push_back(filePath);
-            const auto featureSeries = FeatureFinding::GenerateFeatureSeries(seriesSet.second.at(i), featureSet);
+            if (trainMap.contains(seriesSet.first))
+                trainPaths.push_back(filePath);
+            else if (testMap.contains(seriesSet.first))
+                testPaths.push_back(filePath);
+            else
+                throw std::logic_error("Unknown class " + std::to_string(seriesSet.first));
+            const auto featureSeries = FeatureFinding::GenerateFeatureSeries(seriesSet.second.at(i), features);
             FileHanding::WriteFile(filePath, featureSeries);
         }
     }
     Logger::End(id);
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(trainPaths.begin(), trainPaths.end(), g);
     id = Logger::Begin("Writing Split Files");
-    std::vector<std::string> trainPaths;
-    std::vector<std::string> testPaths;
-    for (const auto &pathSet : paths) {
-        const uint testIndex = (uint) (arguments.split.value() * (double) pathSet.second.size());
-        for (uint i = 0; i < testIndex; i++)
-            trainPaths.push_back(pathSet.second.at(i));
-        for (uint i = testIndex; i < pathSet.second.size(); i++)
-            testPaths.push_back(pathSet.second.at(i));
+    FileHanding::WriteFile("split/test.txt", testPaths);
+    const uint valCount = (uint) (0.3 * (double) trainPaths.size());
+    std::vector<std::string> valPaths;
+    for (uint i = 0; i < valCount; i++) {
+        valPaths.push_back(trainPaths.back());
+        trainPaths.pop_back();
     }
-    FileHanding::WriteFile("out/split/train.txt", trainPaths);
-    FileHanding::WriteFile("out/split/test.txt", testPaths);
+    FileHanding::WriteFile("split/train.txt", trainPaths);
+    FileHanding::WriteFile("split/val.txt", valPaths);
     Logger::End(id);
-
+    
     return 0;
 }

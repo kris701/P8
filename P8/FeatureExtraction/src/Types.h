@@ -22,7 +22,7 @@ constexpr Attribute ATTRIBUTES[ATTRIBUTE_COUNT] { Attribute::Frequency };
 struct LabelledSeries {
     int label;
     Series series;
-    LabelledSeries(int label, Series series) : label(label), series(std::move(series)) {};
+    LabelledSeries(int label, const Series &series) : label(label), series(series) {};
 };
 
 struct Feature {

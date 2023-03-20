@@ -2,6 +2,11 @@
 #define FEATUREEXTRACTION_FEATUREFINDING_H
 
 #include <stdexcept>
+#include <random>
+#include <algorithm>
+#include <iterator>
+#include <iostream>
+#include <vector>
 #include "Types.h"
 #include "SeriesUtils.h"
 #include "InformationGain.h"
@@ -86,7 +91,7 @@ namespace FeatureFinding {
 
         return Feature(optimalShapelet.value(), optimalAttribute.value());
     }
-
+    
     // *Not actually a tree
     [[nodiscard]] std::vector<Feature> GenerateFeatureTree(int depth, const std::vector<LabelledSeries> &series, const ClassCount &counts) {
         std::vector<Feature> features;
@@ -107,6 +112,8 @@ namespace FeatureFinding {
         Logger::End(featureId);
 
         for (const auto &s : { split.below, split.above }) {
+            if (s.size() < 2)
+                continue;
             const auto tempCounts = SeriesUtils::GetCount(s);
 
             bool harmonious = true; // All elements in either side of split, or it is empty
@@ -120,6 +127,31 @@ namespace FeatureFinding {
 
             for (const auto &f: GenerateFeatureTree(depth - 1, s, tempCounts))
                 features.push_back(f);
+        }
+
+        return features;
+    }
+
+    std::vector<Feature> GenerateFeaturePairs(const std::unordered_map<int, std::vector<Series>> &trainData, const std::unordered_map<int, std::vector<Series>> &testData) {
+        std::vector<Feature> features;
+
+        std::random_device rd;
+        std::mt19937 g(rd());
+
+        for (const auto &trainSet : trainData) {
+            for (const auto &testSet : testData) {
+                uint pairId = Logger::Begin("Generating feature for (" + std::to_string(trainSet.first) + "," + std::to_string(testSet.first) + ")");
+                std::vector<LabelledSeries> series;
+                for (const auto &seriesSet : { trainSet, testSet })
+                    for (const auto &s : seriesSet.second)
+                        series.push_back(LabelledSeries(seriesSet.first, s));
+                std::shuffle(series.begin(), series.end(), g);
+                
+                const auto windows = WindowGeneration::GenerateWindows(series, 2, 8);
+
+                features.push_back(FindOptimalFeature(series, windows));
+                Logger::End(pairId);
+            }
         }
 
         return features;
