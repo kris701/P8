@@ -13,8 +13,8 @@
 #include "Attributes.h"
 #include "WindowGeneration.h"
 #include "Logger.h"
-#include "indicators/cursor_control.hpp"
-#include "indicators/block_progress_bar.hpp"
+#include "../include/indicators/cursor_control.hpp"
+#include "../include/indicators/progress_bar.hpp"
 
 namespace FeatureFinding {
     [[nodiscard]] double EvaluateWindow(double priorEntropy, double bestScore, const ClassCount &counts, Attribute attribute,
@@ -60,8 +60,13 @@ namespace FeatureFinding {
 
         indicators::show_console_cursor(false);
         using namespace indicators;
-        BlockProgressBar bar{
+        ProgressBar bar{
                 option::BarWidth{80},
+                option::Start{"["},
+                option::Fill{"="},
+                option::Lead{">"},
+                option::Remainder{" "},
+                option::End{" ]"},
                 option::ForegroundColor{Color::white},
                 option::FontStyles{
                     std::vector<FontStyle>{FontStyle::bold}},
@@ -80,12 +85,15 @@ namespace FeatureFinding {
                     optimalGain = gain;
                 }
             }
-            bar.set_option(option::PostfixText{
-                    std::to_string(i) + "/" + std::to_string(windows.size())
-            });
-            bar.tick();
+            if (i % 1000 == 0) {
+                bar.set_option(option::PostfixText{
+                        std::to_string(i) + "/" + std::to_string(windows.size())
+                    });
+                bar.set_progress(i);
+            }
         }
         indicators::show_console_cursor(true);
+        bar.set_progress(windows.size());
         bar.mark_as_completed();
 
 
@@ -93,14 +101,14 @@ namespace FeatureFinding {
     }
     
     // *Not actually a tree
-    [[nodiscard]] std::vector<Feature> GenerateFeatureTree(int depth, const std::vector<LabelledSeries> &series, const ClassCount &counts) {
+    [[nodiscard]] std::vector<Feature> GenerateFeatureTree(int depth, const std::vector<LabelledSeries> &series, const ClassCount &counts, uint minWindowSize, uint maxWindowSize) {
         std::vector<Feature> features;
         if (depth == 0)
             return features;
 
         uint featureId = Logger::Begin("Generating Feature for Depth " + std::to_string(depth));
 
-        const auto windows = WindowGeneration::GenerateWindows(series, 2, 8);
+        const auto windows = WindowGeneration::GenerateWindows(series, minWindowSize, maxWindowSize);
         const auto feature = FindOptimalFeature(series, windows);
         features.push_back(feature);
 
@@ -125,14 +133,14 @@ namespace FeatureFinding {
             if (harmonious)
                 continue;
 
-            for (const auto &f: GenerateFeatureTree(depth - 1, s, tempCounts))
+            for (const auto &f: GenerateFeatureTree(depth - 1, s, tempCounts, minWindowSize, maxWindowSize))
                 features.push_back(f);
         }
 
         return features;
     }
 
-    std::vector<Feature> GenerateFeaturePairs(const std::unordered_map<int, std::vector<Series>> &trainData, const std::unordered_map<int, std::vector<Series>> &testData) {
+    std::vector<Feature> GenerateFeaturePairs(const std::unordered_map<int, std::vector<Series>> &trainData, const std::unordered_map<int, std::vector<Series>> &testData, uint minWindowSize, uint maxWindowSize) {
         std::vector<Feature> features;
 
         std::random_device rd;
@@ -147,7 +155,7 @@ namespace FeatureFinding {
                         series.push_back(LabelledSeries(seriesSet.first, s));
                 std::shuffle(series.begin(), series.end(), g);
                 
-                const auto windows = WindowGeneration::GenerateWindows(series, 2, 8);
+                const auto windows = WindowGeneration::GenerateWindows(series, minWindowSize, maxWindowSize);
 
                 features.push_back(FindOptimalFeature(series, windows));
                 Logger::End(pairId);

@@ -4,11 +4,11 @@
 
 #include <atomic>
 #include <functional>
-#include <indicators/color.hpp>
-#include <indicators/setting.hpp>
-#include <indicators/cursor_control.hpp>
-#include <indicators/cursor_movement.hpp>
-#include <indicators/details/stream_helper.hpp>
+#include "color.hpp"
+#include "setting.hpp"
+#include "cursor_control.hpp"
+#include "cursor_movement.hpp"
+#include "details/stream_helper.hpp"
 #include <iostream>
 #include <mutex>
 #include <vector>

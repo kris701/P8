@@ -73,8 +73,8 @@ class SwedishLeafDataset(data.Dataset):
     def _get_current_classes(self, fname):
         with open(fname) as f:
             paths = f.read().split("\n")
-        classes = [path.split(os.sep)[1] for path in paths]
+        classes = [path.replace("/",os.sep).replace("\\",os.sep).split(os.sep)[1] for path in paths]
         return classes
 
     def _find_y(self, item):
-            return int(item.split(os.sep)[1])
+           return int(item.replace("/",os.sep).replace("\\",os.sep).split(os.sep)[1])

@@ -19,12 +19,12 @@ private:
         const std::string desc;
         bool finished = false;
         // Initial time
-        std::chrono::_V2::steady_clock::time_point iTime;
+        std::chrono::steady_clock::time_point iTime;
         // End time
-        std::chrono::_V2::steady_clock::time_point eTime;
+        std::chrono::steady_clock::time_point eTime;
         int64_t time = 0;
-        LogPoint(const std::string &desc, std::chrono::_V2::steady_clock::time_point iTime) : desc(desc), iTime(iTime) {}
-        LogPoint(const std::string &desc, std::chrono::_V2::steady_clock::time_point iTime, uint parent) :
+        LogPoint(const std::string &desc, std::chrono::steady_clock::time_point iTime) : desc(desc), iTime(iTime) {}
+        LogPoint(const std::string &desc, std::chrono::steady_clock::time_point iTime, uint parent) :
             desc(desc), iTime(iTime), parent(parent) {}
     };
     static inline uint currentId = 0;
