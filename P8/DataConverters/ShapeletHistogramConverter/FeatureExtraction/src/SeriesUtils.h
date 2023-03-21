@@ -37,27 +37,6 @@ namespace SeriesUtils {
         return combined;
     }
 
-    [[nodiscard]] static std::pair<std::vector<LabelledSeries>, std::vector<LabelledSeries>>
-    Split (const std::vector<LabelledSeries>& series, uint firstSize) {
-        std::vector<LabelledSeries> first;
-        std::vector<LabelledSeries> second;
-
-        for (uint i = 0; i < firstSize; i++)
-            first.push_back(series.at(i));
-        for (uint i = firstSize; i < series.size(); i++)
-            second.push_back(series.at(i));
-
-        return { first, second };
-    }
-
-    [[nodiscard]] static std::pair<std::vector<LabelledSeries>, std::vector<LabelledSeries>> Split
-            (const std::vector<LabelledSeries>& series, double split) {
-        if (std::ceil(split) == std::floor(split)) // has no decimal point
-            return Split(series, (uint) std::round(split));
-        else
-            return Split(series, (uint) (split * (double) series.size()));
-    }
-
     [[nodiscard]] static std::unordered_map<int, std::vector<Series>> ToMap
     (const std::vector<LabelledSeries> &series) {
         std::unordered_map<int, std::vector<Series>> map;
@@ -66,6 +45,24 @@ namespace SeriesUtils {
             map[s.label].push_back(s.series);
 
         return map;
+    }
+
+    [[nodiscard]] static std::pair<std::vector<LabelledSeries>, std::vector<LabelledSeries>> Split
+            (const std::vector<LabelledSeries>& series, double split) {
+        const auto mapped = ToMap(series);
+        std::vector<LabelledSeries> first;
+        std::vector<LabelledSeries> second;
+        for (const auto &seriesSet : mapped) {
+            const uint count = seriesSet.second.size();
+            // If no decimal point round split to count, else times split with number of series of given class
+            const uint firstSize = (std::round(split) == split) ? (uint) std::round(split) : (uint) (split * (double) count);
+            for (uint i = 0; i < firstSize; i++)
+                first.emplace_back(seriesSet.first, seriesSet.second.at(i));
+            for (uint i = firstSize; i < count; i++)
+                second.emplace_back(seriesSet.first, seriesSet.second.at(i));
+        }
+
+        return { first, second };
     }
 }
 

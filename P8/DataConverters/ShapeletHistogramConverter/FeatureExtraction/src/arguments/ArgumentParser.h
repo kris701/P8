@@ -29,7 +29,7 @@ namespace ArgumentParsing {
                 ("out", "Output path of formated data (Absolute)", cxxopts::value<std::string>())
                 ("split", "How much of the data should be training data. [0.0,1.0) for percent, [1, n) for data points", cxxopts::value<double>() -> default_value("5"))
                 ("valtrainsplit", "How much of the data should be put into the validation set (0,1)", cxxopts::value<double>() -> default_value("0.1"))
-                ("depth", "Desc", cxxopts::value<uint>() -> default_value("3"))
+                ("depth", "Desc", cxxopts::value<uint>() -> default_value("40"))
                 ("minWindowSize", "Desc", cxxopts::value<uint>() -> default_value("2"))
                 ("maxWindowSize", "Desc", cxxopts::value<uint>() -> default_value("8"))
                 ("h,help", "Print usage")
