@@ -48,9 +48,9 @@ namespace FileHanding {
     static void WriteFile(const std::string &path, const std::vector<double> &data) {
         std::filesystem::create_directories(std::filesystem::path(path).parent_path());
         std::ofstream out(path);
-        for (const auto &point : data) {
-            out << point;
-            if (point != data.back())
+        for (int i = 0; i < data.size(); i++) {
+            out << data.at(i);
+            if (i != data.size() - 1)
                 out << "\n";
         }
         out.close();
@@ -59,9 +59,9 @@ namespace FileHanding {
     static void WriteFile(const std::string &path, const std::vector<std::string> &data) {
         std::filesystem::create_directories(std::filesystem::path(path).parent_path());
         std::ofstream out(path);
-        for (const auto &point : data) {
-            out << point;
-            if (point != data.back())
+        for (int i = 0; i < data.size(); i++) {
+            out << data.at(i);
+            if (i != data.size() - 1)
                 out << "\n";
         }
         out.close();

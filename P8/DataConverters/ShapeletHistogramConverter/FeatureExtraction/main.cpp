@@ -166,10 +166,10 @@ int ConvertData(Arguments arguments) {
     std::vector<Feature> features = FeatureFinding::GenerateFeatureTree(arguments.depth, trainData, SeriesUtils::GetCount(trainData), arguments.minWindowSize, arguments.maxWindowSize);
     Logger::End(id);
 
-    //id = Logger::Begin("Generating Feature Pairs");
-    //for (const auto& feature : FeatureFinding::GenerateFeaturePairs(trainMap, testMap, arguments.minWindowSize, arguments.maxWindowSize))
-    //    features.push_back(feature);
-    //Logger::End(id);
+    id = Logger::Begin("Generating Feature Pairs");
+    for (const auto& feature : FeatureFinding::GenerateFeaturePairs(trainMap, testMap, arguments.minWindowSize, arguments.maxWindowSize))
+        features.push_back(feature);
+    Logger::End(id);
 
     id = Logger::Begin("Writing Features to Files");
     std::unordered_map<int, std::vector<std::string>> paths;

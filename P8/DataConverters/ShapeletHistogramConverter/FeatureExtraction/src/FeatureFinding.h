@@ -93,6 +93,7 @@ namespace FeatureFinding {
             }
         }
         indicators::show_console_cursor(true);
+        bar.set_progress(windows.size());
         bar.mark_as_completed();
 
 
