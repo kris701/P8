@@ -18,7 +18,8 @@ dataOptions.TestClassesSplit = 0.2;
 dataOptions.SourceTrainData = "./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv";
 dataOptions.SourceTestData = "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv";
 
-dataConverter = DirectDataConverter(dataOptions);
+#dataConverter = DirectDataConverter(dataOptions);
+dataConverter = ShapeletHistogramConverter(dataOptions);
 dataConverter.ConvertData()
 
 # Setup protonet 

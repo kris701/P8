@@ -7,9 +7,9 @@
 #include <mutex>
 #include <vector>
 
-#include <indicators/color.hpp>
-#include <indicators/cursor_movement.hpp>
-#include <indicators/details/stream_helper.hpp>
+#include "color.hpp"
+#include "cursor_movement.hpp"
+#include "details/stream_helper.hpp"
 
 namespace indicators {
 

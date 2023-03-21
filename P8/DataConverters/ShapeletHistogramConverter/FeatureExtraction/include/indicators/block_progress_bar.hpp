@@ -2,14 +2,14 @@
 #ifndef INDICATORS_BLOCK_PROGRESS_BAR
 #define INDICATORS_BLOCK_PROGRESS_BAR
 
-#include <indicators/color.hpp>
-#include <indicators/details/stream_helper.hpp>
+#include "color.hpp"
+#include "details/stream_helper.hpp"
 
 #include <algorithm>
 #include <atomic>
 #include <chrono>
-#include <indicators/setting.hpp>
-#include <indicators/terminal_size.hpp>
+#include "setting.hpp"
+#include "terminal_size.hpp"
 #include <iomanip>
 #include <iostream>
 #include <sstream>

@@ -2,14 +2,14 @@
 #ifndef INDICATORS_PROGRESS_SPINNER
 #define INDICATORS_PROGRESS_SPINNER
 
-#include <indicators/details/stream_helper.hpp>
+#include "details/stream_helper.hpp"
 
 #include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <cmath>
-#include <indicators/color.hpp>
-#include <indicators/setting.hpp>
+#include "color.hpp"
+#include "setting.hpp"
 #include <iomanip>
 #include <iostream>
 #include <mutex>
