@@ -42,10 +42,13 @@ namespace FeatureFinding {
                 valueCount[split.first[i] > split.second[i]][i] -= diff[i];
         }
 
-        return InformationGain::CalculateInformationGain(valueCount, priorEntropy);
+        if (valueCount.size() < 2) // Impossible to split a single point
+            return 0;
+        else
+            return InformationGain::CalculateInformationGain(valueCount, priorEntropy);
     }
 
-    [[nodiscard]] Feature FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows) {
+    [[nodiscard]] std::optional<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows) {
         if (series.size() < 2)
             throw std::logic_error("Cannot find features for less than two series.");
         if (windows.empty())
@@ -94,8 +97,11 @@ namespace FeatureFinding {
         }
         bar.mark_as_completed();
         indicators::show_console_cursor(true);
-        
-        return Feature(optimalShapelet.value(), optimalAttribute.value());
+
+        if (optimalGain > 0)
+            return Feature(optimalShapelet.value(), optimalAttribute.value());
+        else
+            return std::optional<Feature>();
     }
     
     // *Not actually a tree
@@ -107,7 +113,10 @@ namespace FeatureFinding {
         uint featureId = Logger::Begin("Generating Feature for Depth " + std::to_string(depth));
 
         const auto windows = WindowGeneration::GenerateWindows(series, minWindowSize, maxWindowSize);
-        const auto feature = FindOptimalFeature(series, windows);
+        const auto oFeature = FindOptimalFeature(series, windows);
+        if (!oFeature.has_value())
+            return features;
+        const auto& feature = oFeature.value();
         features.push_back(feature);
 
         uint splitId = Logger::Begin("Retriving optimal split");
@@ -155,7 +164,9 @@ namespace FeatureFinding {
                 
                 const auto windows = WindowGeneration::GenerateWindows(series, minWindowSize, maxWindowSize);
 
-                features.push_back(FindOptimalFeature(series, windows));
+                const auto feature = FindOptimalFeature(series, windows);
+                if (feature.has_value())
+                    features.push_back(feature.value());
                 Logger::End(pairId);
             }
         }

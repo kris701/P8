@@ -8,11 +8,18 @@
 
 int ConvertData(ArgumentParsing::Arguments arguments) {
     uint id = Logger::Begin("Reading Data");
-    const auto data = SeriesUtils::Combine(
+    auto data = SeriesUtils::Combine(
             FileHanding::ReadCSV(arguments.trainPath, "\t"),
             FileHanding::ReadCSV(arguments.testPath, "\t")
             );
+
     const auto mappedData = SeriesUtils::ToMap(data);
+    Logger::End(id);
+
+    id = Logger::Begin("Shuffling Data");
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(data.begin(), data.end(), g);
     Logger::End(id);
 
     id = Logger::Begin("Splitting Data");
