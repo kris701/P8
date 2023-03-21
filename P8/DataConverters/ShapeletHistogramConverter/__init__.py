@@ -42,9 +42,10 @@ class ShapeletHistogramConverter(BaseDataConverter):
             print("Dataset already formated!")
 
     def _CompileFeatureExtractor(self, compileDir):
-        subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out")]) 
         if os.name == "nt":
-            subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release"]) 
+            subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out")]) 
         else:
-            subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release", "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=${CMAKE_BINARY_DIR}/Release"]) 
+
+            subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out"), "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=Release"]) 
+        subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release"]) 
         pass;
