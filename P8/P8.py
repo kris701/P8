@@ -12,17 +12,17 @@ targetDataDir = "formated" + os.sep + "swedishLeaf"
 targetOutputDir = "output" + os.sep + "swedishLeaf"
 
 # Convert data into a new format
-dataOptions = DataConverterOptions()
+dataOptions = ShapeletHistogramConverterOptions()
 dataOptions.FormatedFolder = targetDataDir
 dataOptions.TrainValSplit = 1;
 dataOptions.TestClassesSplit = 0.2;
 dataOptions.SourceTrainData = "./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv";
 dataOptions.SourceTestData = "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv";
-#dataOptions.depth = 3;
-#dataOptions.maxWindowSize = 8;
+dataOptions.depth = 3;
+dataOptions.maxWindowSize = 8;
 
-dataConverter = DirectDataConverter(dataOptions);
-#dataConverter = ShapeletHistogramConverter(dataOptions);
+#dataConverter = DirectDataConverter(dataOptions);
+dataConverter = ShapeletHistogramConverter(dataOptions);
 dataConverter.ConvertData()
 
 # Setup protonet 
