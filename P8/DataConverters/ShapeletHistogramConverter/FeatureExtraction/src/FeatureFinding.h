@@ -92,11 +92,9 @@ namespace FeatureFinding {
                 bar.set_progress(i);
             }
         }
-        indicators::show_console_cursor(true);
-        bar.set_progress(windows.size());
         bar.mark_as_completed();
-
-
+        indicators::show_console_cursor(true);
+        
         return Feature(optimalShapelet.value(), optimalAttribute.value());
     }
     
