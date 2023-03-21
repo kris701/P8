@@ -14,7 +14,7 @@
 #include "WindowGeneration.h"
 #include "Logger.h"
 #include "../include/indicators/cursor_control.hpp"
-#include "../include/indicators/block_progress_bar.hpp"
+#include "../include/indicators/progress_bar.hpp"
 
 namespace FeatureFinding {
     [[nodiscard]] double EvaluateWindow(double priorEntropy, double bestScore, const ClassCount &counts, Attribute attribute,
@@ -60,8 +60,13 @@ namespace FeatureFinding {
 
         indicators::show_console_cursor(false);
         using namespace indicators;
-        BlockProgressBar bar{
+        ProgressBar bar{
                 option::BarWidth{80},
+                option::Start{"["},
+                option::Fill{"="},
+                option::Lead{">"},
+                option::Remainder{" "},
+                option::End{" ]"},
                 option::ForegroundColor{Color::white},
                 option::FontStyles{
                     std::vector<FontStyle>{FontStyle::bold}},
@@ -80,10 +85,12 @@ namespace FeatureFinding {
                     optimalGain = gain;
                 }
             }
-            bar.set_option(option::PostfixText{
-                    std::to_string(i) + "/" + std::to_string(windows.size())
-            });
-            bar.tick();
+            if (i % 1000 == 0) {
+                bar.set_option(option::PostfixText{
+                        std::to_string(i) + "/" + std::to_string(windows.size())
+                    });
+                bar.set_progress(i);
+            }
         }
         indicators::show_console_cursor(true);
         bar.mark_as_completed();

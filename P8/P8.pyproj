@@ -26,6 +26,7 @@
     <Compile Include="DataConverters\DirectDataConverter\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DataConverters\ShapeletHistogramConverter\ShapeletHistogramConverterOptions.py" />
     <Compile Include="DataConverters\ShapeletHistogramConverter\__init__.py" />
     <Compile Include="Datasets\SwedishLeaf\__init__.py">
       <SubType>Code</SubType>

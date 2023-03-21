@@ -49,7 +49,9 @@ namespace FileHanding {
         std::filesystem::create_directories(std::filesystem::path(path).parent_path());
         std::ofstream out(path);
         for (const auto &point : data) {
-            out << point << '\n';
+            out << point;
+            if (point != data.back())
+                out << "\n";
         }
         out.close();
     }
@@ -58,7 +60,9 @@ namespace FileHanding {
         std::filesystem::create_directories(std::filesystem::path(path).parent_path());
         std::ofstream out(path);
         for (const auto &point : data) {
-            out << point << '\n';
+            out << point;
+            if (point != data.back())
+                out << "\n";
         }
         out.close();
     }

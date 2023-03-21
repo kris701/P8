@@ -3,6 +3,7 @@ import os
 from DataConverters.DirectDataConverter import DirectDataConverter
 from DataConverters.ShapeletHistogramConverter import ShapeletHistogramConverter
 from DataConverters.DataConverterOptions import DataConverterOptions
+from DataConverters.ShapeletHistogramConverter.ShapeletHistogramConverterOptions import ShapeletHistogramConverterOptions
 from NetTrainers.ProtoNetTrainer import NetTrainer
 from NetTrainers.ProtoNetTrainer import NetOptions
 from Datasets.SwedishLeaf import SwedishLeafDataset
@@ -11,7 +12,7 @@ targetDataDir = "formated" + os.sep + "swedishLeaf"
 targetOutputDir = "output" + os.sep + "swedishLeaf"
 
 # Convert data into a new format
-dataOptions = DataConverterOptions()
+dataOptions = ShapeletHistogramConverterOptions()
 dataOptions.FormatedFolder = targetDataDir
 dataOptions.TrainValSplit = 0.7;
 dataOptions.TestClassesSplit = 0.2;

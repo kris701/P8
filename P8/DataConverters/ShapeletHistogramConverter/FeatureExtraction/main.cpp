@@ -13,7 +13,8 @@ struct Arguments {
     double split = -1;
     double valtrainsplit = 0.3;
     uint minWindowSize = 2;
-    uint maxWindowSize = 8;
+    uint maxWindowSize = 4;
+    uint depth = 3;
 };
 
 Arguments ParseArguments (int argc, char **argv) {
@@ -24,6 +25,9 @@ Arguments ParseArguments (int argc, char **argv) {
             ("out", "Required - Output path of formated data (Absolute)", cxxopts::value<std::string>())
             ("split", "Optional - How much of the data should be training data (0,1)", cxxopts::value<double>())
             ("valtrainsplit", "Optional - How much of the training data should be put into the validation set (0,1)", cxxopts::value<double>())
+            ("depth", "Optional - Desc", cxxopts::value<uint>())
+            ("maxWindowSize", "Optional - Desc", cxxopts::value<uint>())
+            ("minWindowSize", "Optional - Desc", cxxopts::value<uint>())
             ("h,help", "Print usage")
             ;
     auto result = options.parse(argc, argv);
@@ -53,6 +57,30 @@ Arguments ParseArguments (int argc, char **argv) {
     }
     else {
         arguments.outPath = result["out"].as<std::string>();
+    }
+
+    if (!result.count("depth")) {
+        std::cout << "Missing depth." << std::endl;
+        exit(1);
+    }
+    else {
+        arguments.depth = result["depth"].as<uint>();
+    }
+
+    if (!result.count("maxWindowSize")) {
+        std::cout << "Missing maxWindowSize." << std::endl;
+        exit(1);
+    }
+    else {
+        arguments.maxWindowSize = result["maxWindowSize"].as<uint>();
+    }
+
+    if (!result.count("minWindowSize")) {
+        std::cout << "Missing minWindowSize." << std::endl;
+        exit(1);
+    }
+    else {
+        arguments.minWindowSize = result["minWindowSize"].as<uint>();
     }
 
     if (result.count("split")) {
@@ -135,20 +163,20 @@ int ConvertData(Arguments arguments) {
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Set");
-    std::vector<Feature> features = FeatureFinding::GenerateFeatureTree(3, trainData, SeriesUtils::GetCount(trainData), arguments.minWindowSize, arguments.maxWindowSize);
+    std::vector<Feature> features = FeatureFinding::GenerateFeatureTree(arguments.depth, trainData, SeriesUtils::GetCount(trainData), arguments.minWindowSize, arguments.maxWindowSize);
     Logger::End(id);
 
-    id = Logger::Begin("Generating Feature Pairs");
-    for (const auto& feature : FeatureFinding::GenerateFeaturePairs(trainMap, testMap, arguments.minWindowSize, arguments.maxWindowSize))
-        features.push_back(feature);
-    Logger::End(id);
+    //id = Logger::Begin("Generating Feature Pairs");
+    //for (const auto& feature : FeatureFinding::GenerateFeaturePairs(trainMap, testMap, arguments.minWindowSize, arguments.maxWindowSize))
+    //    features.push_back(feature);
+    //Logger::End(id);
 
     id = Logger::Begin("Writing Features to Files");
     std::unordered_map<int, std::vector<std::string>> paths;
     std::vector<std::string> trainPaths;
     std::vector<std::string> testPaths;
     for (const auto& seriesSet : mappedData) {
-        const std::string dirPath = arguments.outPath + "/data/" + std::to_string(seriesSet.first) + "/";
+        const std::string dirPath = "data/" + std::to_string(seriesSet.first) + "/";
         for (uint i = 0; i < seriesSet.second.size(); i++) {
             const std::string filePath = dirPath + std::to_string(i);
             paths[seriesSet.first].push_back(filePath);
@@ -159,7 +187,7 @@ int ConvertData(Arguments arguments) {
             else
                 throw std::logic_error("Unknown class " + std::to_string(seriesSet.first));
             const auto featureSeries = FeatureFinding::GenerateFeatureSeries(seriesSet.second.at(i), features);
-            FileHanding::WriteFile(filePath, featureSeries);
+            FileHanding::WriteFile(arguments.outPath + "/" + filePath, featureSeries);
         }
     }
     Logger::End(id);

@@ -2,13 +2,13 @@ import os
 import pathlib
 import subprocess
 
-from ..DataConverterOptions import DataConverterOptions
+from .ShapeletHistogramConverterOptions import ShapeletHistogramConverterOptions
 from ..BaseDataConverter import BaseDataConverter
 
 class ShapeletHistogramConverter(BaseDataConverter):
     compile_dir : str = "./FeatureExtraction";
 
-    def __init__(self, options: DataConverterOptions) -> None:
+    def __init__(self, options: ShapeletHistogramConverterOptions) -> None:
         super().__init__(options)
 
     def ConvertData(self):
@@ -31,7 +31,10 @@ class ShapeletHistogramConverter(BaseDataConverter):
                             "--test", str(os.path.join(workingDir, self.Options.SourceTestData.replace("./","").replace("/",os.sep))),
                             "--out", str(os.path.join(workingDir, self.Options.FormatedFolder.replace("./","").replace("/",os.sep))),
                             "--split", str(self.Options.TrainValSplit),
-                            "--valtrainsplit", str(self.Options.TestClassesSplit)
+                            "--valtrainsplit", str(self.Options.TestClassesSplit),
+                            "--depth", str(self.Options.depth),
+                            "--minWindowSize", str(self.Options.minWindowSize),
+                            "--maxWindowSize", str(self.Options.minWindowSize),
                             ]) 
 
             print("Formating complete!")
