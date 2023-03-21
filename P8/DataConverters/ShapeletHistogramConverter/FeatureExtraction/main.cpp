@@ -1,132 +1,18 @@
 #include <iostream>
 #include <string>
-#include "include/cxxopts/cxxopts.hpp"
 #include "src/FileHanding.h"
 #include "src/FeatureFinding.h"
 #include "src/SeriesUtils.h"
 #include "src/Logger.h"
+#include "src/arguments/ArgumentParser.h"
 
-struct Arguments {
-    std::string trainPath;
-    std::string testPath;
-    std::string outPath;
-    double split = -1;
-    double valtrainsplit = 0.3;
-    uint minWindowSize = 2;
-    uint maxWindowSize = 4;
-    uint depth = 3;
-};
-
-Arguments ParseArguments (int argc, char **argv) {
-    cxxopts::Options options("FeatureExtraction", "Extracts features from given files");
-    options.add_options()
-            ("train", "Required - Path to train data (Absolute)", cxxopts::value<std::string>())
-            ("test", "Required - Path to test data (Absolute)", cxxopts::value<std::string>())
-            ("out", "Required - Output path of formated data (Absolute)", cxxopts::value<std::string>())
-            ("split", "Optional - How much of the data should be training data (0,1)", cxxopts::value<double>())
-            ("valtrainsplit", "Optional - How much of the training data should be put into the validation set (0,1)", cxxopts::value<double>())
-            ("depth", "Optional - Desc", cxxopts::value<uint>())
-            ("maxWindowSize", "Optional - Desc", cxxopts::value<uint>())
-            ("minWindowSize", "Optional - Desc", cxxopts::value<uint>())
-            ("h,help", "Print usage")
-            ;
-    auto result = options.parse(argc, argv);
-
-    if (result.count("help")) {
-        std::cout << options.help() << std::endl;
-        exit(0);
-    }
-    Arguments arguments;
-    if (!result.count("train")) {
-        std::cout << "Missing train path." << std::endl;
-        exit(1);
-    } else {
-        arguments.trainPath = result["train"].as<std::string>();
-    }
-
-    if (!result.count("test")) {
-        std::cout << "Missing test path." << std::endl;
-        exit(1);
-    } else {
-        arguments.testPath = result["test"].as<std::string>();
-    }
-
-    if (!result.count("out")) {
-        std::cout << "Missing out path." << std::endl;
-        exit(1);
-    }
-    else {
-        arguments.outPath = result["out"].as<std::string>();
-    }
-
-    if (!result.count("depth")) {
-        std::cout << "Missing depth." << std::endl;
-        exit(1);
-    }
-    else {
-        arguments.depth = result["depth"].as<uint>();
-    }
-
-    if (!result.count("maxWindowSize")) {
-        std::cout << "Missing maxWindowSize." << std::endl;
-        exit(1);
-    }
-    else {
-        arguments.maxWindowSize = result["maxWindowSize"].as<uint>();
-    }
-
-    if (!result.count("minWindowSize")) {
-        std::cout << "Missing minWindowSize." << std::endl;
-        exit(1);
-    }
-    else {
-        arguments.minWindowSize = result["minWindowSize"].as<uint>();
-    }
-
-    if (result.count("split")) {
-        const double split = result["split"].as<double>();
-        if (split < 0 || split > 1) {
-            std::cout << "Split must be between 0 and 1." << std::endl;
-            exit(1);
-        } else if (split == 0) {
-            std::cout << "Split must be over 0, as it is impossible to create features from noting." << std::endl;
-            exit(1);
-        } else {
-            arguments.split = split;
-        }
-    }
-
-    if (result.count("valtrainsplit")) {
-        const double valtrainsplit = result["valtrainsplit"].as<double>();
-        if (valtrainsplit < 0 || valtrainsplit > 1) {
-            std::cout << "Valtrainsplit must be between 0 and 1." << std::endl;
-            exit(1);
-        }
-        else if (valtrainsplit == 0) {
-            std::cout << "Valtrainsplit must be over 0, as it is impossible to create features from noting." << std::endl;
-            exit(1);
-        }
-        else {
-            arguments.valtrainsplit = valtrainsplit;
-        }
-    }
-
-    return arguments;
-}
-
-int ConvertData(Arguments arguments) {
+int ConvertData(ArgumentParsing::Arguments arguments) {
     uint id = Logger::Begin("Reading Data");
     const auto tempTrainData = FileHanding::ReadCSV(arguments.trainPath, "\t");
     const auto tempTestData = FileHanding::ReadCSV(arguments.testPath, "\t");
     Logger::End(id);
 
-    if (arguments.split == -1)
-        arguments.split = (double)tempTrainData.size() / (double)tempTestData.size();
-
-
     id = Logger::Begin("Generating Data based on Split.");
-
-
     std::unordered_map<int, std::vector<Series>> mappedData;
     std::unordered_set<int> classes;
     for (const auto& seriesSet : { tempTrainData, tempTestData })
@@ -211,7 +97,7 @@ int ConvertData(Arguments arguments) {
 
 int main(int argc, char** argv) {
     uint id = Logger::Begin("Parsing Arguments");
-    auto arguments = ParseArguments(argc, argv);
+    auto arguments = ArgumentParsing::ParseArguments(argc, argv);
     Logger::End(id);
 
     return ConvertData(arguments);
