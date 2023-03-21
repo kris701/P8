@@ -1,35 +1,44 @@
-import cppyy
 import os
 import pathlib
+import subprocess
 
 from ..DataConverterOptions import DataConverterOptions
 from ..BaseDataConverter import BaseDataConverter
 
 class ShapeletHistogramConverter(BaseDataConverter):
+    compile_dir : str = "./FeatureExtraction";
+
     def __init__(self, options: DataConverterOptions) -> None:
         super().__init__(options)
 
-    def _Initialize(self):
-        # Include whatever cpp files are needed
-        path = os.path.join(pathlib.Path(__file__).parent.resolve(), "FeatureExtraction" + os.sep + "main.cpp")
-        cppyy.include(path)
-
     def ConvertData(self):
         if not os.path.isdir(self.Options.FormatedFolder):
-            print("Compiling the feature extractor...")
-            self._Initialize()
-            print("Formating dataset. This may take a while...")
 
-            options = cppyy.gbl.Arguments();
             workingDir = pathlib.Path().resolve();
-            options.trainPath = str(os.path.join(workingDir, self.Options.SourceTrainData.replace("./","").replace("/",os.sep)));
-            options.testPath = str(os.path.join(workingDir, self.Options.SourceTestData.replace("./","").replace("/",os.sep)));
-            options.outPath = str(os.path.join(workingDir, self.Options.FormatedFolder.replace("./","").replace("/",os.sep)));
-            options.valtrainsplit = self.Options.TrainValSplit;
-            options.split = self.Options.TestClassesSplit
+            thisFile = pathlib.Path(__file__).parent.resolve();
+            if not os.path.isdir(os.path.join(thisFile, self.compile_dir, "out")):
+                print("Compiling the feature extractor...")
+                self._CompileFeatureExtractor(os.path.join(thisFile, self.compile_dir))
 
-            cppyy.gbl.ConvertData(options);
+            print("Formating dataset. This may take a while...")
+            
+            extension = "";
+            if os.name == "nt":
+                extension = ".exe"
+            executable = os.path.join(thisFile, "./FeatureExtraction/out/Release/FeatureExtraction" + extension)
+            subprocess.run([executable, 
+                            "--train", str(os.path.join(workingDir, self.Options.SourceTrainData.replace("./","").replace("/",os.sep))),
+                            "--test", str(os.path.join(workingDir, self.Options.SourceTestData.replace("./","").replace("/",os.sep))),
+                            "--out", str(os.path.join(workingDir, self.Options.FormatedFolder.replace("./","").replace("/",os.sep))),
+                            "--split", str(self.Options.TrainValSplit),
+                            "--valtrainsplit", str(self.Options.TestClassesSplit)
+                            ]) 
+
             print("Formating complete!")
         else:
             print("Dataset already formated!")
 
+    def _CompileFeatureExtractor(self, compileDir):
+        subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out")]) 
+        subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release"]) 
+        pass;

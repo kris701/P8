@@ -23,6 +23,7 @@ Arguments ParseArguments (int argc, char **argv) {
             ("test", "Required - Path to test data (Absolute)", cxxopts::value<std::string>())
             ("out", "Required - Output path of formated data (Absolute)", cxxopts::value<std::string>())
             ("split", "Optional - How much of the data should be training data (0,1)", cxxopts::value<double>())
+            ("valtrainsplit", "Optional - How much of the training data should be put into the validation set (0,1)", cxxopts::value<double>())
             ("h,help", "Print usage")
             ;
     auto result = options.parse(argc, argv);
@@ -67,10 +68,25 @@ Arguments ParseArguments (int argc, char **argv) {
         }
     }
 
+    if (result.count("valtrainsplit")) {
+        const double valtrainsplit = result["valtrainsplit"].as<double>();
+        if (valtrainsplit < 0 || valtrainsplit > 1) {
+            std::cout << "Valtrainsplit must be between 0 and 1." << std::endl;
+            exit(1);
+        }
+        else if (valtrainsplit == 0) {
+            std::cout << "Valtrainsplit must be over 0, as it is impossible to create features from noting." << std::endl;
+            exit(1);
+        }
+        else {
+            arguments.valtrainsplit = valtrainsplit;
+        }
+    }
+
     return arguments;
 }
 
-void ConvertData(Arguments arguments) {
+int ConvertData(Arguments arguments) {
     uint id = Logger::Begin("Reading Data");
     const auto tempTrainData = FileHanding::ReadCSV(arguments.trainPath, "\t");
     const auto tempTestData = FileHanding::ReadCSV(arguments.testPath, "\t");
@@ -161,6 +177,8 @@ void ConvertData(Arguments arguments) {
     FileHanding::WriteFile(arguments.outPath + "/split/train.txt", trainPaths);
     FileHanding::WriteFile(arguments.outPath + "/split/val.txt", valPaths);
     Logger::End(id);
+
+    return 0;
 }
 
 int main(int argc, char** argv) {
@@ -168,7 +186,5 @@ int main(int argc, char** argv) {
     auto arguments = ParseArguments(argc, argv);
     Logger::End(id);
 
-    ConvertData(arguments);
-
-    return 0;
+    return ConvertData(arguments);
 }
