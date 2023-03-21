@@ -19,11 +19,15 @@ class ShapeletHistogramConverter(BaseDataConverter):
             print("Compiling the feature extractor...")
             self._Initialize()
             print("Formating dataset. This may take a while...")
+
             options = cppyy.gbl.Arguments();
             workingDir = pathlib.Path().resolve();
-            options.trainPath = os.path.join(workingDir, self.Options.SourceTrainData.replace("./","").replace("/",os.sep));
-            options.testPath = os.path.join(workingDir, self.Options.SourceTestData.replace("./","").replace("/",os.sep));
-            options.outPath = os.path.join(workingDir, self.Options.FormatedFolder.replace("./","").replace("/",os.sep));
+            options.trainPath = str(os.path.join(workingDir, self.Options.SourceTrainData.replace("./","").replace("/",os.sep)));
+            options.testPath = str(os.path.join(workingDir, self.Options.SourceTestData.replace("./","").replace("/",os.sep)));
+            options.outPath = str(os.path.join(workingDir, self.Options.FormatedFolder.replace("./","").replace("/",os.sep)));
+            options.valtrainsplit = self.Options.TrainValSplit;
+            options.split = self.Options.TestClassesSplit
+
             cppyy.gbl.ConvertData(options);
             print("Formating complete!")
         else:

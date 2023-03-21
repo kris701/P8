@@ -11,6 +11,7 @@ struct Arguments {
     std::string testPath;
     std::string outPath;
     double split = -1;
+    double valtrainsplit = 0.3;
     uint minWindowSize = 2;
     uint maxWindowSize = 8;
 };
@@ -60,7 +61,7 @@ Arguments ParseArguments (int argc, char **argv) {
     return arguments;
 }
 
-int ConvertData(Arguments arguments) {
+void ConvertData(Arguments arguments) {
     uint id = Logger::Begin("Reading Data");
     const auto tempTrainData = FileHanding::ReadCSV(arguments.trainPath, "\t");
     const auto tempTestData = FileHanding::ReadCSV(arguments.testPath, "\t");
@@ -142,7 +143,7 @@ int ConvertData(Arguments arguments) {
     std::shuffle(trainPaths.begin(), trainPaths.end(), g);
     id = Logger::Begin("Writing Split Files");
     FileHanding::WriteFile(arguments.outPath + "/split/test.txt", testPaths);
-    const uint valCount = (uint)(0.3 * (double)trainPaths.size());
+    const uint valCount = (uint)(arguments.valtrainsplit * (double)trainPaths.size());
     std::vector<std::string> valPaths;
     for (uint i = 0; i < valCount; i++) {
         valPaths.push_back(trainPaths.back());
@@ -151,8 +152,6 @@ int ConvertData(Arguments arguments) {
     FileHanding::WriteFile(arguments.outPath + "/split/train.txt", trainPaths);
     FileHanding::WriteFile(arguments.outPath + "/split/val.txt", valPaths);
     Logger::End(id);
-
-    return 0;
 }
 
 int main(int argc, char** argv) {
@@ -160,5 +159,7 @@ int main(int argc, char** argv) {
     auto arguments = ParseArguments(argc, argv);
     Logger::End(id);
 
-    return ConvertData(arguments);
+    ConvertData(arguments);
+
+    return 0;
 }
