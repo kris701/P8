@@ -15,7 +15,7 @@ targetOutputDir = "output" + os.sep + "swedishLeaf"
 dataOptions = ShapeletHistogramConverterOptions()
 dataOptions.FormatedFolder = targetDataDir
 dataOptions.TrainValSplit = 0;
-dataOptions.TestClassesSplit = 5;
+dataOptions.TestClassesSplit = 3;
 dataOptions.SourceTrainData = "./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv";
 dataOptions.SourceTestData = "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv";
 dataOptions.depth = 40;
@@ -29,12 +29,12 @@ dataConverter.ConvertData()
 options = NetOptions.NetOptions
 options.dataset_root = targetDataDir
 options.experiment_root = targetOutputDir;
-options.classes_per_it_tr = 10
-options.num_query_tr = 4;
+options.classes_per_it_tr = 3
+options.num_query_tr = 2;
 options.num_support_tr = 1;
-options.classes_per_it_test = 10
+options.classes_per_it_test = 3
 options.train_epochs = 5;
-options.test_epochs = 1;
+options.test_epochs = 3;
 options.load_val_set = False;
 
 net = NetTrainer.NetTrainer(options, SwedishLeafDataset)
