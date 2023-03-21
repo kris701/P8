@@ -43,5 +43,8 @@ class ShapeletHistogramConverter(BaseDataConverter):
 
     def _CompileFeatureExtractor(self, compileDir):
         subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out")]) 
-        subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release"]) 
+        if os.name == "nt":
+            subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release"]) 
+        else:
+            subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release", "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=${CMAKE_BINARY_DIR}/Release"]) 
         pass;
