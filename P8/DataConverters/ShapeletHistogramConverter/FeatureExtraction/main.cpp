@@ -36,14 +36,14 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     Logger::End(id);
 
     id = Logger::Begin("Writing Features to Files");
-    const auto featurePath = arguments.outPath + "/data/";
+    const auto featurePath = arguments.outPath + "data/";
     const auto trainFiles = FileHanding::WriteToFiles(featurePath, trainFeatures);
     const auto testFiles = FileHanding::WriteToFiles(featurePath, testFeatures);
     const auto valFiles = FileHanding::WriteToFiles(featurePath, valFeatures);
     Logger::End(id);
 
     id = Logger::Begin("Writing Split Files");
-    const auto splitPath = arguments.outPath + "/split/";
+    const auto splitPath = arguments.outPath + "split/";
     FileHanding::WriteFile(splitPath + "train.txt", FileHanding::RemoveSubPath(arguments.outPath, trainFiles));
     FileHanding::WriteFile(splitPath + "test.txt", FileHanding::RemoveSubPath(arguments.outPath, testFiles));
     FileHanding::WriteFile(splitPath + "val.txt", FileHanding::RemoveSubPath(arguments.outPath, valFiles));
