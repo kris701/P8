@@ -68,6 +68,41 @@ namespace FileHanding {
         }
         out.close();
     }
+
+    // https://stackoverflow.com/questions/41304891/how-to-count-the-number-of-files-in-a-directory-using-standard
+    std::size_t DirFileCount(std::filesystem::path path) {
+        using std::filesystem::directory_iterator;
+        return std::distance(directory_iterator(path), directory_iterator{});
+    }
+
+    static std::vector<std::string> WriteToFiles(const std::string &dir, const std::unordered_map<int, std::vector<std::vector<double>>> &data) {
+        std::vector<std::string> paths;
+
+        for (const auto &classSet : data) {
+            const std::string classDir = dir + std::to_string(classSet.first) + "/";
+            uint startIndex = 0;
+            if (std::filesystem::exists(classDir))
+                startIndex = DirFileCount(classDir);
+
+            for (uint i = 0; i < classSet.second.size(); i++) {
+                const std::string path = classDir + std::to_string(startIndex + i);
+                WriteFile(path, classSet.second.at(i));
+                paths.push_back(path);
+            }
+        }
+
+        return paths;
+    }
+
+    static std::vector<std::string> RemoveSubPath(const std::string &subPath, const std::vector<std::string> &paths) {
+        std::vector<std::string> newPaths;
+        const uint subPathLength = subPath.size();
+        for (auto &p : paths) {
+            auto subPathIndex = p.find(subPath);
+            newPaths.push_back(p.substr(subPathIndex + subPathLength, p.size()));
+        }
+        return newPaths;
+    }
 };
 
 #endif //FEATUREEXTRACTION_FILEHANDING_H

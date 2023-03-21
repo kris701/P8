@@ -15,10 +15,9 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     const auto mappedData = SeriesUtils::ToMap(data);
     Logger::End(id);
 
-    id = Logger::Begin("Generating Data based on Split.");
+    id = Logger::Begin("Splitting Data");
     const auto valSplit = SeriesUtils::Split(data, arguments.valtrainsplit);
     const auto valData = valSplit.first;
-
     const auto trainSplit = SeriesUtils::Split(valSplit.second, arguments.split);
     const auto trainData = trainSplit.first;
     const auto testData = trainSplit.second;
@@ -30,39 +29,24 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     std::vector<Feature> features = FeatureFinding::GenerateFeatureTree(arguments.depth, trainData, SeriesUtils::GetCount(trainData), arguments.minWindowSize, arguments.maxWindowSize);
     Logger::End(id);
 
-    id = Logger::Begin("Writing Features to Files");
-    std::unordered_map<int, std::vector<std::string>> paths;
-    std::vector<std::string> trainPaths;
-    std::vector<std::string> testPaths;
-    for (const auto& seriesSet : mappedData) {
-        const std::string dirPath = "data/" + std::to_string(seriesSet.first) + "/";
-        for (uint i = 0; i < seriesSet.second.size(); i++) {
-            const std::string filePath = dirPath + std::to_string(i);
-            paths[seriesSet.first].push_back(filePath);
-            if (trainMap.contains(seriesSet.first))
-                trainPaths.push_back(filePath);
-            else if (testMap.contains(seriesSet.first))
-                testPaths.push_back(filePath);
-            else
-                throw std::logic_error("Unknown class " + std::to_string(seriesSet.first));
-            const auto featureSeries = FeatureFinding::GenerateFeatureSeries(seriesSet.second.at(i), features);
-            FileHanding::WriteFile(arguments.outPath + "/" + filePath, featureSeries);
-        }
-    }
+    id = Logger::Begin("Generating Feature Points");
+    const auto trainFeatures = FeatureFinding::GenerateFeatureSeries(trainData, features);
+    const auto testFeatures = FeatureFinding::GenerateFeatureSeries(testData, features);
+    const auto valFeatures = FeatureFinding::GenerateFeatureSeries(valData, features);
     Logger::End(id);
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(trainPaths.begin(), trainPaths.end(), g);
+
+    id = Logger::Begin("Writing Features to Files");
+    const auto featurePath = arguments.outPath + "/data/";
+    const auto trainFiles = FileHanding::WriteToFiles(featurePath, trainFeatures);
+    const auto testFiles = FileHanding::WriteToFiles(featurePath, testFeatures);
+    const auto valFiles = FileHanding::WriteToFiles(featurePath, valFeatures);
+    Logger::End(id);
+
     id = Logger::Begin("Writing Split Files");
-    FileHanding::WriteFile(arguments.outPath + "/split/test.txt", testPaths);
-    const uint valCount = (uint)(arguments.valtrainsplit * (double)trainPaths.size());
-    std::vector<std::string> valPaths;
-    for (uint i = 0; i < valCount; i++) {
-        valPaths.push_back(trainPaths.back());
-        trainPaths.pop_back();
-    }
-    FileHanding::WriteFile(arguments.outPath + "/split/train.txt", trainPaths);
-    FileHanding::WriteFile(arguments.outPath + "/split/val.txt", valPaths);
+    const auto splitPath = arguments.outPath + "/split/";
+    FileHanding::WriteFile(splitPath + "train.txt", FileHanding::RemoveSubPath(arguments.outPath, trainFiles));
+    FileHanding::WriteFile(splitPath + "test.txt", FileHanding::RemoveSubPath(arguments.outPath, testFiles));
+    FileHanding::WriteFile(splitPath + "val.txt", FileHanding::RemoveSubPath(arguments.outPath, valFiles));
     Logger::End(id);
 
     return 0;
