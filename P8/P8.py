@@ -15,7 +15,7 @@ targetOutputDir = "output" + os.sep + "swedishLeaf"
 dataOptions = ShapeletHistogramConverterOptions()
 dataOptions.FormatedFolder = targetDataDir
 dataOptions.TrainValSplit = 0;
-dataOptions.TestClassesSplit = 3;
+dataOptions.TestClassesSplit = 5;
 dataOptions.SourceTrainData = "./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv";
 dataOptions.SourceTestData = "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv";
 dataOptions.depth = 3;
@@ -30,22 +30,22 @@ options = NetOptions.NetOptions
 options.dataset_root = targetDataDir
 options.experiment_root = targetOutputDir;
 options.classes_per_it_tr = 10
-options.classes_per_it_test = 3
+options.num_query_tr = 4;
+options.num_support_tr = 1;
+options.classes_per_it_test = 10
 options.train_epochs = 5;
 options.test_epochs = 1;
+options.load_val_set = False;
 
 net = NetTrainer.NetTrainer(options, SwedishLeafDataset)
 
 # Train the protonet
-print("Training Model (train set size: {}, validate set size: {})".format(
-    len(net.TrainDataloader.dataset.all_items), 
-    len(net.ValDataloader.dataset.all_items)))
+print("Training Model")
 best_train_acc = net.Train();
 print("Best train acc: {:0.02f}".format(best_train_acc))
 print("")
 
 # Test the new classes on the protonet
-print("Testing Model (test set size: {})".format(
-    len(net.TestDataloader.dataset.all_items)))
+print("Testing Model")
 avr_test_acc = net.Test();
 print("Avr test acc: {:0.02f}".format(avr_test_acc))

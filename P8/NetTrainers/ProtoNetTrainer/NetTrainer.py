@@ -62,9 +62,12 @@ class NetTrainer(BaseNetTrainer):
         pbar1 = tqdm(range(self.Options.train_epochs), desc='Loading...', position=0, colour="red")
         for epoch in pbar1:
             pbar1.set_description('Epoch {}, (Best Acc: {:0.2f})'.format(epoch + 1, best_acc), refresh=True);
-            tr_iter = iter(tr_dataloader)
+
+            if tr_dataloader is None:
+                raise Exception("Cannot train without a train set dataloader!")
 
             # Train
+            tr_iter = iter(tr_dataloader)
             model.train()
             pbar2 = tqdm(tr_iter, desc='   Initializing model...', leave=False, position=1, colour="green")
             for batch in pbar2:
@@ -81,11 +84,14 @@ class NetTrainer(BaseNetTrainer):
                 avg_acc = np.mean(train_acc[-self.Options.iterations:])
                 pbar2.set_description('   Train Loss: {:0.2f}, Train Acc: {:0.2f}'.format(avg_loss, avg_acc), refresh=True);
             lr_scheduler.step()
+            
+            # Eval
             if val_dataloader is None:
+                torch.save(model.state_dict(), best_model_path)
+                best_acc = avg_acc
+                best_state = model.state_dict()
                 continue
             val_iter = iter(val_dataloader)
-
-            # Eval
             model.eval()
             pbar2 = tqdm(val_iter, desc='   Initializing model...', leave=False, position=1, colour="blue")
             for batch in pbar2:
@@ -128,6 +134,9 @@ class NetTrainer(BaseNetTrainer):
         '''
         Tests a model with a set of new data.
         '''
+        if test_dataloader is None:
+                raise Exception("Cannot test without a test set dataloader!")
+
         device = self._getDevice()
         avg_acc = list()
         pbar1 = tqdm(range(self.Options.test_epochs), desc='Loading...', position=0, colour="red")
