@@ -52,12 +52,6 @@ namespace SeriesUtils {
         std::vector<LabelledSeries> first;
         std::vector<LabelledSeries> second;
 
-        if (split == 1) {
-            for (const auto &serie : series)
-                second.emplace_back(serie);
-            return { first, second };
-        }
-
         const auto mapped = ToMap(series);
         for (const auto &seriesSet : mapped) {
             const uint count = seriesSet.second.size();

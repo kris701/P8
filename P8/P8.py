@@ -14,7 +14,7 @@ targetOutputDir = "output" + os.sep + "swedishLeaf"
 # Convert data into a new format
 dataOptions = ShapeletHistogramConverterOptions()
 dataOptions.FormatedFolder = targetDataDir
-dataOptions.TrainValSplit = 1;
+dataOptions.TrainValSplit = 0;
 dataOptions.TestClassesSplit = 0.05;
 dataOptions.SourceTrainData = "./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv";
 dataOptions.SourceTestData = "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv";
