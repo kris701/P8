@@ -18,7 +18,7 @@ dataOptions.TrainValSplit = 0;
 dataOptions.TestClassesSplit = 5;
 dataOptions.SourceTrainData = "./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv";
 dataOptions.SourceTestData = "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv";
-dataOptions.depth = 3;
+dataOptions.depth = 40;
 dataOptions.maxWindowSize = 8;
 
 #dataConverter = DirectDataConverter(dataOptions);

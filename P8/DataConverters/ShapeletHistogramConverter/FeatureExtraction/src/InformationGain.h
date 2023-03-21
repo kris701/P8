@@ -56,6 +56,8 @@ namespace InformationGain {
     }
 
     [[nodiscard]] static double GetOptimalSplitPoint(const std::map<double, ClassCount> &matchFrequency) {
+        if (matchFrequency.size() < 2)
+            throw std::logic_error("Trying to split a single point");
         std::optional<double> bestPoint;
         double bestEntropy;
 
