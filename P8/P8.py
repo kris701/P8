@@ -8,14 +8,14 @@ from NetTrainers.ProtoNetTrainer import NetTrainer
 from NetTrainers.ProtoNetTrainer import NetOptions
 from Datasets.SwedishLeaf import SwedishLeafDataset
 
-targetDataDir = "formated" + os.sep + "swedishLeaf"
+targetDataDir = "formated" + os.sep + "swedishLeaf" + os.sep
 targetOutputDir = "output" + os.sep + "swedishLeaf"
 
 # Convert data into a new format
 dataOptions = ShapeletHistogramConverterOptions()
 dataOptions.FormatedFolder = targetDataDir
 dataOptions.TrainValSplit = 0;
-dataOptions.TestClassesSplit = 0.05;
+dataOptions.TestClassesSplit = 3;
 dataOptions.SourceTrainData = "./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv";
 dataOptions.SourceTestData = "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv";
 dataOptions.depth = 3;
