@@ -77,4 +77,4 @@ class SwedishLeafDataset(data.Dataset):
         return classes
 
     def _find_y(self, item):
-           return int(item.replace("/",os.sep).replace("\\",os.sep).split(os.sep)[1])
+        return int(item.replace("/",os.sep).replace("\\",os.sep).split(os.sep)[1])

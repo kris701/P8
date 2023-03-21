@@ -41,9 +41,12 @@ class BaseNetTrainer():
 
         # Setup the dataloaders for the dataset 
         self.Dataset = dataset;
-        self.TrainDataloader = self._init_dataloader('train', self.Dataset)
-        self.ValDataloader = self._init_dataloader('val', self.Dataset)
-        self.TestDataloader = self._init_dataloader('test', self.Dataset)
+        if self.Options.load_train_set:
+            self.TrainDataloader = self._init_dataloader('train', self.Dataset)
+        if self.Options.load_val_set:
+            self.ValDataloader = self._init_dataloader('val', self.Dataset)
+        if self.Options.load_test_set:
+            self.TestDataloader = self._init_dataloader('test', self.Dataset)
 
         # Verify that there are no overlap between the dataloaders.
         DataLoaderVerifier.Verify([self.ValDataloader, self.TrainDataloader, self.TestDataloader])
