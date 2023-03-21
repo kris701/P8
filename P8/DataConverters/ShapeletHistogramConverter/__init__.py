@@ -25,7 +25,7 @@ class ShapeletHistogramConverter(BaseDataConverter):
             extension = "";
             if os.name == "nt":
                 extension = ".exe"
-            executable = os.path.join(thisFile, "./FeatureExtraction/out/Release/FeatureExtraction" + extension)
+            executable = os.path.join(thisFile, "FeatureExtraction/out/Release/FeatureExtraction" + extension)
             subprocess.run([executable, 
                             "--train", str(os.path.join(workingDir, self.Options.SourceTrainData.replace("./","").replace("/",os.sep))),
                             "--test", str(os.path.join(workingDir, self.Options.SourceTestData.replace("./","").replace("/",os.sep))),
