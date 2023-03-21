@@ -42,7 +42,7 @@ namespace InformationGain {
 
     [[nodiscard]] static double CalculateSplitEntropy(const std::map<double, ClassCount> &values, double splitPoint) {
         const auto split = GetSplit(values, splitPoint);
-        const uint lowerTotal = std::accumulate(split.first.begin(), split.second.end(), (uint) 0);
+        const uint lowerTotal = std::accumulate(split.first.begin(), split.first.end(), (uint) 0);
         const uint upperTotal = std::accumulate(split.second.begin(), split.second.end(), (uint) 0);
 
         const uint total = lowerTotal + upperTotal;
