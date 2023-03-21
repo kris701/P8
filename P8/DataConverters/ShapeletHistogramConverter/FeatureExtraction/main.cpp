@@ -8,53 +8,26 @@
 
 int ConvertData(ArgumentParsing::Arguments arguments) {
     uint id = Logger::Begin("Reading Data");
-    const auto tempTrainData = FileHanding::ReadCSV(arguments.trainPath, "\t");
-    const auto tempTestData = FileHanding::ReadCSV(arguments.testPath, "\t");
+    const auto data = SeriesUtils::Combine(
+            FileHanding::ReadCSV(arguments.trainPath, "\t"),
+            FileHanding::ReadCSV(arguments.testPath, "\t")
+            );
+    const auto mappedData = SeriesUtils::ToMap(data);
     Logger::End(id);
 
     id = Logger::Begin("Generating Data based on Split.");
-    std::unordered_map<int, std::vector<Series>> mappedData;
-    std::unordered_set<int> classes;
-    for (const auto& seriesSet : { tempTrainData, tempTestData })
-        for (const auto& s : seriesSet) {
-            mappedData[s.label].push_back(s.series);
-            classes.emplace(s.label);
-        }
+    const auto valSplit = SeriesUtils::Split(data, arguments.valtrainsplit);
+    const auto valData = valSplit.first;
 
-    const uint trainClassCount = (uint)(arguments.split * (double)mappedData.size());
-
-    std::unordered_map<int, std::vector<Series>> trainMap;
-    std::unordered_map<int, std::vector<Series>> testMap;
-    for (uint i = 0; i < trainClassCount; i++) {
-        const auto map = (*std::next(mappedData.begin(), i));
-        for (const auto& s : map.second)
-            trainMap[map.first].push_back(s);
-    }
-    for (uint i = trainClassCount; i < classes.size(); i++) {
-        const auto map = (*std::next(mappedData.begin(), i));
-        for (const auto& s : map.second)
-            testMap[map.first].push_back(s);
-    }
-
-    std::vector<LabelledSeries> trainData;
-    for (const auto& seriesSet : trainMap)
-        for (const auto& s : seriesSet.second)
-            trainData.emplace_back(seriesSet.first, s);
-
-    std::vector<LabelledSeries> testData;
-    for (const auto& seriesSet : testMap)
-        for (const auto& s : seriesSet.second)
-            testData.emplace_back(seriesSet.first, s);
-
+    const auto trainSplit = SeriesUtils::Split(valSplit.second, arguments.split);
+    const auto trainData = trainSplit.first;
+    const auto testData = trainSplit.second;
+    const auto trainMap = SeriesUtils::ToMap(trainData);
+    const auto testMap = SeriesUtils::ToMap(testData);
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Set");
     std::vector<Feature> features = FeatureFinding::GenerateFeatureTree(arguments.depth, trainData, SeriesUtils::GetCount(trainData), arguments.minWindowSize, arguments.maxWindowSize);
-    Logger::End(id);
-
-    id = Logger::Begin("Generating Feature Pairs");
-    for (const auto& feature : FeatureFinding::GenerateFeaturePairs(trainMap, testMap, arguments.minWindowSize, arguments.maxWindowSize))
-        features.push_back(feature);
     Logger::End(id);
 
     id = Logger::Begin("Writing Features to Files");
