@@ -49,9 +49,10 @@ namespace SeriesUtils {
 
     [[nodiscard]] static std::pair<std::vector<LabelledSeries>, std::vector<LabelledSeries>> Split
             (const std::vector<LabelledSeries>& series, double split) {
-        const auto mapped = ToMap(series);
         std::vector<LabelledSeries> first;
         std::vector<LabelledSeries> second;
+
+        const auto mapped = ToMap(series);
         for (const auto &seriesSet : mapped) {
             const uint count = seriesSet.second.size();
             // If no decimal point round split to count, else times split with number of series of given class

@@ -86,6 +86,7 @@
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\include\indicators\termcolor.hpp" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\include\indicators\terminal_size.hpp" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\main.cpp" />
+    <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\ArgumentParser.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\Attributes.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\FeatureFinding.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\FileHanding.h" />
