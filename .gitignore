@@ -372,5 +372,8 @@ P8/output/**
 
 P8/Data/*
 !P8/Data/readme.md
-# PyCharm
+
+# pycharm / clion
 .idea
+*cmake-build-debug*
+*cmake-build-release*
