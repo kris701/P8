@@ -92,16 +92,14 @@ namespace FeatureFinding {
                 bar.set_progress(i);
             }
         }
-        indicators::show_console_cursor(true);
-        bar.set_progress(windows.size());
         bar.mark_as_completed();
-
-
+        indicators::show_console_cursor(true);
+        
         return Feature(optimalShapelet.value(), optimalAttribute.value());
     }
     
     // *Not actually a tree
-    [[nodiscard]] std::vector<Feature> GenerateFeatureTree(int depth, const std::vector<LabelledSeries> &series, const ClassCount &counts, uint minWindowSize, uint maxWindowSize) {
+    [[nodiscard]] std::vector<Feature> GenerateFeatureTree(uint depth, const std::vector<LabelledSeries> &series, const ClassCount &counts, uint minWindowSize, uint maxWindowSize) {
         std::vector<Feature> features;
         if (depth == 0)
             return features;
@@ -172,6 +170,16 @@ namespace FeatureFinding {
             featureSeries.push_back(Attributes::GenerateValue(series, feature.shapelet, feature.attribute));
 
         return featureSeries;
+    }
+
+    std::unordered_map<int, std::vector<std::vector<double>>> GenerateFeatureSeries
+    (const std::vector<LabelledSeries> &series, const std::vector<Feature> &features) {
+        std::unordered_map<int, std::vector<std::vector<double>>> featureSeriesSet;
+
+        for (const auto &s : series)
+            featureSeriesSet[s.label].push_back(GenerateFeatureSeries(s.series, features));
+
+        return featureSeriesSet;
     }
 }
 
