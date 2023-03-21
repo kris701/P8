@@ -11,6 +11,8 @@
 
 namespace FileHanding {
     [[nodiscard]] static std::vector<LabelledSeries> ReadCSV(const std::string &path, const std::string &delimiter = ",") {
+        if (!std::filesystem::exists(path))
+            throw std::logic_error("Could not find file " + path);
         std::ifstream file(path);
         std::string line;
         std::vector<LabelledSeries> dataPoints;
