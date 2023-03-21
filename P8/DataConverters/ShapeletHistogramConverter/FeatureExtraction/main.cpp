@@ -4,7 +4,7 @@
 #include "src/FeatureFinding.h"
 #include "src/SeriesUtils.h"
 #include "src/Logger.h"
-#include "src/arguments/ArgumentParser.h"
+#include "src/ArgumentParser.h"
 
 int ConvertData(ArgumentParsing::Arguments arguments) {
     uint id = Logger::Begin("Reading Data");
