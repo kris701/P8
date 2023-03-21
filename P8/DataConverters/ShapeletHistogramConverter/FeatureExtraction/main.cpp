@@ -21,6 +21,7 @@ Arguments ParseArguments (int argc, char **argv) {
     options.add_options()
             ("train", "Required - Path to train data (Absolute)", cxxopts::value<std::string>())
             ("test", "Required - Path to test data (Absolute)", cxxopts::value<std::string>())
+            ("out", "Required - Output path of formated data (Absolute)", cxxopts::value<std::string>())
             ("split", "Optional - How much of the data should be training data (0,1)", cxxopts::value<double>())
             ("h,help", "Print usage")
             ;
@@ -43,6 +44,14 @@ Arguments ParseArguments (int argc, char **argv) {
         exit(1);
     } else {
         arguments.testPath = result["test"].as<std::string>();
+    }
+
+    if (!result.count("out")) {
+        std::cout << "Missing out path." << std::endl;
+        exit(1);
+    }
+    else {
+        arguments.outPath = result["out"].as<std::string>();
     }
 
     if (result.count("split")) {
