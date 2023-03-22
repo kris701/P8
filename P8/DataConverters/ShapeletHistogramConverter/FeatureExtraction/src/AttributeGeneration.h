@@ -32,11 +32,41 @@ namespace AttributeGeneration {
         }
     }
 
+    namespace Distance {
+        [[nodiscard]] static double Distance(const Series &series, uint offset, const Series &window) {
+            double tempDist = 0;
+            const double yOffset = series[offset];
+
+            for (uint i = 1; i < window.size(); i++)
+                tempDist += series[i + offset] - window[i] - yOffset;
+
+            return tempDist;
+        }
+
+        // Assumes input values between 0, 1
+        [[nodiscard]] static double MinimumDistance(const Series &series, const Series &window) {
+            assert(window.size() <= series.size());
+
+            const auto maxDist = (double) (window.size() - 1);
+            double minDist = maxDist;
+
+            for (uint i = 0; i < series.size() - window.size(); ++i) {
+                double tempDist = Distance(series, i, window);
+                if (tempDist < minDist)
+                    minDist = tempDist;
+            }
+
+            return (double) minDist / maxDist;
+        }
+    }
+
     [[nodiscard]] static inline double GenerateValue(const Series &series, const Series &window, Attribute attribute) {
         assert(window.size() <= series.size());
         switch (attribute.type) {
             case AttributeType::Frequency:
-                return Frequency::GenerateFrequency(series, window, attribute.param1);
+                return Frequency::GenerateFrequency(series, window, attribute.param1.value());
+            case AttributeType::MinDist:
+                return Distance::MinimumDistance(series, window);
             case AttributeType::None:
             default:
                 throw std::logic_error("Missing attribute in value generation.");

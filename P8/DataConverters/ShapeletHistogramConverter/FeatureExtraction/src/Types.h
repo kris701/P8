@@ -13,12 +13,14 @@ using ClassCount = std::array<uint, MAX_CLASSES>;
 
 enum class AttributeType {
     None,
-    Frequency
+    Frequency,
+    MinDist
 };
 
 struct Attribute {
     AttributeType type;
-    double param1;
+    std::optional<double> param1;
+    explicit Attribute(AttributeType type) : type(type) {};
     Attribute(AttributeType type, double param1) : type(type), param1(param1) {};
 };
 
@@ -28,6 +30,7 @@ const std::vector<Attribute> Attributes {
     Attribute(AttributeType::Frequency, 0.2),
     Attribute(AttributeType::Frequency, 0.4),
     Attribute(AttributeType::Frequency, 0.8),
+    Attribute(AttributeType::MinDist),
 };
 
 struct LabelledSeries {
