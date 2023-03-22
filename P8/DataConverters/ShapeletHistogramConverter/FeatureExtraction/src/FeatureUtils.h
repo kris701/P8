@@ -32,41 +32,11 @@ namespace FeatureUtils {
             const auto& feature = features.at(i);
             lines.push_back({
                 std::to_string(feature.gain),
-                AttributeTypeToString(feature.attribute.type),
-                feature.attribute.param1.has_value() ? std::to_string(feature.attribute.param1.value()) : "",
-                "",
-                "",
+                feature.attribute->Name(),
+                feature.attribute->Param1(),
+                feature.attribute->Param2(),
+                feature.attribute->Param3(),
                 shapeletPaths.at(i)});
-        }
-
-        return lines;
-    }
-
-    [[nodiscard]] static std::vector<std::string> AttributeHeader() {
-        return {
-            "Attribute",
-            "Desc",
-            "Param1 Desc",
-            "Param2 Desc",
-            "Param3 Desc"
-        };
-    }
-
-    [[nodiscard]] static std::vector<std::vector<std::string>> AttributeCSV(const std::vector<Feature> &features) {
-        std::unordered_set<AttributeType> attributesUsed;
-        for (const auto &feature : features)
-            attributesUsed.emplace(feature.attribute.type);
-
-        std::vector<std::vector<std::string>> lines;
-
-        for (const auto &attribute : attributesUsed) {
-            lines.push_back({
-                AttributeTypeToString(attribute),
-                AttributeTypeDesc(attribute),
-                Param1Desc(attribute),
-                "",
-                ""
-            });
         }
 
         return lines;

@@ -69,9 +69,6 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     FileHanding::WriteCSV(featurePath + "features.csv",
                           FeatureUtils::FeatureHeader(),
                           FeatureUtils::FeatureCSV(features, shapeletFiles));
-    FileHanding::WriteCSV(featurePath + "attributes.csv",
-                          FeatureUtils::AttributeHeader(),
-                          FeatureUtils::AttributeCSV(features));
     Logger::End(id);
 
     return 0;
