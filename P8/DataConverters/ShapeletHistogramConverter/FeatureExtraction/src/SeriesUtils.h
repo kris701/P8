@@ -65,6 +65,21 @@ namespace SeriesUtils {
 
         return { first, second };
     }
+
+    static void MinMaxNormalize(std::vector<LabelledSeries> &series) {
+        const auto min = MinValue(series);
+        const auto max = MaxValue(series) + std::abs(min);
+
+        // First move all values into positive range
+        for (auto &s : series)
+            for (auto &p : s.series)
+                p += std::abs(min);
+
+        // Normalize
+        for (auto &s : series)
+            for (auto &p : s.series)
+                p = p / max;
+    }
 }
 
 #endif //FEATUREEXTRACTION_SERIESUTILS_H

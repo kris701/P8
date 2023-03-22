@@ -16,6 +16,10 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     const auto mappedData = SeriesUtils::ToMap(data);
     Logger::End(id);
 
+    id = Logger::Begin("Normalizing Data");
+    SeriesUtils::MinMaxNormalize(data);
+    Logger::End(id);
+
     id = Logger::Begin("Shuffling Data");
     std::random_device rd;
     std::mt19937 g(rd());
@@ -33,7 +37,7 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Set");
-    std::vector<Feature> features = FeatureFinding::GenerateFeatureTree(arguments.depth, trainData, SeriesUtils::GetCount(trainData), arguments.minWindowSize, arguments.maxWindowSize);
+    const auto features = FeatureFinding::GenerateFeatureTree(arguments.depth, trainData, SeriesUtils::GetCount(trainData), arguments.minWindowSize, arguments.maxWindowSize);
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Points");
