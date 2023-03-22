@@ -66,6 +66,7 @@
   <ItemGroup>
     <Content Include="DataConverters\readme.md" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\CMakeLists.txt" />
+    <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\CMakePresets.json" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\include\cxxopts\cxxopts.hpp" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\include\cxxopts\LICENSE" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\include\indicators\block_progress_bar.hpp" />
@@ -87,8 +88,9 @@
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\include\indicators\terminal_size.hpp" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\main.cpp" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\ArgumentParser.h" />
-    <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\Attributes.h" />
+    <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\AttributeGeneration.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\FeatureFinding.h" />
+    <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\FeatureUtils.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\FileHanding.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\InformationGain.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\Logger.h" />
