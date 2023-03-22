@@ -70,9 +70,25 @@ namespace FileHanding {
     }
 
     // https://stackoverflow.com/questions/41304891/how-to-count-the-number-of-files-in-a-directory-using-standard
-    std::size_t DirFileCount(std::filesystem::path path) {
+    static std::size_t DirFileCount(std::filesystem::path path) {
         using std::filesystem::directory_iterator;
         return std::distance(directory_iterator(path), directory_iterator{});
+    }
+
+    static std::vector<std::string> WriteToFiles(const std::string &dir, const std::vector<std::vector<double>> &data) {
+        std::vector<std::string> paths;
+
+        uint startIndex = 0;
+        if (std::filesystem::exists(dir))
+            startIndex = DirFileCount(dir);
+
+        for (uint i = 0; i < data.size(); i++) {
+            const std::string path = dir + std::to_string(startIndex + i);
+            WriteFile(path, data.at(i));
+            paths.push_back(path);
+        }
+
+        return paths;
     }
 
     static std::vector<std::string> WriteToFiles(const std::string &dir, const std::unordered_map<int, std::vector<std::vector<double>>> &data) {
@@ -80,15 +96,8 @@ namespace FileHanding {
 
         for (const auto &classSet : data) {
             const std::string classDir = dir + std::to_string(classSet.first) + "/";
-            uint startIndex = 0;
-            if (std::filesystem::exists(classDir))
-                startIndex = DirFileCount(classDir);
-
-            for (uint i = 0; i < classSet.second.size(); i++) {
-                const std::string path = classDir + std::to_string(startIndex + i);
-                WriteFile(path, classSet.second.at(i));
+            for (const auto &path : WriteToFiles(classDir, classSet.second))
                 paths.push_back(path);
-            }
         }
 
         return paths;
@@ -102,6 +111,31 @@ namespace FileHanding {
             newPaths.push_back(p.substr(subPathIndex + subPathLength, p.size()));
         }
         return newPaths;
+    }
+
+    static void WriteCSV
+    (const std::string &path, const std::optional<std::vector<std::string>> &header, const std::vector<std::vector<std::string>> &lines) {
+        std::filesystem::create_directories(std::filesystem::path(path).parent_path());
+        std::ofstream out(path);
+        if (header.has_value()) {
+            for (const auto &p: header.value()) {
+                out << p;
+                if (&p != &header.value().back())
+                    out << ',';
+            }
+            if (!lines.empty())
+                out << '\n';
+        }
+        for (const auto &l : lines) {
+            for (const auto &p: l) {
+                out << p;
+                if (&p != &l.back())
+                    out << ',';
+            }
+            if (&l != &lines.back())
+                out << '\n';
+        }
+        out.close();
     }
 };
 

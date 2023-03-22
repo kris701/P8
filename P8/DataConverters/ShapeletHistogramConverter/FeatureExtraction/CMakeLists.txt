@@ -8,5 +8,5 @@ add_executable(FeatureExtraction main.cpp
         include/cxxopts/cxxopts.hpp
         include/indicators/block_progress_bar.hpp include/indicators/cursor_control.hpp
         src/FileHanding.h src/Types.h src/WindowGeneration.h src/SeriesUtils.h src/InformationGain.h src/FeatureFinding.h src/AttributeGeneration.h src/Logger.h
-        src/ArgumentParser.h)
+        src/ArgumentParser.h src/FeatureUtils.h)
 target_include_directories(FeatureExtraction PRIVATE include)

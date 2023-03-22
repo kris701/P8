@@ -17,6 +17,17 @@ enum class AttributeType {
     MinDist
 };
 
+std::string AttributeTypeToString(AttributeType type) {
+    switch (type) {
+        case AttributeType::None:
+            return "None";
+        case AttributeType::Frequency:
+            return "Freq";
+        case AttributeType::MinDist:
+            return "MinDist";
+    }
+}
+
 struct Attribute {
     AttributeType type;
     std::optional<double> param1;
@@ -26,6 +37,9 @@ struct Attribute {
 
 const std::vector<Attribute> Attributes {
     Attribute(AttributeType::Frequency, 0.01),
+    Attribute(AttributeType::Frequency, 0.02),
+    Attribute(AttributeType::Frequency, 0.04),
+    Attribute(AttributeType::Frequency, 0.08),
     Attribute(AttributeType::Frequency, 0.1),
     Attribute(AttributeType::Frequency, 0.2),
     Attribute(AttributeType::Frequency, 0.4),
@@ -40,9 +54,9 @@ struct LabelledSeries {
 };
 
 struct Feature {
+    const double gain;
     const Attribute attribute;
     const std::vector<double> shapelet;
-    const double gain;
 
     Feature(const std::vector<double> &shapelet, const Attribute attribute, double gain)
             : shapelet(shapelet), attribute(attribute), gain(gain) {}
