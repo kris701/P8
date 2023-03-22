@@ -1,15 +1,15 @@
-#ifndef FEATUREEXTRACTION_ATTRIBUTES_H
-#define FEATUREEXTRACTION_ATTRIBUTES_H
+#ifndef FEATUREEXTRACTION_ATTRIBUTEGENERATION_H
+#define FEATUREEXTRACTION_ATTRIBUTEGENERATION_H
 
 #include <stdexcept>
 #include <cassert>
 #include <map>
 #include "Types.h"
 
-namespace Attributes {
+namespace AttributeGeneration {
     namespace Frequency {
-        [[nodiscard]] static bool ToleranceMatch(const Series &series, uint offset, const Series &window) {
-            const double tempTolerance = 0.5 + series[offset];
+        [[nodiscard]] static bool ToleranceMatch(const Series &series, uint offset, const Series &window, double tolerance) {
+            const double tempTolerance = tolerance + series[offset];
 
             for (uint i = 1; i < window.size(); i++)
                 if (std::abs(series[i + offset] - window.at(i)) > tempTolerance)
@@ -18,12 +18,12 @@ namespace Attributes {
             return true;
         }
 
-        [[nodiscard]] static double GenerateFrequency(const Series &series, const Series &window) {
+        [[nodiscard]] static double GenerateFrequency(const Series &series, const Series &window, double tolerance) {
             uint checked = 0;
             uint matchCount = 0;
 
             for (uint i = 0; i < series.size() - window.size(); ++i) {
-                if (ToleranceMatch(series, i, window))
+                if (ToleranceMatch(series, i, window, tolerance))
                     ++matchCount;
                 ++checked;
             }
@@ -34,10 +34,10 @@ namespace Attributes {
 
     [[nodiscard]] static inline double GenerateValue(const Series &series, const Series &window, Attribute attribute) {
         assert(window.size() <= series.size());
-        switch (attribute) {
-            case Attribute::Frequency:
-                return Frequency::GenerateFrequency(series, window);
-            case Attribute::None:
+        switch (attribute.type) {
+            case AttributeType::Frequency:
+                return Frequency::GenerateFrequency(series, window, attribute.param1);
+            case AttributeType::None:
             default:
                 throw std::logic_error("Missing attribute in value generation.");
         }
@@ -62,4 +62,4 @@ namespace Attributes {
     }
 }
 
-#endif //FEATUREEXTRACTION_ATTRIBUTES_H
+#endif //FEATUREEXTRACTION_ATTRIBUTEGENERATION_H

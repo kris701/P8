@@ -10,7 +10,7 @@
 #include "Types.h"
 #include "SeriesUtils.h"
 #include "InformationGain.h"
-#include "Attributes.h"
+#include "AttributeGeneration.h"
 #include "WindowGeneration.h"
 #include "Logger.h"
 #include "../include/indicators/cursor_control.hpp"
@@ -23,7 +23,7 @@ namespace FeatureFinding {
 
         ClassCount diff { counts };
         for (const auto &s : series) {
-            valueCount[Attributes::GenerateValue(s.series, window, attribute)][s.label]++;
+            valueCount[AttributeGeneration::GenerateValue(s.series, window, attribute)][s.label]++;
             diff.at(s.label)--;
 
             if (valueCount.size() < 2) // No split point at single value
@@ -79,7 +79,7 @@ namespace FeatureFinding {
 
         for (uint i = 0; i < windows.size(); i++) {
             const auto& window = windows.at(i);
-            for (const auto &attribute: ATTRIBUTES) {
+            for (const auto &attribute: Attributes) {
                 const double gain = EvaluateWindow(currentEntropy, optimalGain, counts, attribute, series, window);
 
                 if (!optimalShapelet.has_value() || gain > optimalGain) {
@@ -99,7 +99,7 @@ namespace FeatureFinding {
         indicators::show_console_cursor(true);
 
         if (optimalGain > 0)
-            return Feature(optimalShapelet.value(), optimalAttribute.value());
+            return Feature(optimalShapelet.value(), optimalAttribute.value(), optimalGain);
         else
             return std::optional<Feature>();
     }
@@ -120,8 +120,8 @@ namespace FeatureFinding {
         features.push_back(feature);
 
         uint splitId = Logger::Begin("Retriving optimal split");
-        const double splitPoint = InformationGain::GetOptimalSplitPoint(Attributes::GenerateValues(series, feature.shapelet, feature.attribute));
-        const auto split = Attributes::SplitSeries(series, feature.attribute, feature.shapelet, splitPoint);
+        const double splitPoint = InformationGain::GetOptimalSplitPoint(AttributeGeneration::GenerateValues(series, feature.shapelet, feature.attribute));
+        const auto split = AttributeGeneration::SplitSeries(series, feature.attribute, feature.shapelet, splitPoint);
         Logger::End(splitId);
 
         Logger::End(featureId);
@@ -178,7 +178,7 @@ namespace FeatureFinding {
         std::vector<double> featureSeries;
 
         for (const auto &feature : features)
-            featureSeries.push_back(Attributes::GenerateValue(series, feature.shapelet, feature.attribute));
+            featureSeries.push_back(AttributeGeneration::GenerateValue(series, feature.shapelet, feature.attribute));
 
         return featureSeries;
     }

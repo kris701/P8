@@ -11,13 +11,24 @@ constexpr uint MAX_CLASSES = 20;
 using Series = std::vector<double>;
 using ClassCount = std::array<uint, MAX_CLASSES>;
 
-enum class Attribute {
+enum class AttributeType {
     None,
     Frequency
 };
 
-constexpr uint ATTRIBUTE_COUNT = 1;
-constexpr Attribute ATTRIBUTES[ATTRIBUTE_COUNT] { Attribute::Frequency };
+struct Attribute {
+    AttributeType type;
+    double param1;
+    Attribute(AttributeType type, double param1) : type(type), param1(param1) {};
+};
+
+const std::vector<Attribute> Attributes {
+    Attribute(AttributeType::Frequency, 0.01),
+    Attribute(AttributeType::Frequency, 0.1),
+    Attribute(AttributeType::Frequency, 0.2),
+    Attribute(AttributeType::Frequency, 0.4),
+    Attribute(AttributeType::Frequency, 0.8),
+};
 
 struct LabelledSeries {
     int label;
@@ -26,11 +37,12 @@ struct LabelledSeries {
 };
 
 struct Feature {
-    const std::vector<double> shapelet;
     const Attribute attribute;
+    const std::vector<double> shapelet;
+    const double gain;
 
-    Feature(const std::vector<double> &shapelet, const Attribute attribute)
-            : shapelet(shapelet), attribute(attribute) {}
+    Feature(const std::vector<double> &shapelet, const Attribute attribute, double gain)
+            : shapelet(shapelet), attribute(attribute), gain(gain) {}
 };
 
 struct Split {
