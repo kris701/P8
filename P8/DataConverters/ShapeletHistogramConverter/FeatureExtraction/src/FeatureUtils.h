@@ -41,6 +41,36 @@ namespace FeatureUtils {
 
         return lines;
     }
+
+    [[nodiscard]] static std::vector<std::string> AttributeHeader() {
+        return {
+            "Attribute",
+            "Desc",
+            "Param1 Desc",
+            "Param2 Desc",
+            "Param3 Desc"
+        };
+    }
+
+    [[nodiscard]] static std::vector<std::vector<std::string>> AttributeCSV(const std::vector<Feature> &features) {
+        std::unordered_set<AttributeType> attributesUsed;
+        for (const auto &feature : features)
+            attributesUsed.emplace(feature.attribute.type);
+
+        std::vector<std::vector<std::string>> lines;
+
+        for (const auto &attribute : attributesUsed) {
+            lines.push_back({
+                AttributeTypeToString(attribute),
+                AttributeTypeDesc(attribute),
+                Param1Desc(attribute),
+                "",
+                ""
+            });
+        }
+
+        return lines;
+    }
 }
 
 #endif //FEATUREEXTRACTION_FEATUREUTILS_H

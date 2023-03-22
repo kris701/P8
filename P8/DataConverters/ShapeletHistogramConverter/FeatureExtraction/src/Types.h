@@ -28,6 +28,28 @@ std::string AttributeTypeToString(AttributeType type) {
     }
 }
 
+std::string AttributeTypeDesc(AttributeType type) {
+    switch (type) {
+        case AttributeType::None:
+            return "No attribute. Likely a bug.";
+        case AttributeType::Frequency:
+            return "How frequently a shapelet occurs in a given time series.";
+        case AttributeType::MinDist:
+            return "The minimum distance between a shapelet and a given time series.";
+    }
+}
+
+std::string Param1Desc(AttributeType type) {
+    switch (type) {
+        case AttributeType::None:
+            return "Not used.";
+        case AttributeType::Frequency:
+            return "Tolerance. How far away a point can be from the shapelet, while still being considered a match.";
+        case AttributeType::MinDist:
+            return "Not used.";
+    }
+}
+
 struct Attribute {
     AttributeType type;
     std::optional<double> param1;
