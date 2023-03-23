@@ -16,6 +16,7 @@
 #include "../include/indicators/progress_bar.hpp"
 #include "Feature.h"
 #include "attributes/Frequency.h"
+#include "attributes/MinDist.h"
 
 namespace FeatureFinding {
     [[nodiscard]] double EvaluateWindow(double priorEntropy, double bestScore, const ClassCount &counts, const Attribute *attribute,
@@ -64,6 +65,7 @@ namespace FeatureFinding {
             new Frequency(0.2),
             new Frequency(0.4),
             new Frequency(0.8),
+            new MinDist()
         }; // Intentionally not freed
 
         const ClassCount counts = SeriesUtils::GetCount(series);

@@ -10,7 +10,7 @@ public:
     [[nodiscard]] inline std::string Name() const final { return "Frequency"; };
     [[nodiscard]] inline std::string Param1() const final { return std::to_string(tolerance); };
 
-    [[nodiscard]] static bool ToleranceMatch(const Series &series, uint offset, const Series &window, double tolerance) {
+    [[nodiscard]] bool ToleranceMatch(const Series &series, uint offset, const Series &window) const {
         const double tempTolerance = tolerance + series[offset];
 
         for (uint i = 1; i < window.size(); i++)
@@ -25,7 +25,7 @@ public:
         uint matchCount = 0;
 
         for (uint i = 0; i < series.size() - window.size(); ++i) {
-            if (ToleranceMatch(series, i, window, tolerance))
+            if (ToleranceMatch(series, i, window))
                 ++matchCount;
             ++checked;
         }
@@ -34,7 +34,7 @@ public:
     }
 
 private:
-    double tolerance;
+    const double tolerance;
 };
 
 #endif //FEATUREEXTRACTION_FREQUENCY_H
