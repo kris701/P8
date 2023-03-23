@@ -71,9 +71,10 @@ namespace SeriesUtils {
         const auto max = MaxValue(series) + std::abs(min);
 
         // First move all values into positive range
+        // Does this moving all values such that minimum is in zero
         for (auto &s : series)
             for (auto &p : s.series)
-                p += std::abs(min);
+                    p -= min;
 
         // Normalize
         for (auto &s : series)
