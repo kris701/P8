@@ -53,6 +53,7 @@
     <Folder Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\include\indicators\" />
     <Folder Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\include\indicators\details\" />
     <Folder Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\" />
+    <Folder Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\attributes\" />
     <Folder Include="Datasets\SwedishLeaf\" />
     <Folder Include="Data\" />
     <Folder Include="Data\SwedishLeaf\" />
@@ -88,7 +89,9 @@
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\include\indicators\terminal_size.hpp" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\main.cpp" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\ArgumentParser.h" />
-    <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\AttributeGeneration.h" />
+    <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\attributes\Attribute.h" />
+    <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\attributes\Frequency.h" />
+    <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\Feature.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\FeatureFinding.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\FeatureUtils.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\FileHanding.h" />
