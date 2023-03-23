@@ -1,7 +1,12 @@
 import os
+from os.path import isdir
 import pathlib
 import subprocess
-
+import shutil
+import checksumdir
+import hashlib
+import json
+    
 from .ShapeletHistogramConverterOptions import ShapeletHistogramConverterOptions
 from ..BaseDataConverter import BaseDataConverter
 
@@ -12,11 +17,12 @@ class ShapeletHistogramConverter(BaseDataConverter):
         super().__init__(options)
 
     def ConvertData(self):
-        if not os.path.isdir(self.Options.FormatedFolder):
+        if not self.HaveConvertedBefore():
+            self.PurgeOutputFolder();
 
             workingDir = pathlib.Path().resolve();
             thisFile = pathlib.Path(__file__).parent.resolve();
-            if not os.path.isdir(os.path.join(thisFile, self.compile_dir, "out")):
+            if self._ShouldRecompile():
                 print("Compiling the feature extractor...")
                 self._CompileFeatureExtractor(os.path.join(thisFile, self.compile_dir))
 
@@ -37,15 +43,47 @@ class ShapeletHistogramConverter(BaseDataConverter):
                             "--maxWindowSize", str(self.Options.minWindowSize),
                             ]) 
 
+            self.OutputChecksum();
             print("Formating complete!")
         else:
             print("Dataset already formated!")
 
     def _CompileFeatureExtractor(self, compileDir):
+        if os.path.isdir(os.path.join(compileDir, "out")):
+            shutil.rmtree(os.path.join(compileDir, "out"));
+
         if os.name == "nt":
             subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out")]) 
         else:
-
             subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out"), "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=Release"]) 
         subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release"]) 
-        pass;
+
+        checksum_value = self._GetExtractorChecksum();
+        thisFile = pathlib.Path(__file__).parent.resolve();
+        if not os.path.isdir(os.path.join(thisFile, "checksum")):
+            os.mkdir(os.path.join(thisFile, "checksum"))
+        with open(os.path.join(thisFile, "checksum" + os.sep + "checksum.txt"), "w") as f:
+            f.write(checksum_value + "\n")
+    
+    def _ShouldRecompile(self):
+        thisFile = pathlib.Path(__file__).parent.resolve();
+        if not os.path.isdir(os.path.join(thisFile, self.compile_dir, "out")):
+            return True;
+        if not os.path.isfile(os.path.join(thisFile, "checksum" + os.sep + "checksum.txt")):
+            return True;
+        thisFile = pathlib.Path(__file__).parent.resolve();
+        current_checksum = checksumdir.dirhash(os.path.join(thisFile, "FeatureExtraction"));
+        saved_checksum = "";
+        with open(os.path.join(thisFile, "checksum" + os.sep + "checksum.txt"), "r") as f:
+            saved_checksum = f.readline()
+        return current_checksum != saved_checksum.replace("\n","");
+
+    def _GetExtractorChecksum(self):
+        thisFile = pathlib.Path(__file__).parent.resolve();
+        return checksumdir.dirhash(os.path.join(thisFile, "FeatureExtraction"))
+
+    def GetChecksum(self):
+        data = str(
+            json.dumps(self.Options.__dict__, sort_keys=True) + self._GetExtractorChecksum()
+            ).encode('utf-8')
+        return hashlib.md5(data).hexdigest()
