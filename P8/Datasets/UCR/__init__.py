@@ -7,7 +7,7 @@ import os
 Inspired by https://github.com/pytorch/vision/pull/46
 '''
 
-class SwedishLeafDataset(data.Dataset):
+class UCR(data.Dataset):
 
     def __init__(self, mode='train', root='formated', transform=None, target_transform=None):
         '''
@@ -17,7 +17,7 @@ class SwedishLeafDataset(data.Dataset):
         - transform: how to transform the input
         - target_transform: how to transform the target
         '''
-        super(SwedishLeafDataset, self).__init__()
+        super(UCR, self).__init__()
         self.mode = mode
         self.root = root
         self.splits_folder = "split"

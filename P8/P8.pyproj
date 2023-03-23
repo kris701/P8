@@ -28,7 +28,7 @@
     </Compile>
     <Compile Include="DataConverters\ShapeletHistogramConverter\ShapeletHistogramConverterOptions.py" />
     <Compile Include="DataConverters\ShapeletHistogramConverter\__init__.py" />
-    <Compile Include="Datasets\SwedishLeaf\__init__.py">
+    <Compile Include="Datasets\UCR\__init__.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataConverters\DataConverterOptions.py" />
@@ -54,7 +54,7 @@
     <Folder Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\include\indicators\details\" />
     <Folder Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\" />
     <Folder Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\attributes\" />
-    <Folder Include="Datasets\SwedishLeaf\" />
+    <Folder Include="Datasets\UCR\" />
     <Folder Include="Data\" />
     <Folder Include="Data\SwedishLeaf\" />
     <Folder Include="DataConverters\" />
