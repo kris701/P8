@@ -91,6 +91,7 @@
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\ArgumentParser.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\attributes\Attribute.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\attributes\Frequency.h" />
+    <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\attributes\MinDist.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\Feature.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\FeatureFinding.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\FeatureUtils.h" />
