@@ -23,17 +23,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DataConverters\BaseDataConverter.py" />
+    <Compile Include="DataConverters\DataConverterBuilder.py" />
     <Compile Include="DataConverters\DirectDataConverter\__init__.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataConverters\ShapeletHistogramConverter\ShapeletHistogramConverterOptions.py" />
     <Compile Include="DataConverters\ShapeletHistogramConverter\__init__.py" />
     <Compile Include="Datasets\DatasetBuilder.py" />
     <Compile Include="Datasets\UCR\__init__.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataConverters\DataConverterOptions.py" />
-    <Compile Include="ExperimentSuite\__init__.py" />
+    <Compile Include="ExperimentSuite.py" />
+    <Compile Include="NetTrainers\NetTrainerBuilder.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\BaseNetTrainer.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\DataloaderVerifier.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\NetTrainer.py" />
@@ -64,12 +65,10 @@
     <Folder Include="DataConverters\ShapeletHistogramConverter\" />
     <Folder Include="Experiments\" />
     <Folder Include="Experiments\Configs\" />
-    <Folder Include="Experiments\Configs\SwedishLeaf\" />
     <Folder Include="Experiments\Output\" />
     <Folder Include="NetTrainers\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\Backbones\" />
-    <Folder Include="ExperimentSuite\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataConverters\readme.md" />
@@ -112,8 +111,7 @@
     <Content Include="Data\SwedishLeaf\README.md" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TEST.tsv" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TRAIN.tsv" />
-    <Content Include="Experiments\Configs\SwedishLeaf\dataloader.ini" />
-    <Content Include="Experiments\Configs\SwedishLeaf\protonet.ini" />
+    <Content Include="Experiments\Configs\SwedishLeaf.ini" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.9" />

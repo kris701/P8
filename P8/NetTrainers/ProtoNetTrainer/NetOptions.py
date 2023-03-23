@@ -7,21 +7,25 @@ class NetOptions():
         pass
 
     def __init__(self, configName) -> None:
-        config = configparser.ConfigParser()
+        config = configparser.RawConfigParser()
+        config.optionxform = lambda option: option
         config.read(configName)
-        for index in config["OVERRIDES"]:
-            typeName = self.__annotations__[index].__name__;
-            if typeName == "str":
-                self.__dict__[index] = config["OVERRIDES"][index]
-            elif typeName == "bool":
-                self.__dict__[index] = config["OVERRIDES"].getboolean(index)
-            elif typeName == "int":
-                self.__dict__[index] = config["OVERRIDES"].getint(index)
-            elif typeName == "float":
-                self.__dict__[index] = config["OVERRIDES"].getfloat(index)
-            else:
-                raise Exception("Invalid config type!")
+        for index in config["NETTRAINER"]:
+            if index in self.__annotations__:
+                typeName = self.__annotations__[index].__name__;
+                if typeName == "str":
+                    self.__dict__[index] = config["NETTRAINER"][index]
+                elif typeName == "bool":
+                    self.__dict__[index] = config["NETTRAINER"].getboolean(index)
+                elif typeName == "int":
+                    self.__dict__[index] = config["NETTRAINER"].getint(index)
+                elif typeName == "float":
+                    self.__dict__[index] = config["NETTRAINER"].getfloat(index)
+                else:
+                    raise Exception("Invalid config type!")
 
+    # What net trainer to use
+    trainer_name : str = "ProtoNetTrainer";
     # name of the dataset to use
     dataset_name : str = "UCR";
     # path to dataset
