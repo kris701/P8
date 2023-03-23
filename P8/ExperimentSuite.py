@@ -10,7 +10,7 @@ from Datasets import DatasetBuilder
 
 class ExperimentSuite():
     ExperimentConfigDir : str = "Experiments/Configs";
-    ExperimentOutputDir : str = "Experiments/Output";
+    ExperimentResultsDir : str = "Experiments/Results";
     ExperimentsToRun : list;
 
     def __init__(self, experimentsToRun : list) -> None:
@@ -18,9 +18,13 @@ class ExperimentSuite():
 
     def RunExperiments(self):
         print("Running experiments...")
-        with open(os.path.join(self.ExperimentOutputDir, "run " + time.strftime("%Y%m%d-%H%M%S") + ".csv"), 'w', newline='') as csvfile:
+        timestamp = time.strftime("%Y%m%d-%H%M%S")
+        os.mkdir(os.path.join(self.ExperimentResultsDir, timestamp))
+
+        with open(os.path.join(self.ExperimentResultsDir, timestamp, "run " + timestamp + ".csv"), 'w', newline='') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow(['Experiment Name', 'Best train accuracy', 'Best test accuracy'])
+
             for expName in self.ExperimentsToRun:
                 dataLoaderOptions = DataConverterOptions(os.path.join(self.ExperimentConfigDir, expName + ".ini"))
                 dataConverter = DataConverterBuilder.GetDataConverter(dataLoaderOptions.UseConverter)(dataLoaderOptions)
@@ -29,6 +33,7 @@ class ExperimentSuite():
                 dataConverter.ConvertData()
 
                 protonetOptions = NetOptions(os.path.join(self.ExperimentConfigDir, expName + ".ini"))
+                protonetOptions.experiment_root = os.path.join(self.ExperimentResultsDir, timestamp, expName)
                 protonet = NetTrainerBuilder.GetNetTrainer(protonetOptions.trainer_name)(protonetOptions, DatasetBuilder.GetDataset(protonetOptions.dataset_name))
 
                 print("Training Model")

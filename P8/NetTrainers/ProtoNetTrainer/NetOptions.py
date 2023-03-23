@@ -29,9 +29,9 @@ class NetOptions():
     # name of the dataset to use
     dataset_name : str = "UCR";
     # path to dataset
-    dataset_root : str = "formated";
+    dataset_root : str = "Formatted";
     # root where to store models, losses and accuracies
-    experiment_root : str = "output";
+    experiment_root : str = "Output";
     # number of epochs to train for
     train_epochs : int = 10;
     # number of epochs to test for
