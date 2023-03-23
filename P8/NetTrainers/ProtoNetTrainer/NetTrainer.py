@@ -87,9 +87,10 @@ class NetTrainer(BaseNetTrainer):
             
             # Eval
             if val_dataloader is None:
-                torch.save(model.state_dict(), best_model_path)
-                best_acc = avg_acc
-                best_state = model.state_dict()
+                if avg_acc > best_acc:
+                    torch.save(model.state_dict(), best_model_path)
+                    best_acc = avg_acc
+                    best_state = model.state_dict()
                 continue
             val_iter = iter(val_dataloader)
             model.eval()

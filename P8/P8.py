@@ -15,11 +15,11 @@ targetOutputDir = "output" + os.sep + "swedishLeaf"
 dataOptions = ShapeletHistogramConverterOptions()
 dataOptions.FormatedFolder = targetDataDir
 dataOptions.TrainValSplit = 0;
-dataOptions.TestClassesSplit = 3;
+dataOptions.TestClassesSplit = 5;
 dataOptions.SourceTrainData = "./Data/SwedishLeaf/SwedishLeaf_TRAIN.tsv";
 dataOptions.SourceTestData = "./Data/SwedishLeaf/SwedishLeaf_TEST.tsv";
 dataOptions.depth = 40;
-dataOptions.maxWindowSize = 8;
+dataOptions.maxWindowSize = 32;
 
 #dataConverter = DirectDataConverter(dataOptions);
 dataConverter = ShapeletHistogramConverter(dataOptions);
