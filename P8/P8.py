@@ -1,8 +1,6 @@
 from ExperimentSuite import ExperimentSuite
 
-experiments = ["SwedishLeaf"]
+experiments = ["SwedishLeaf","Beef"]
 
 expSuite = ExperimentSuite(experiments)
-result = expSuite.RunExperiments()
-
-print(result)
+expSuite.RunExperiments()
