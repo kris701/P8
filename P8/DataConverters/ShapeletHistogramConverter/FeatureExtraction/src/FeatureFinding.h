@@ -17,6 +17,7 @@
 #include "Feature.h"
 #include "attributes/Frequency.h"
 #include "attributes/MinDist.h"
+#include "attributes/RelFrequency.h"
 
 namespace FeatureFinding {
     [[nodiscard]] double EvaluateWindow(double priorEntropy, double bestScore, const ClassCount &counts, const Attribute *attribute,
@@ -65,6 +66,14 @@ namespace FeatureFinding {
             new Frequency(0.2),
             new Frequency(0.4),
             new Frequency(0.8),
+            new RelFrequency(0.01),
+            new RelFrequency(0.02),
+            new RelFrequency(0.04),
+            new RelFrequency(0.08),
+            new RelFrequency(0.1),
+            new RelFrequency(0.2),
+            new RelFrequency(0.4),
+            new RelFrequency(0.8),
             new MinDist()
         }; // Intentionally not freed
 
