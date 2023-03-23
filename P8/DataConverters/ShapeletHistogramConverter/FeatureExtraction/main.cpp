@@ -5,6 +5,7 @@
 #include "src/SeriesUtils.h"
 #include "src/Logger.h"
 #include "src/ArgumentParser.h"
+#include "src/FeatureUtils.h"
 
 int ConvertData(ArgumentParsing::Arguments arguments) {
     uint id = Logger::Begin("Reading Data");
@@ -14,6 +15,10 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
             );
 
     const auto mappedData = SeriesUtils::ToMap(data);
+    Logger::End(id);
+
+    id = Logger::Begin("Normalizing Data");
+    SeriesUtils::MinMaxNormalize(data);
     Logger::End(id);
 
     id = Logger::Begin("Shuffling Data");
@@ -33,7 +38,7 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Set");
-    std::vector<Feature> features = FeatureFinding::GenerateFeatureTree(arguments.depth, trainData, SeriesUtils::GetCount(trainData), arguments.minWindowSize, arguments.maxWindowSize);
+    const auto features = FeatureFinding::GenerateFeatureTree(arguments.depth, trainData, SeriesUtils::GetCount(trainData), arguments.minWindowSize, arguments.maxWindowSize);
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Points");
@@ -42,11 +47,11 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     const auto valFeatures = FeatureFinding::GenerateFeatureSeries(valData, features);
     Logger::End(id);
 
-    id = Logger::Begin("Writing Features to Files");
-    const auto featurePath = arguments.outPath + "data/";
-    const auto trainFiles = FileHanding::WriteToFiles(featurePath, trainFeatures);
-    const auto testFiles = FileHanding::WriteToFiles(featurePath, testFeatures);
-    const auto valFiles = FileHanding::WriteToFiles(featurePath, valFeatures);
+    id = Logger::Begin("Writing Feature Series to Files");
+    const auto featureSeriesPath = arguments.outPath + "data/";
+    const auto trainFiles = FileHanding::WriteToFiles(featureSeriesPath, trainFeatures);
+    const auto testFiles = FileHanding::WriteToFiles(featureSeriesPath, testFeatures);
+    const auto valFiles = FileHanding::WriteToFiles(featureSeriesPath, valFeatures);
     Logger::End(id);
 
     id = Logger::Begin("Writing Split Files");
@@ -54,6 +59,16 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     FileHanding::WriteFile(splitPath + "train.txt", FileHanding::RemoveSubPath(arguments.outPath, trainFiles));
     FileHanding::WriteFile(splitPath + "test.txt", FileHanding::RemoveSubPath(arguments.outPath, testFiles));
     FileHanding::WriteFile(splitPath + "val.txt", FileHanding::RemoveSubPath(arguments.outPath, valFiles));
+    Logger::End(id);
+
+    id = Logger::Begin("Writing Feature Files");
+    const auto featurePath = arguments.outPath + "features/";
+    const auto shapeletPath = featurePath + "shapelets/";
+    const auto shapelets = FeatureUtils::RetrieveShapelets(features);
+    const auto shapeletFiles = FileHanding::RemoveSubPath(featurePath, FileHanding::WriteToFiles(shapeletPath, shapelets));
+    FileHanding::WriteCSV(featurePath + "features.csv",
+                          FeatureUtils::FeatureHeader(),
+                          FeatureUtils::FeatureCSV(features, shapeletFiles));
     Logger::End(id);
 
     return 0;

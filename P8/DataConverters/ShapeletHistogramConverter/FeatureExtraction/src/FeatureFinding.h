@@ -10,20 +10,22 @@
 #include "Types.h"
 #include "SeriesUtils.h"
 #include "InformationGain.h"
-#include "Attributes.h"
 #include "WindowGeneration.h"
 #include "Logger.h"
 #include "../include/indicators/cursor_control.hpp"
 #include "../include/indicators/progress_bar.hpp"
+#include "Feature.h"
+#include "attributes/Frequency.h"
+#include "attributes/MinDist.h"
 
 namespace FeatureFinding {
-    [[nodiscard]] double EvaluateWindow(double priorEntropy, double bestScore, const ClassCount &counts, Attribute attribute,
+    [[nodiscard]] double EvaluateWindow(double priorEntropy, double bestScore, const ClassCount &counts, const Attribute *attribute,
                                         const std::vector<LabelledSeries> &series, const Series &window) {
         std::map<double, ClassCount> valueCount; // At the given value, how many of each class
 
         ClassCount diff { counts };
         for (const auto &s : series) {
-            valueCount[Attributes::GenerateValue(s.series, window, attribute)][s.label]++;
+            valueCount[attribute->GenerateValue(s.series, window)][s.label]++;
             diff.at(s.label)--;
 
             if (valueCount.size() < 2) // No split point at single value
@@ -54,11 +56,23 @@ namespace FeatureFinding {
         if (windows.empty())
             throw std::logic_error("Missing windows.");
 
+        const std::vector<Attribute*> attributes {
+            new Frequency(0.01),
+            new Frequency(0.02),
+            new Frequency(0.04),
+            new Frequency(0.08),
+            new Frequency(0.1),
+            new Frequency(0.2),
+            new Frequency(0.4),
+            new Frequency(0.8),
+            new MinDist()
+        }; // Intentionally not freed
+
         const ClassCount counts = SeriesUtils::GetCount(series);
         const double currentEntropy = InformationGain::CalculateEntropy(counts);
 
         std::optional<Series> optimalShapelet;
-        std::optional<Attribute> optimalAttribute;
+        std::optional<Attribute*> optimalAttribute;
         double optimalGain = 0;
 
         indicators::show_console_cursor(false);
@@ -79,7 +93,7 @@ namespace FeatureFinding {
 
         for (uint i = 0; i < windows.size(); i++) {
             const auto& window = windows.at(i);
-            for (const auto &attribute: ATTRIBUTES) {
+            for (const auto &attribute: attributes) {
                 const double gain = EvaluateWindow(currentEntropy, optimalGain, counts, attribute, series, window);
 
                 if (!optimalShapelet.has_value() || gain > optimalGain) {
@@ -99,7 +113,7 @@ namespace FeatureFinding {
         indicators::show_console_cursor(true);
 
         if (optimalGain > 0)
-            return Feature(optimalShapelet.value(), optimalAttribute.value());
+            return Feature(optimalShapelet.value(), optimalAttribute.value(), optimalGain);
         else
             return std::optional<Feature>();
     }
@@ -120,13 +134,13 @@ namespace FeatureFinding {
         features.push_back(feature);
 
         uint splitId = Logger::Begin("Retriving optimal split");
-        const double splitPoint = InformationGain::GetOptimalSplitPoint(Attributes::GenerateValues(series, feature.shapelet, feature.attribute));
-        const auto split = Attributes::SplitSeries(series, feature.attribute, feature.shapelet, splitPoint);
+        const double splitPoint = InformationGain::GetOptimalSplitPoint(feature.attribute->GenerateValues(series, feature.shapelet));
+        const auto split = feature.attribute->SplitSeries(series, feature.shapelet, splitPoint);
         Logger::End(splitId);
 
         Logger::End(featureId);
 
-        for (const auto &s : { split.below, split.above }) {
+        for (const auto &s : { split.at(0), split.at(1) }) {
             if (s.size() < 2)
                 continue;
             const auto tempCounts = SeriesUtils::GetCount(s);
@@ -178,7 +192,7 @@ namespace FeatureFinding {
         std::vector<double> featureSeries;
 
         for (const auto &feature : features)
-            featureSeries.push_back(Attributes::GenerateValue(series, feature.shapelet, feature.attribute));
+            featureSeries.push_back(feature.attribute->GenerateValue(series, feature.shapelet));
 
         return featureSeries;
     }
