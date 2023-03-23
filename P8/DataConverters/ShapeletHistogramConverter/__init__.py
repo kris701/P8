@@ -49,7 +49,8 @@ class ShapeletHistogramConverter(BaseDataConverter):
             print("Dataset already formated!")
 
     def _CompileFeatureExtractor(self, compileDir):
-        shutil.rmtree(os.path.join(compileDir, "out"));
+        if os.path.isdir(os.path.join(compileDir, "out")):
+            shutil.rmtree(os.path.join(compileDir, "out"));
 
         if os.name == "nt":
             subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out")]) 
