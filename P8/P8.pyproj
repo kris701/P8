@@ -28,6 +28,7 @@
     </Compile>
     <Compile Include="DataConverters\ShapeletHistogramConverter\ShapeletHistogramConverterOptions.py" />
     <Compile Include="DataConverters\ShapeletHistogramConverter\__init__.py" />
+    <Compile Include="Datasets\DatasetBuilder.py" />
     <Compile Include="Datasets\UCR\__init__.py">
       <SubType>Code</SubType>
     </Compile>

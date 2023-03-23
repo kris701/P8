@@ -2,6 +2,8 @@ import torch.nn as nn
 from .Backbones.slprotonet import slProtoNet
 
 class NetOptions():
+    # name of the dataset to use
+    dataset_name : str = "UCR";
     # path to dataset
     dataset_root : str = "formated";
     # root where to store models, losses and accuracies

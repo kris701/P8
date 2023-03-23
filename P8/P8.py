@@ -7,6 +7,7 @@ from DataConverters.ShapeletHistogramConverter.ShapeletHistogramConverterOptions
 from NetTrainers.ProtoNetTrainer import NetTrainer
 from NetTrainers.ProtoNetTrainer import NetOptions
 from Datasets.UCR import UCR
+from Datasets import DatasetBuilder
 
 targetDataDir = "formated" + os.sep + "swedishLeaf" + os.sep
 targetOutputDir = "output" + os.sep + "swedishLeaf"
@@ -36,8 +37,9 @@ options.classes_per_it_test = 3
 options.train_epochs = 5;
 options.test_epochs = 3;
 options.load_val_set = False;
+options.dataset_name = "UCR"
 
-net = NetTrainer.NetTrainer(options, UCR)
+net = NetTrainer.NetTrainer(options, DatasetBuilder.GetDataset(options.dataset_name))
 
 # Train the protonet
 print("Training Model")
