@@ -1,6 +1,7 @@
 import os
 import pathlib
 import subprocess
+import shutil
 
 from .ShapeletHistogramConverterOptions import ShapeletHistogramConverterOptions
 from ..BaseDataConverter import BaseDataConverter
@@ -12,7 +13,8 @@ class ShapeletHistogramConverter(BaseDataConverter):
         super().__init__(options)
 
     def ConvertData(self):
-        if not os.path.isdir(self.Options.FormatedFolder):
+        if not self.HaveConvertedBefore():
+            self.PurgeOutputFolder();
 
             workingDir = pathlib.Path().resolve();
             thisFile = pathlib.Path(__file__).parent.resolve();
@@ -37,6 +39,7 @@ class ShapeletHistogramConverter(BaseDataConverter):
                             "--maxWindowSize", str(self.Options.minWindowSize),
                             ]) 
 
+            self.OutputChecksum();
             print("Formating complete!")
         else:
             print("Dataset already formated!")
@@ -45,7 +48,6 @@ class ShapeletHistogramConverter(BaseDataConverter):
         if os.name == "nt":
             subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out")]) 
         else:
-
             subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out"), "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=Release"]) 
         subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release"]) 
         pass;

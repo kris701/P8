@@ -72,11 +72,14 @@ class DirectDataConverter(BaseDataConverter):
         return [train_data[i] + test_data[i] for i in range(len(train_data))]
 
     def ConvertData(self):
-        if not os.path.isdir(self.Options.FormatedFolder):
+        if not self.HaveConvertedBefore():
+            self.PurgeOutputFolder();
+
             print("Formating dataset. This may take a while...")
             formated = self._formatData(self.Options.SourceTrainData, self.Options.SourceTestData)
             self._write_data(formated, self.Options.FormatedFolder)
             self._create_splits(self.Options.FormatedFolder, int(len(formated) * (1 - self.Options.TestClassesSplit)), self.Options.TrainValSplit)
+            self.OutputChecksum();
             print("Formating complete!")
         else:
             print("Dataset already formated!")
