@@ -1,4 +1,6 @@
 import configparser
+import os
+from os.path import isfile
 
 class DataConverterOptions():
     def __init__(self, configName) -> None:
@@ -25,7 +27,7 @@ class DataConverterOptions():
     SourceTrainData : str = "";
     SourceTestData : str = "";
     # Output formated data to
-    FormatedFolder : str = "formated/BaseOutput";
+    FormatedFolder : str = "Formatted/BaseOutput";
 
     # What percentage of the data classes should be put into the test data
     TestClassesSplit : float = 0.2;
@@ -36,6 +38,10 @@ class DataConverterOptions():
     minWindowSize : int = 2;
     maxWindowSize : int = 4;
     depth : int = 1;
+
+    def VerifySettings(self):
+        if not os.path.isfile(self.SourceTrainData): raise Exception("Source train dataset not found: '" + self.SourceTrainData + "'")
+        if not os.path.isfile(self.SourceTestData): raise Exception("Source test dataset not found: '" + self.SourceTestData + "'")
 
 
 

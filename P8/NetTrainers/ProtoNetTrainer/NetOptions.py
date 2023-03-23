@@ -1,5 +1,6 @@
 import torch.nn as nn
 import configparser
+import os
 from .Backbones.slprotonet import slProtoNet
 
 class NetOptions():
@@ -87,3 +88,6 @@ class NetOptions():
     z_dim = int = 8;
     # Backbone protonet to use
     backbone : nn.Module = slProtoNet;
+    
+    def VerifySettings(self):
+        if not os.path.isdir(self.dataset_root): raise Exception("Target formatted dataset not found: '" + self.dataset_root + "'")

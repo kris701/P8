@@ -27,12 +27,14 @@ class ExperimentSuite():
 
             for expName in self.ExperimentsToRun:
                 dataLoaderOptions = DataConverterOptions(os.path.join(self.ExperimentConfigDir, expName + ".ini"))
+                dataLoaderOptions.VerifySettings();
                 dataConverter = DataConverterBuilder.GetDataConverter(dataLoaderOptions.UseConverter)(dataLoaderOptions)
             
                 print("Formatting Dataset")
                 dataConverter.ConvertData()
 
                 protonetOptions = NetOptions(os.path.join(self.ExperimentConfigDir, expName + ".ini"))
+                protonetOptions.VerifySettings();
                 protonetOptions.experiment_root = os.path.join(self.ExperimentResultsDir, timestamp, expName)
                 protonet = NetTrainerBuilder.GetNetTrainer(protonetOptions.trainer_name)(protonetOptions, DatasetBuilder.GetDataset(protonetOptions.dataset_name))
 
