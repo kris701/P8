@@ -111,6 +111,7 @@
     <Content Include="Data\SwedishLeaf\README.md" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TEST.tsv" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TRAIN.tsv" />
+    <Content Include="Experiments\Configs\CricketX.ini" />
     <Content Include="Experiments\Configs\Beef.ini" />
     <Content Include="Experiments\Configs\SwedishLeaf.ini" />
   </ItemGroup>
