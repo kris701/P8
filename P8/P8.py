@@ -6,14 +6,13 @@ from DataConverters.DataConverterOptions import DataConverterOptions
 from DataConverters.ShapeletHistogramConverter.ShapeletHistogramConverterOptions import ShapeletHistogramConverterOptions
 from NetTrainers.ProtoNetTrainer import NetTrainer
 from NetTrainers.ProtoNetTrainer import NetOptions
-from Datasets.UCR import UCR
 from Datasets import DatasetBuilder
 
 targetDataDir = "formated" + os.sep + "swedishLeaf" + os.sep
 targetOutputDir = "output" + os.sep + "swedishLeaf"
 
 # Convert data into a new format
-dataOptions = ShapeletHistogramConverterOptions()
+dataOptions = ShapeletHistogramConverterOptions
 dataOptions.FormatedFolder = targetDataDir
 dataOptions.TrainValSplit = 0;
 dataOptions.TestClassesSplit = 5;
@@ -24,7 +23,9 @@ dataOptions.maxWindowSize = 32;
 
 #dataConverter = DirectDataConverter(dataOptions);
 dataConverter = ShapeletHistogramConverter(dataOptions);
-dataConverter.ConvertData()
+#dataConverter.ConvertData()
+
+test = NetOptions.NetOptions("./Experiments/Configs/SwedishLeaf/protonet.ini")
 
 # Setup protonet 
 options = NetOptions.NetOptions

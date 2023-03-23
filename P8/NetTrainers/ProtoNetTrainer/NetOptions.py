@@ -1,7 +1,27 @@
 import torch.nn as nn
+import configparser
 from .Backbones.slprotonet import slProtoNet
 
 class NetOptions():
+    def __init__(self) -> None:
+        pass
+
+    def __init__(self, configName) -> None:
+        config = configparser.ConfigParser()
+        config.read(configName)
+        for index in config["OVERRIDES"]:
+            typeName = self.__annotations__[index].__name__;
+            if typeName == "str":
+                self.__dict__[index] = config["OVERRIDES"][index]
+            elif typeName == "bool":
+                self.__dict__[index] = config["OVERRIDES"].getboolean(index)
+            elif typeName == "int":
+                self.__dict__[index] = config["OVERRIDES"].getint(index)
+            elif typeName == "float":
+                self.__dict__[index] = config["OVERRIDES"].getfloat(index)
+            else:
+                raise Exception("Invalid config type!")
+
     # name of the dataset to use
     dataset_name : str = "UCR";
     # path to dataset
