@@ -1,0 +1,49 @@
+\documentclass[11pt]{article}
+\usepackage[table,xcdraw]{xcolor}
+%\usepackage{array}
+\usepackage{listings}
+\usepackage{subfiles}
+\usepackage[utf8]{inputenc}
+\usepackage{xr}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{multicol}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{cleveref}
+\usepackage{mathbbol}
+\usepackage{float}
+\usepackage{url}
+\usepackage{subcaption}
+\usepackage{ragged2e}
+\usepackage{lipsum}
+\usepackage{tcolorbox}
+\usepackage{todonotes}
+\usepackage{mathtools}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
+\usepackage{tabularx}
+\usepackage[
+  backend=bibtex,
+  bibencoding=utf8,
+  style=numeric-comp]{biblatex}
+\addbibresource{ref.bib}
+\usepackage[a4paper, total={7in, 9in}]{geometry}
+
+\renewcommand*{\bibfont}{\tiny}
+\usepackage[font=footnotesize,labelfont=bf]{caption}
+
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+
+\pagestyle{fancy}
+\fancyhf{}
+
+\newcommand\myeq{\stackrel{\mathclap{\normalfont\mbox{def}}}{=}}
+
+\setlength{\headheight}{13.59999pt}
