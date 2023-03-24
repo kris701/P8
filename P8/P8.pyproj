@@ -23,7 +23,6 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ConfigParser\ConfigParserHelpers.py" />
     <Compile Include="DataConverters\BaseDataConverter.py" />
     <Compile Include="DataConverters\DataConverterBuilder.py" />
     <Compile Include="DataConverters\DataConverterOptions.py" />
@@ -118,10 +117,10 @@
     <Folder Include="Formated\SwedishLeaf\features\" />
     <Folder Include="Formated\SwedishLeaf\features\shapelets\" />
     <Folder Include="Formated\SwedishLeaf\split\" />
+    <Folder Include="Formatted\" />
     <Folder Include="NetTrainers\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\Backbones\" />
-    <Folder Include="ConfigParser\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataConverters\readme.md" />
@@ -160,6 +159,7 @@
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\SeriesUtils.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\Types.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\WindowGeneration.h" />
+    <Content Include="Datasets\readme.md" />
     <Content Include="Data\Beef\Beef_TEST.tsv" />
     <Content Include="Data\Beef\Beef_TRAIN.tsv" />
     <Content Include="Data\Beef\README.md" />
@@ -173,6 +173,7 @@
     <Content Include="Experiments\Configs\CricketX.ini" />
     <Content Include="Experiments\Configs\Beef.ini" />
     <Content Include="Experiments\Configs\SwedishLeaf.ini" />
+    <Content Include="Experiments\readme.md" />
     <Content Include="Formated\Beef\checksum.txt" />
     <Content Include="Formated\Beef\data\1\0" />
     <Content Include="Formated\Beef\data\1\1" />
@@ -2195,6 +2196,8 @@
     <Content Include="Formated\SwedishLeaf\split\test.txt" />
     <Content Include="Formated\SwedishLeaf\split\train.txt" />
     <Content Include="Formated\SwedishLeaf\split\val.txt" />
+    <Content Include="Formatted\readme.md" />
+    <Content Include="NetTrainers\readme.md" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.9" />

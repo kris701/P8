@@ -367,12 +367,12 @@ P8Report/**/build
 
 *.pdf
 
-P8/Formated/**
+P8/Formatted/**
 P8/Output/**
 
 P8/Data/*
 !P8/Data/readme.md
-!P8/Formated/readme.md
+!P8/Formatted/readme.md
 
 # pycharm / clion
 .idea
