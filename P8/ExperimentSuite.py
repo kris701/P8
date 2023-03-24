@@ -51,7 +51,7 @@ class ExperimentSuite():
                 bestTestAcc = protonet.Test();
 
                 print("Copying dataset...")
-                shutil.copytree(dataLoaderOptions.FormatedFolder, os.path.join(self.ExperimentResultsDir, timestamp, expName + "-dataset"))
+                shutil.make_archive(os.path.join(self.ExperimentResultsDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
 
                 csvWriter.writerow([expName, bestTrainAcc, bestTestAcc])
 
