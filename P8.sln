@@ -5,6 +5,12 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "P8", "P8\P8.pyproj", "{7C9633B0-ACFF-451D-AB8A-C9CE2724B9D8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ComparisonData", "ComparisonData", "{1419FD10-550D-4ADB-AA3E-0878D419FA6A}"
+	ProjectSection(SolutionItems) = preProject
+		ComparisonData\5shot.csv = ComparisonData\5shot.csv
+		ComparisonData\readme.md = ComparisonData\readme.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
