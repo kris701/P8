@@ -31,7 +31,7 @@ namespace ArgumentParsing {
                 ("valtrainsplit", "How much of the data should be put into the validation set (0,1)", cxxopts::value<double>() -> default_value("0"))
                 ("depth", "Desc", cxxopts::value<uint>() -> default_value("40"))
                 ("minWindowSize", "Desc", cxxopts::value<uint>() -> default_value("2"))
-                ("maxWindowSize", "Desc", cxxopts::value<uint>() -> default_value("8"))
+                ("maxWindowSize", "Desc", cxxopts::value<uint>() -> default_value("32"))
                 ("h,help", "Print usage")
                 ;
         auto result = options.parse(argc, argv);

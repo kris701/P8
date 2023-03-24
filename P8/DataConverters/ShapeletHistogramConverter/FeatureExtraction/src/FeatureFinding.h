@@ -17,8 +17,17 @@
 #include "Feature.h"
 #include "attributes/Frequency.h"
 #include "attributes/MinDist.h"
+#include "attributes/RelFrequency.h"
 
 namespace FeatureFinding {
+    const std::vector<Attribute*> attributes {
+            new Frequency(0.04),
+            new Frequency(0.4),
+            new RelFrequency(0.04),
+            new RelFrequency(0.4),
+            new MinDist()
+    }; // Intentionally not freed
+
     [[nodiscard]] double EvaluateWindow(double priorEntropy, double bestScore, const ClassCount &counts, const Attribute *attribute,
                                         const std::vector<LabelledSeries> &series, const Series &window) {
         std::map<double, ClassCount> valueCount; // At the given value, how many of each class
@@ -55,18 +64,6 @@ namespace FeatureFinding {
             throw std::logic_error("Cannot find features for less than two series.");
         if (windows.empty())
             throw std::logic_error("Missing windows.");
-
-        const std::vector<Attribute*> attributes {
-            new Frequency(0.01),
-            new Frequency(0.02),
-            new Frequency(0.04),
-            new Frequency(0.08),
-            new Frequency(0.1),
-            new Frequency(0.2),
-            new Frequency(0.4),
-            new Frequency(0.8),
-            new MinDist()
-        }; // Intentionally not freed
 
         const ClassCount counts = SeriesUtils::GetCount(series);
         const double currentEntropy = InformationGain::CalculateEntropy(counts);
@@ -117,15 +114,16 @@ namespace FeatureFinding {
         else
             return std::optional<Feature>();
     }
-    
+
     // *Not actually a tree
-    [[nodiscard]] std::vector<Feature> GenerateFeatureTree(uint depth, const std::vector<LabelledSeries> &series, const ClassCount &counts, uint minWindowSize, uint maxWindowSize) {
+    [[nodiscard]] std::vector<Feature> GenerateFeatureTree(uint depth, const std::vector<LabelledSeries> &series, uint minWindowSize, uint maxWindowSize) {
         std::vector<Feature> features;
         if (depth == 0)
             return features;
 
         uint featureId = Logger::Begin("Generating Feature for Depth " + std::to_string(depth));
 
+        const auto counts = SeriesUtils::GetCount(series);
         const auto windows = WindowGeneration::GenerateWindows(series, minWindowSize, maxWindowSize);
         const auto oFeature = FindOptimalFeature(series, windows);
         if (!oFeature.has_value())
@@ -133,7 +131,7 @@ namespace FeatureFinding {
         const auto& feature = oFeature.value();
         features.push_back(feature);
 
-        uint splitId = Logger::Begin("Retriving optimal split");
+        uint splitId = Logger::Begin("Retrieving optimal split");
         const double splitPoint = InformationGain::GetOptimalSplitPoint(feature.attribute->GenerateValues(series, feature.shapelet));
         const auto split = feature.attribute->SplitSeries(series, feature.shapelet, splitPoint);
         Logger::End(splitId);
@@ -154,36 +152,27 @@ namespace FeatureFinding {
             if (harmonious)
                 continue;
 
-            for (const auto &f: GenerateFeatureTree(depth - 1, s, tempCounts, minWindowSize, maxWindowSize))
+            for (const auto &f: GenerateFeatureTree(depth - 1, s, minWindowSize, maxWindowSize))
                 features.push_back(f);
         }
 
         return features;
     }
 
-    std::vector<Feature> GenerateFeaturePairs(const std::unordered_map<int, std::vector<Series>> &trainData, const std::unordered_map<int, std::vector<Series>> &testData, uint minWindowSize, uint maxWindowSize) {
+    [[nodiscard]] std::vector<Feature> GenerateFeaturePairs(const std::unordered_map<int, std::vector<Series>> &data, uint minWindowSize, uint maxWindowSize) {
         std::vector<Feature> features;
 
-        std::random_device rd;
-        std::mt19937 g(rd());
-
-        for (const auto &trainSet : trainData) {
-            for (const auto &testSet : testData) {
-                uint pairId = Logger::Begin("Generating feature for (" + std::to_string(trainSet.first) + "," + std::to_string(testSet.first) + ")");
-                std::vector<LabelledSeries> series;
-                for (const auto &seriesSet : { trainSet, testSet })
-                    for (const auto &s : seriesSet.second)
-                        series.push_back(LabelledSeries(seriesSet.first, s));
-                std::shuffle(series.begin(), series.end(), g);
-                
+        for (auto iter = data.begin(); iter != data.end(); iter++)
+            for (auto iter2 = std::next(iter, 1); iter2 != data.end(); iter2++) {
+                const auto series = SeriesUtils::Mix((*iter).first, (*iter).second, (*iter2).first, (*iter2).second);
                 const auto windows = WindowGeneration::GenerateWindows(series, minWindowSize, maxWindowSize);
 
                 const auto feature = FindOptimalFeature(series, windows);
-                if (feature.has_value())
-                    features.push_back(feature.value());
-                Logger::End(pairId);
+                if (!feature.has_value() || feature.value().gain == 0)
+                    continue;
+
+                features.push_back(feature.value());
             }
-        }
 
         return features;
     }

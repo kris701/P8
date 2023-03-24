@@ -4,6 +4,8 @@
 #include "Types.h"
 
 namespace SeriesUtils {
+    std::random_device rd;
+    std::mt19937 g(rd());
     [[nodiscard]] static ClassCount GetCount(const std::vector<LabelledSeries> &series) {
         ClassCount counts { 0 };
         for (const auto &s : series)
@@ -35,6 +37,20 @@ namespace SeriesUtils {
                 combined.push_back(series);
 
         return combined;
+    }
+
+    [[nodiscard]] static std::vector<LabelledSeries> Mix(int classA, const std::vector<Series> &seriesA,
+                                                         int classB, const std::vector<Series> &seriesB) {
+        std::vector<LabelledSeries> o;
+
+        for (const auto &s : seriesA)
+            o.emplace_back(classA, s);
+        for (const auto &s : seriesB)
+            o.emplace_back(classB, s);
+
+        std::shuffle(o.begin(), o.end(), g);
+
+        return o;
     }
 
     [[nodiscard]] static std::unordered_map<int, std::vector<Series>> ToMap
