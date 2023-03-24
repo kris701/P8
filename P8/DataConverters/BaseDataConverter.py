@@ -30,7 +30,7 @@ class BaseDataConverter(object):
 
     def OutputChecksum(self):
         checksum = self.GetChecksum();
-        with open(self.Options.FormatedFolder + os.sep + "checksum.txt", "w") as f:
+        with open(os.path.join(self.Options.FormatedFolder, "checksum.txt"), "w") as f:
             f.write(checksum + "\n")
     
     def GetChecksum(self):

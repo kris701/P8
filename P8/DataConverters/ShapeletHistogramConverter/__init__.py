@@ -1,5 +1,4 @@
 import os
-from os.path import isdir
 import pathlib
 import subprocess
 import shutil
@@ -7,13 +6,13 @@ import checksumdir
 import hashlib
 import json
     
-from .ShapeletHistogramConverterOptions import ShapeletHistogramConverterOptions
+from ..DataConverterOptions import DataConverterOptions
 from ..BaseDataConverter import BaseDataConverter
 
 class ShapeletHistogramConverter(BaseDataConverter):
     compile_dir : str = "./FeatureExtraction";
 
-    def __init__(self, options: ShapeletHistogramConverterOptions) -> None:
+    def __init__(self, options: DataConverterOptions) -> None:
         super().__init__(options)
 
     def ConvertData(self):
@@ -32,7 +31,7 @@ class ShapeletHistogramConverter(BaseDataConverter):
             if os.name == "nt":
                 extension = ".exe"
             executable = os.path.join(thisFile, "FeatureExtraction/out/Release/FeatureExtraction" + extension)
-            subprocess.run([executable, 
+            res = subprocess.run([executable, 
                             "--train", str(os.path.join(workingDir, self.Options.SourceTrainData.replace("./","").replace("/",os.sep))),
                             "--test", str(os.path.join(workingDir, self.Options.SourceTestData.replace("./","").replace("/",os.sep))),
                             "--out", str(os.path.join(workingDir, self.Options.FormatedFolder.replace("./","").replace("/",os.sep))),

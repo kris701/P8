@@ -12,6 +12,7 @@
     <Name>P8</Name>
     <RootNamespace>P8</RootNamespace>
     <InterpreterId>Global|PythonCore|3.9</InterpreterId>
+    <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,15 +24,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DataConverters\BaseDataConverter.py" />
+    <Compile Include="DataConverters\DataConverterBuilder.py" />
+    <Compile Include="DataConverters\DataConverterOptions.py" />
     <Compile Include="DataConverters\DirectDataConverter\__init__.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataConverters\ShapeletHistogramConverter\ShapeletHistogramConverterOptions.py" />
     <Compile Include="DataConverters\ShapeletHistogramConverter\__init__.py" />
-    <Compile Include="Datasets\SwedishLeaf\__init__.py">
+    <Compile Include="Datasets\DatasetBuilder.py" />
+    <Compile Include="Datasets\UCR\__init__.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataConverters\DataConverterOptions.py" />
+    <Compile Include="ExperimentSuite.py" />
+    <Compile Include="NetTrainers\NetTrainerBuilder.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\BaseNetTrainer.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\DataloaderVerifier.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\NetTrainer.py" />
@@ -54,12 +58,18 @@
     <Folder Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\include\indicators\details\" />
     <Folder Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\" />
     <Folder Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\attributes\" />
-    <Folder Include="Datasets\SwedishLeaf\" />
+    <Folder Include="Datasets\UCR\" />
     <Folder Include="Data\" />
+    <Folder Include="Data\Beef\" />
+    <Folder Include="Data\CricketX\" />
     <Folder Include="Data\SwedishLeaf\" />
     <Folder Include="DataConverters\" />
     <Folder Include="Datasets\" />
     <Folder Include="DataConverters\ShapeletHistogramConverter\" />
+    <Folder Include="Experiments\" />
+    <Folder Include="Experiments\Configs\" />
+    <Folder Include="Experiments\Results\" />
+    <Folder Include="Formatted\" />
     <Folder Include="NetTrainers\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\Backbones\" />
@@ -101,10 +111,23 @@
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\SeriesUtils.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\Types.h" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\src\WindowGeneration.h" />
+    <Content Include="Datasets\readme.md" />
+    <Content Include="Data\Beef\Beef_TEST.tsv" />
+    <Content Include="Data\Beef\Beef_TRAIN.tsv" />
+    <Content Include="Data\Beef\README.md" />
+    <Content Include="Data\CricketX\CricketX_TEST.tsv" />
+    <Content Include="Data\CricketX\CricketX_TRAIN.tsv" />
+    <Content Include="Data\CricketX\README.md" />
     <Content Include="Data\readme.md" />
     <Content Include="Data\SwedishLeaf\README.md" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TEST.tsv" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TRAIN.tsv" />
+    <Content Include="Experiments\Configs\CricketX.ini" />
+    <Content Include="Experiments\Configs\Beef.ini" />
+    <Content Include="Experiments\Configs\SwedishLeaf.ini" />
+    <Content Include="Experiments\readme.md" />
+    <Content Include="Formatted\readme.md" />
+    <Content Include="NetTrainers\readme.md" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.9" />
