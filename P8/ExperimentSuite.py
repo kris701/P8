@@ -21,7 +21,7 @@ class ExperimentSuite():
     def RunExperiments(self):
         print("Running experiments...")
         timestamp = time.strftime("%Y%m%d-%H%M%S")
-        os.mkdir(os.path.join(self.ExperimentResultsDir, timestamp))
+        os.makedirs(os.path.join(self.ExperimentResultsDir, timestamp))
 
         with open(os.path.join(self.ExperimentResultsDir, timestamp, "run " + timestamp + ".csv"), 'w', newline='') as csvfile:
             csvWriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
