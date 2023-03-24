@@ -2,6 +2,7 @@ import os
 import csv
 import time
 import configparser
+import shutil
 
 from DataConverters.DataConverterOptions import DataConverterOptions
 from DataConverters import DataConverterBuilder
@@ -48,6 +49,9 @@ class ExperimentSuite():
 
                 print("Testing Model")
                 bestTestAcc = protonet.Test();
+
+                print("Copying dataset...")
+                shutil.copytree(dataLoaderOptions.FormatedFolder, os.path.join(self.ExperimentResultsDir, timestamp, expName + "-dataset"))
 
                 csvWriter.writerow([expName, bestTrainAcc, bestTestAcc])
 
