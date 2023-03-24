@@ -1,6 +1,7 @@
 import os
 import csv
 import time
+import configparser
 
 from DataConverters.DataConverterOptions import DataConverterOptions
 from DataConverters import DataConverterBuilder
@@ -26,14 +27,18 @@ class ExperimentSuite():
             spamwriter.writerow(['Experiment Name', 'Best train accuracy', 'Best test accuracy'])
 
             for expName in self.ExperimentsToRun:
-                dataLoaderOptions = DataConverterOptions(os.path.join(self.ExperimentConfigDir, expName + ".ini"))
+                configName = os.path.join(self.ExperimentConfigDir, expName + ".ini")
+
+                dataLoaderOptions = DataConverterOptions()
+                self._ParseConfigIntoObject(configName, "DATACONVERTER", dataLoaderOptions)
                 dataLoaderOptions.VerifySettings();
                 dataConverter = DataConverterBuilder.GetDataConverter(dataLoaderOptions.UseConverter)(dataLoaderOptions)
             
                 print("Formatting Dataset")
                 dataConverter.ConvertData()
 
-                protonetOptions = NetOptions(os.path.join(self.ExperimentConfigDir, expName + ".ini"))
+                protonetOptions = NetOptions()
+                self._ParseConfigIntoObject(configName, "NETTRAINER", protonetOptions)
                 protonetOptions.VerifySettings();
                 protonetOptions.experiment_root = os.path.join(self.ExperimentResultsDir, timestamp, expName)
                 protonet = NetTrainerBuilder.GetNetTrainer(protonetOptions.trainer_name)(protonetOptions, DatasetBuilder.GetDataset(protonetOptions.dataset_name))
@@ -46,3 +51,24 @@ class ExperimentSuite():
 
                 spamwriter.writerow([expName, bestTrainAcc, bestTestAcc])
 
+        print("Experiments finished!")
+
+    def _ParseConfigIntoObject(self, configName, sectionName, obj) -> None:
+        config = configparser.RawConfigParser()
+        config.optionxform = lambda option: option
+        config.read(configName)
+        for index in config[sectionName]:
+            if index in obj.__annotations__:
+                typeName = obj.__annotations__[index].__name__;
+                if typeName == "str":
+                    obj.__dict__[index] = config[sectionName][index]
+                elif typeName == "bool":
+                    obj.__dict__[index] = config[sectionName].getboolean(index)
+                elif typeName == "int":
+                    obj.__dict__[index] = config[sectionName].getint(index)
+                elif typeName == "float":
+                    obj.__dict__[index] = config[sectionName].getfloat(index)
+                else:
+                    raise Exception("Invalid config type!")
+            else:
+                raise Warning("Warning, key '" + index + "' not in this object!")

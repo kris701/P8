@@ -12,6 +12,7 @@
     <Name>P8</Name>
     <RootNamespace>P8</RootNamespace>
     <InterpreterId>Global|PythonCore|3.9</InterpreterId>
+    <SuppressConfigureTestFrameworkPrompt>true</SuppressConfigureTestFrameworkPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,8 +23,10 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ConfigParser\ConfigParserHelpers.py" />
     <Compile Include="DataConverters\BaseDataConverter.py" />
     <Compile Include="DataConverters\DataConverterBuilder.py" />
+    <Compile Include="DataConverters\DataConverterOptions.py" />
     <Compile Include="DataConverters\DirectDataConverter\__init__.py">
       <SubType>Code</SubType>
     </Compile>
@@ -32,7 +35,6 @@
     <Compile Include="Datasets\UCR\__init__.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataConverters\DataConverterOptions.py" />
     <Compile Include="ExperimentSuite.py" />
     <Compile Include="NetTrainers\NetTrainerBuilder.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\BaseNetTrainer.py" />
@@ -119,6 +121,7 @@
     <Folder Include="NetTrainers\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\Backbones\" />
+    <Folder Include="ConfigParser\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataConverters\readme.md" />
