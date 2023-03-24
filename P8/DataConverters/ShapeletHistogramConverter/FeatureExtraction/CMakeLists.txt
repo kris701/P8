@@ -20,8 +20,7 @@ add_library(Sources INTERFACE
 
 add_executable(FeatureExtraction main.cpp
         include/cxxopts/cxxopts.hpp
-        include/indicators/block_progress_bar.hpp include/indicators/cursor_control.hpp
-        )
+        include/indicators/block_progress_bar.hpp include/indicators/cursor_control.hpp)
 target_include_directories(FeatureExtraction PRIVATE include)
 
 
