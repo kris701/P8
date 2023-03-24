@@ -367,11 +367,12 @@ P8Report/**/build
 
 *.pdf
 
-P8/formated/**
-P8/output/**
+P8/Formatted/**
+P8/Output/**
 
 P8/Data/*
 !P8/Data/readme.md
+!P8/Formatted/readme.md
 
 # pycharm / clion
 .idea
@@ -379,3 +380,4 @@ P8/Data/*
 *cmake-build-release*
 
 P8/DataConverters/ShapeletHistogramConverter/checksum/**
+P8/Experiments/Results/**
