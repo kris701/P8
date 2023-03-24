@@ -23,8 +23,8 @@ class ExperimentSuite():
         os.mkdir(os.path.join(self.ExperimentResultsDir, timestamp))
 
         with open(os.path.join(self.ExperimentResultsDir, timestamp, "run " + timestamp + ".csv"), 'w', newline='') as csvfile:
-            spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow(['Experiment Name', 'Best train accuracy', 'Best test accuracy'])
+            csvWriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            csvWriter.writerow(['Experiment Name', 'Best train accuracy', 'Best test accuracy'])
 
             for expName in self.ExperimentsToRun:
                 configName = os.path.join(self.ExperimentConfigDir, expName + ".ini")
@@ -49,7 +49,7 @@ class ExperimentSuite():
                 print("Testing Model")
                 bestTestAcc = protonet.Test();
 
-                spamwriter.writerow([expName, bestTrainAcc, bestTestAcc])
+                csvWriter.writerow([expName, bestTrainAcc, bestTestAcc])
 
         print("Experiments finished!")
 
