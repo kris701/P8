@@ -16,13 +16,19 @@ list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 
 add_library(Sources INTERFACE
         src/FileHanding.h src/Types.h src/WindowGeneration.h src/SeriesUtils.h src/InformationGain.h src/FeatureFinding.h src/Logger.h
-        src/ArgumentParser.h src/FeatureUtils.h src/attributes/Attribute.h src/Feature.h src/attributes/Frequency.h src/attributes/MinDist.h src/attributes/RelFrequency.h)
+        src/ArgumentParser.h src/FeatureUtils.h src/attributes/Attribute.h src/Feature.h src/attributes/Frequency.h src/attributes/MinDist.h src/attributes/RelFrequency.h src/Classification.h)
 
 add_executable(FeatureExtraction main.cpp
         include/cxxopts/cxxopts.hpp
         include/indicators/block_progress_bar.hpp include/indicators/cursor_control.hpp)
+target_link_libraries(FeatureExtraction PRIVATE Sources)
 target_include_directories(FeatureExtraction PRIVATE include)
 
+add_executable(Classifier classifier.cpp
+        include/cxxopts/cxxopts.hpp
+        include/indicators/block_progress_bar.hpp include/indicators/cursor_control.hpp)
+target_link_libraries(Classifier PRIVATE Sources)
+target_include_directories(Classifier PRIVATE include)
 
 include(CTest)
 include(Catch)
