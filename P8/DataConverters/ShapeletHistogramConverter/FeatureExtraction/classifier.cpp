@@ -48,49 +48,24 @@ int main(int argc, char** argv) {
     auto features = FeatureFinding::GenerateFeatureTree(arguments.depth, trainData, arguments.minWindowSize, arguments.maxWindowSize);
     Logger::End(id);
 
-    id = Logger::Begin("Generating Feature Pairs");
-    /*const auto pairFeatures = FeatureFinding::GenerateFeaturePairs(trainMap, arguments.minWindowSize, arguments.maxWindowSize);
-    for (const auto &feature : pairFeatures)
-        features.emplace_back(feature.shapelet, feature.attribute, feature.gain);
-    Logger::End(id);*/
-
     id = Logger::Begin("Generating Feature Points");
     const auto trainFeatures = FeatureFinding::GenerateFeatureSeries(trainData, features);
     Logger::End(id);
 
     printf("k-Nearest Neighbours:\n");
 
-    for (uint k = 1; k < 10; k++) {
-        uint correct = 0;
-        uint incorrect = 0;
-        for (const auto &s : testData) {
-            int guess = Classification::KNearestNeighbours(features, trainFeatures, s.series, k);
+    uint correct = 0;
+    uint incorrect = 0;
+    for (const auto &s : testData) {
+        int guess = Classification::KNearestNeighbours(features, trainFeatures, s.series, 3);
 
-            if (guess == s.label)
-                correct++;
-            else
-                incorrect++;
-        }
-
-        printf("k - %d: Accuracy -  %f\n", k, (double) correct / (double) (correct + incorrect));
+        if (guess == s.label)
+            correct++;
+        else
+            incorrect++;
     }
 
-    printf("k-Nearest Neighbours with Tiebreak:\n");
-
-    for (uint k = 1; k < 10; k++) {
-        uint correct = 0;
-        uint incorrect = 0;
-        for (const auto &s : testData) {
-            int guess = Classification::KNearestNeighboursWithTiebreak(features, trainFeatures, s.series, k);
-
-            if (guess == s.label)
-                correct++;
-            else
-                incorrect++;
-        }
-
-        printf("k - %d: Accuracy -  %f\n", k, (double) correct / (double) (correct + incorrect));
-    }
+    printf("k - %d: Accuracy -  %f\n", 3, (double) correct / (double) (correct + incorrect));
 
     return 0;
 }
