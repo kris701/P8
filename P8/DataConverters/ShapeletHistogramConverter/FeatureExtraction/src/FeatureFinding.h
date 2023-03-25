@@ -172,6 +172,30 @@ namespace FeatureFinding {
     [[nodiscard]] std::vector<Feature> GenerateFeaturePairs(const std::unordered_map<int, std::vector<Series>> &data, uint minWindowSize, uint maxWindowSize) {
         std::vector<Feature> features;
 
+        uint pairCount = 0;
+        for (auto iter = data.begin(); iter != data.end(); iter++)
+            for (auto iter2 = std::next(iter, 1); iter2 != data.end(); iter2++)
+                pairCount++;
+
+        using namespace indicators;
+
+        printf("\n");
+
+        ProgressBar bar{
+                option::BarWidth{50},
+                option::Start{"["},
+                option::Fill{"="},
+                option::Lead{">"},
+                option::Remainder{" "},
+                option::End{"]"},
+                option::FontStyles{std::vector<FontStyle>{FontStyle::bold}},
+                option::ShowElapsedTime{true},
+                option::ShowRemainingTime{true},
+                option::MaxProgress{pairCount}
+        };
+
+        show_console_cursor(false);
+
         for (auto iter = data.begin(); iter != data.end(); iter++)
             for (auto iter2 = std::next(iter, 1); iter2 != data.end(); iter2++) {
                 const auto series = SeriesUtils::Mix((*iter).first, (*iter).second, (*iter2).first, (*iter2).second);
@@ -182,7 +206,10 @@ namespace FeatureFinding {
                     continue;
 
                 features.push_back(*feature);
+                bar.tick();
             }
+
+        show_console_cursor(true);
 
         return features;
     }
