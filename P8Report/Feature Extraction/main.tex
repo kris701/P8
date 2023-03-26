@@ -1,0 +1,213 @@
+\documentclass[10pt]{article}
+    \title{\textbf{Information Gain based Feature Extraction}}
+    \usepackage{hyperref}
+    \usepackage{algorithm}
+	\usepackage{algpseudocode}
+	\usepackage{amsfonts} 
+	\usepackage{url}
+	\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+This document describes the current implementation of feature extraction as of 26 March. It can be seen on GitHub\cite{GitHub}.
+
+\tableofcontents
+
+\newpage
+\section{Preprocessing}
+First all data is combined into a single set of labelled series $S = \{(label, series)\}$. Thereafter, the $series$ are scaled to between $0$ and $1$, using the below algorithm \ref{alg:feature_scaling}.
+
+\begin{algorithm}
+\caption{Feature Scaling(S)}\label{alg:feature_scaling}
+\begin{algorithmic}
+\Require $S = \{(label, series)\}$
+\Require $label \in \mathbb{N}$
+\Require $series = [x_1, x_2, ..., x_n]$ where $x_{1 ... n} \in \mathbb{R}$
+\State $min \gets$ Minimum value of any point in any $series$
+\State $max \gets$ Maximum value of any point in any $series$
+\State $max \gets max - min$
+
+\For{$s \in S$}
+	\For{$p \in s_{series}$}
+			\State $p \gets p - min$
+			\State $p \gets p \div max$
+	\EndFor
+\EndFor
+
+\end{algorithmic}
+\end{algorithm}
+
+With the data normalized, it is then shuffled, as to remove any intrinsic information and to improve later entropy pruning.
+\newline
+
+The last step is then to split the data into two sets: $train$ and $test$. The only data used to generate features is the $train$ set.
+
+\section{Generation of Features}
+The whole method of feature generation is based upon the paper \textit{Time Series Shapelets: A New Primitive for Data Mining}\cite{Shapelets}. It introduces the idea of finding shapelets based upon information gained by splitting upon the minimum distance to the given shapelet.
+\newline
+
+This is then combined with the idea introduced in \textit{BOSS}\cite{BOSS}, where a series is classified by the frequency of occurance for different \textit{words}. As such, instead of word occurance, the proposed method uses values related to shapelets. I.e. a feature.
+\newline
+
+\newpage
+\subsection{Feature}
+\begin{wrapfigure}{R}{0.4\textwidth}
+    {\includegraphics[scale=1]{figures/rect187.pdf}}
+    \caption{Example of a feature histogram with 4 features}
+    \vspace{-30pt}
+    \label{fig:feature_histogram}
+\end{wrapfigure}
+\enlargethispage{2\baselineskip}
+In general a feature is some way to generate a value based upon a shapelet. This value generation can be based upon different things, e.g. frequence of occurance in a series, or minimum distance to shapelet\footnote{As one might realise, minimum distance can be larger than 1. However, if one divides the distance by maximum possible distance, it achives the same thing while remaining between 0 and 1.}. As long as the generated value is between 0 and 1, the approach handles it.
+
+The figure \ref{fig:feature_histogram} to the right shows the values generated for a given series, for four features. This can either be viewed as a histogram as shown, or as a 4-dimensional vector.
+
+\subsection{Window Generation}
+The first step is to find potential shapelets. In essence all sub-series, also called windows, of the series in the data are potential shapelets. These windows are found simply through sliding windows, I.e. sliding a window across all series to output all potential windows of the given size.
+
+\subsection{Optimal Feature}
+An optimal feature is one where the value generated gives the highest information gain. In essence this means a good feature is one that cleanly divides the data into two groups, e.g. all of class $A$ are in one group, as opposed to half being in each group. 
+
+However, as a single feature might not be enough information, more needs to be found. To do this the optimal feature of the sub-groups are also found. In a sense, this is a recursive algorithm that continues til' it is impossible to gain more information. It is very similar to how classification trees are made, except the outcome of the algorithm is not a tree, but rather a set of features.
+
+\newpage
+The algorithm for generating this tree is seen below.
+
+\begin{algorithm}
+\caption{GenerateFeatureTree(S, minWS, maxWS)}\label{alg:feature_tree}
+\begin{algorithmic}
+\Require $S = \{(label, series)\}$
+\Require $label \in \mathbb{N}$
+\Require $series = [x_1, x_2, ..., x_n]$ where $x_{1 ... n} \in \mathbb{R}$
+\Require $minWS, maxWS \in \mathbb{N}$ \Comment{Min and Max window size}
+\State $windows \gets GenerateWindows(S, minWS, maxWS)$
+\State $feature \gets FindOptimalFeature(S, windows)$
+\State $(lowerSplit, upperSplit) \gets Split(S, feature)$
+\State $features \gets feature$
+\For{$f \in GenerateFeatureTree(lowerSplit, minWS, maxWS) \cup GenerateFeatureTree(upperSplit, minWS, maxWS)$}
+	\State $features \gets features \cup f$
+\EndFor
+
+\Return{$features$}
+\end{algorithmic}
+\end{algorithm}
+
+The algorithm uses three undefined functions, however \textit{GenerateWindows} - as the name implies - simply generates all windows for the series between the minimum and maximum windows sizes provided. The function \textit{Split} divides the set of series into two groups, one below the found optimal split point and one above. This point will be explored further later, but for now it is the point at which the given feature has the highest information gain in the splitting of the series. So those series with a value generated from the feature below the point will be in $lowerSplit$, and those above in $upperSplit$.
+
+The last function $FindOptimalFeature$ is a bit more complicated.
+
+\begin{algorithm}
+\caption{FindOptimalFeature(S, W)}\label{alg:feature_scaling}
+\begin{algorithmic}
+\Require $S = \{(label, series)\}$
+\Require $label \in \mathbb{N}$
+\Require $series = [x_1, x_2, ..., x_n]$ where $x_{1 ... n} \in \mathbb{R}$
+\Require W or windows is a set of series, all shorter $series$ length n
+\State $A$ is a set of attributes, e.g. frequency, min distance...
+\State $bestFeature$
+\State $bestGain \gets 0$
+\For{$w \in W$}
+	\For{$a \in A$}
+		\If {$EvaluateWindow(a, w) > bestGain$}
+			\State $bestFeature \gets (a, w)$
+			\State$bestGain \gets EvaluateWindow(S, a, w)$
+		\EndIf
+	\EndFor
+\EndFor
+
+\Return{$bestFeature$}
+\end{algorithmic}
+\end{algorithm}
+
+As can be seen, it in essence evaluates all possible combinations of windows and attributes. Each combination is scored based upon how high information gain it has. This is shown in the below algorithm.
+
+\begin{algorithm}
+\caption{EvaluateWindow(S, Attribute, Window)}\label{alg:feature_scaling}
+\begin{algorithmic}
+\Require $S = \{(label, series)\}$
+\Require $label \in \mathbb{N}$
+\Require $series = [x_1, x_2, ..., x_n]$ where $x_{1 ... n} \in \mathbb{R}$
+\Require A is some attribute, e.g. frequency, min distance...
+\Require W or windows is a set of series, all shorter $series$ length n
+\State $valueCount \gets \{(value, classCount)\}$ \Comment Where classCount is how occurance of each class the given value has
+
+\For{$s \in S$}
+	\State $value \gets GenerateValue(a, s_{series})$
+	\State $valueCount_{value} \gets$ Adds single occurance of label $s_{label}$
+\EndFor
+
+\Return{$CalculateInformationGain(valueCount)$}
+\end{algorithmic}
+\end{algorithm}
+
+It shows a version of the algorithm without entropy pruning, where it would stop if it was impossible to achieve higher gain that the current best. However, the princible remains the same. A single value line between 0 and 1 is generated, where the number of times each class has occured at the given value is stored. One such can be seen in the below example.
+
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=1.2]{figures//path3546.pdf}
+\caption{Values between 0 and 1 for 6 series, 3 of each class}
+\label{}
+\end{figure}
+
+The figure shows an example of $valueCount$ after all values have been added, with $S$ containing 3 occurances of two classes. How much information can be gained from this feature, is then how well this can be split into two sets. Hopefully, each with a lower entropy than the orignal. One such split can be seen in the below figure.
+
+\begin{figure}[htp]
+\centering
+\includegraphics[scale=1.2]{figures/path3542.pdf}
+\caption{An example split.}
+\label{}
+\end{figure}
+
+This makes one pure set, and another with lower entropy than the original. However, the splitpoint could in practice be anywhere between the two data points, while giving the same split. As such, to calculate information gain all midpoints between unique values are evaluated for gain. In essence this means at each point split into sets based upon the values, and evaluated.
+
+
+\newpage
+\section{Generation of Feature Series}
+With a set of features generated, the last part is converting each series into it's corresponding feature series. In essence, this means for each series calculate it's value for each feature, then convert that into a vector or histogram. As such, if there are 4 features, each series will converted into a 4 long vector of values.
+
+
+\section{Preliminary Results with Naive KNN}
+This section shows the results of using a simple KNN on the generated features. The KNN implementation can be seen on GitHub\cite{GitHub}. For the test it uses $k=3$ and \textit{Euclidian Distance}. The datasets are from UCR. Each dataset is tested both as \textit{5-shot} and with near original split, although \textit{5-shot} is omissied when it is near original. WD is window size.\\\\
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+	Dataset & Classes & n Train & n Test & Min WD & Max WD & Test Acc\\
+\hline
+	Beef & 5 & 30 & 30 & 2 & 64 & 53\%\\
+\hline
+\hline
+	ChlorineConcentration & 3 & 15 & 4292 & 2 & 64 & 40\%\\
+\hline
+	ChlorineConcentration & 3 & 430 & 3877 & 2 & 8 & 54\%\\
+\hline
+\hline
+	Coffee & 2 & 10 & 46 & 2 & 64 & 89\%\\
+\hline
+	Coffee & 2 & 27 & 29 & 2 & 64 & 93\%\\
+\hline
+\hline
+	MedicalImages & 10 & 50 & 1091 & 2 & 64 & 23\%\\
+\hline
+	MedicalImages & 10 & 370 & 771 & 2 & 64 & 67\%\\
+\hline
+\hline
+	SweidshLeaf & 15 & 75 & 1050 & 2 & 64 & 58\%\\
+\hline
+	SweidshLeaf & 15 & 450 & 675 & 2 & 64 & 88\%\\
+\hline
+\hline
+	TwoPatterns & 4 & 20 & 4980 & 2 & 64 & 37\%\\
+\hline
+	TwoPatterns & 4 & 999 & 4001 & 2 & 8 & 76\%\\
+\hline
+\end{tabular}
+
+
+\newpage
+\bibliography{references.bib}{}
+\bibliographystyle{plain}
+\end{document}
+
