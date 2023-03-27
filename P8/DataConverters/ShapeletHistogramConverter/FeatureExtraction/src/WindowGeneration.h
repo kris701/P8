@@ -36,7 +36,6 @@ namespace WindowGeneration {
 
     [[nodiscard]] static std::vector<Series>
     GenerateWindows(const std::vector<LabelledSeries> &series, uint minLength, uint maxLength) {
-        uint id = Logger::Begin("Generating windows");
         std::vector<Series> windows;
         uint totalWindows = 0;
 
@@ -46,13 +45,10 @@ namespace WindowGeneration {
             for (const auto &window : tempWindows)
                 windows.push_back(window);
         }
-        Logger::End(id);
 
         /* Duplicate Removal */
-        id = Logger::Begin("Removing Duplicate Windows");
         std::sort(windows.begin(), windows.end());
         windows.erase(std::unique(windows.begin(), windows.end()), windows.end());
-        Logger::End(id);
 
         return windows;
     }
