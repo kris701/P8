@@ -96,10 +96,11 @@ namespace FeatureFinding {
     }
 
     [[nodiscard]] std::shared_ptr<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows) {
+        const uint maxThreads = 100;
         const uint threadCount = std::thread::hardware_concurrency();
 
-        std::thread threads[threadCount];
-        std::shared_ptr<Feature> returns[threadCount];
+        std::thread threads[maxThreads];
+        std::shared_ptr<Feature> returns[maxThreads];
 
         for (uint i = 0; i < threadCount; i++) {
             const uint startIndex = i * (windows.size() / threadCount);
