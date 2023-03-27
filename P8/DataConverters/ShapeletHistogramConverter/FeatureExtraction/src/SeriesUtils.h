@@ -95,6 +95,16 @@ namespace SeriesUtils {
             for (auto &p : s.series)
                 p = p / max;
     }
+
+    static ClassCount GetPresentClasses(const ClassCount &counts) {
+        ClassCount present { 0 };
+
+        for (uint i = 0; i < MAX_CLASSES; i++)
+            if (counts[i] > 0)
+                present[i] = 1;
+
+        return present;
+    }
 }
 
 #endif //FEATUREEXTRACTION_SERIESUTILS_H

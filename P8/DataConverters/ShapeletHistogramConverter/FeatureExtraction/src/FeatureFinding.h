@@ -110,7 +110,7 @@ namespace FeatureFinding {
         indicators::show_console_cursor(true);
 
         if (optimalGain > 0)
-            return Feature(optimalShapelet.value(), optimalAttribute.value(), optimalGain);
+            return Feature(optimalShapelet.value(), optimalAttribute.value(), optimalGain, SeriesUtils::GetPresentClasses(counts));
         else
             return std::optional<Feature>();
     }

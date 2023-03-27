@@ -22,6 +22,21 @@ namespace Classification {
         return neighbours;
     }
 
+    std::multiset<std::pair<double, int>> GenerateWeightedNeighbours(const std::unordered_map<int, std::vector<Series>> &trainFeatures,
+                                                             const std::vector<double> &values, const std::vector<Feature> &features) {
+        std::multiset<std::pair<double, int>> neighbours;
+        for (const auto &trainFeatureSet : trainFeatures) {
+            for (const auto &trainFeature : trainFeatureSet.second) {
+                double tempDist = 0;
+                for (uint i = 0; i < trainFeature.size(); i++)
+                    tempDist += std::pow(trainFeature.at(i) - values.at(i), 2) * (std::max(0.5, (double) features.at(i).classes.at(trainFeatureSet.first)));
+                const double dist = std::sqrt(tempDist);
+                neighbours.emplace(dist, trainFeatureSet.first);
+            }
+        }
+        return neighbours;
+    }
+
     int KNearestNeighbours(const std::vector<Feature> &features, const std::unordered_map<int, std::vector<Series>> &trainFeatures,
                            const Series &series, uint k) {
         std::vector<double> values;
@@ -29,6 +44,33 @@ namespace Classification {
             values.push_back(feature.attribute->GenerateValue(series, feature.shapelet));
 
         const auto neighbours = GenerateNeighbours(trainFeatures, values);
+
+        ClassCount count { 0 };
+        uint i = 0;
+        for (const auto &neighbour : neighbours) {
+            count[neighbour.second]++;
+            if (++i >= k)
+                break;
+        }
+
+        std::optional<int> bestGuess;
+        uint bestGuessCount;
+        for (uint t = 0; t < MAX_CLASSES; t++)
+            if (!bestGuess.has_value() || count[t] > bestGuessCount) {
+                bestGuess = t;
+                bestGuessCount = count[t];
+            }
+
+        return bestGuess.value();
+    }
+
+    int WeightedKNearestNeighbours(const std::vector<Feature> &features, const std::unordered_map<int, std::vector<Series>> &trainFeatures,
+                                   const Series &series, uint k) {
+        std::vector<double> values;
+        for (const auto &feature : features)
+            values.push_back(feature.attribute->GenerateValue(series, feature.shapelet));
+
+        const auto neighbours = GenerateWeightedNeighbours(trainFeatures, values, features);
 
         ClassCount count { 0 };
         uint i = 0;

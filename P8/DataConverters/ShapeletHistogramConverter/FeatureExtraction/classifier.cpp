@@ -48,6 +48,12 @@ int main(int argc, char** argv) {
     auto features = FeatureFinding::GenerateFeatureTree(arguments.depth, trainData, arguments.minWindowSize, arguments.maxWindowSize);
     Logger::End(id);
 
+    id = Logger::Begin("Generating Feature Pairs");
+    const auto pairFeatures = FeatureFinding::GenerateFeaturePairs(trainMap, arguments.minWindowSize, arguments.maxWindowSize);
+    for (const auto &feature : pairFeatures)
+        features.emplace_back(feature.shapelet, feature.attribute, feature.gain, feature.classes);
+    Logger::End(id);
+
     id = Logger::Begin("Generating Feature Points");
     const auto trainFeatures = FeatureFinding::GenerateFeatureSeries(trainData, features);
     Logger::End(id);
@@ -57,7 +63,7 @@ int main(int argc, char** argv) {
     uint correct = 0;
     uint incorrect = 0;
     for (const auto &s : testData) {
-        int guess = Classification::KNearestNeighbours(features, trainFeatures, s.series, 3);
+        int guess = Classification::KNearestNeighbours(features, trainFeatures, s.series, 1);
 
         if (guess == s.label)
             correct++;
@@ -65,7 +71,22 @@ int main(int argc, char** argv) {
             incorrect++;
     }
 
-    printf("k - %d: Accuracy -  %f\n", 3, (double) correct / (double) (correct + incorrect));
+    printf("k - %d: Accuracy -  %f\n", 1, (double) correct / (double) (correct + incorrect));
+
+    printf("Weigthed k-Nearest Neighbours:\n");
+
+    correct = 0;
+    incorrect = 0;
+    for (const auto &s : testData) {
+        int guess = Classification::WeightedKNearestNeighbours(features, trainFeatures, s.series, 1);
+
+        if (guess == s.label)
+            correct++;
+        else
+            incorrect++;
+    }
+
+    printf("k - %d: Accuracy -  %f\n", 1, (double) correct / (double) (correct + incorrect));
 
     return 0;
 }
