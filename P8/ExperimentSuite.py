@@ -46,9 +46,11 @@ class ExperimentSuite():
 
                 print("Training Model")
                 bestTrainAcc = protonet.Train();
+                print("Best train acc: " + str(bestTrainAcc))
 
                 print("Testing Model")
                 bestTestAcc = protonet.Test();
+                print("Avg test acc: " + str(bestTestAcc))
 
                 print("Copying dataset...")
                 shutil.make_archive(os.path.join(self.ExperimentResultsDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
