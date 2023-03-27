@@ -7,6 +7,7 @@
 
 using uint = unsigned int;
 constexpr uint MAX_CLASSES = 20;
+constexpr uint maxThreads = 100;
 
 using Series = std::vector<double>;
 using ClassCount = std::array<uint, MAX_CLASSES>;
