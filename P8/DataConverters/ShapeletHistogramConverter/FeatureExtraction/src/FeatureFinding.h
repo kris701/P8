@@ -26,8 +26,6 @@ namespace FeatureFinding {
     const std::vector<Attribute*> attributes {
             new Frequency(0.04),
             new Frequency(0.4),
-            new RelFrequency(0.04),
-            new RelFrequency(0.4),
             new MinDist()
     }; // Intentionally not freed
 
@@ -62,67 +60,59 @@ namespace FeatureFinding {
             return InformationGain::CalculateInformationGain(valueCount, priorEntropy);
     }
 
-    [[nodiscard]] static std::shared_ptr<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows,
-                                                            uint startIndex, uint endIndex) {
+    static void FindOptimalFeature(const std::vector<LabelledSeries> &series,
+                                   const ClassCount &counts,
+                                   double entropy,
+                                   const std::vector<Series> &windows,
+                                   uint startIndex,
+                                   uint endIndex,
+                                   std::shared_ptr<Feature> &optimalFeature,
+                                   std::mutex &featureMutex) {
+        for (uint i = startIndex; i < endIndex; i++) {
+            const auto& window = windows.at(i);
+            for (const auto &attribute: attributes) {
+                double optimalGain = 0;
+                while (!featureMutex.try_lock()){}
+                if (optimalFeature != nullptr)
+                    optimalGain = optimalFeature->gain;
+                featureMutex.unlock();
+                const double gain = EvaluateWindow(entropy, optimalGain, counts, attribute, series, window);
+
+                if (gain > optimalGain) {
+                    while (!featureMutex.try_lock()){}
+                    if (optimalFeature == nullptr || gain > optimalFeature->gain)
+                        optimalFeature = std::make_shared<Feature>(Feature(window, attribute, gain));
+                    featureMutex.unlock();
+                }
+            }
+        }
+    }
+
+    [[nodiscard]] std::shared_ptr<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows) {
         if (series.size() < 2)
             throw std::logic_error("Cannot find features for less than two series.");
         if (windows.empty())
             throw std::logic_error("Missing windows.");
 
-        const ClassCount counts = SeriesUtils::GetCount(series);
-        const double currentEntropy = InformationGain::CalculateEntropy(counts);
-
-        std::optional<Series> optimalShapelet;
-        std::optional<Attribute*> optimalAttribute;
-        double optimalGain = 0;
-
-        for (uint i = startIndex; i < endIndex; i++) {
-            const auto& window = windows.at(i);
-            for (const auto &attribute: attributes) {
-                const double gain = EvaluateWindow(currentEntropy, optimalGain, counts, attribute, series, window);
-
-                if (!optimalShapelet.has_value() || gain > optimalGain) {
-                    optimalShapelet = window;
-                    optimalAttribute = attribute;
-                    optimalGain = gain;
-                }
-            }
-        }
-
-        if (optimalGain > 0)
-            return std::make_shared<Feature>( optimalShapelet.value(), optimalAttribute.value(), optimalGain );
-        else
-            return nullptr;
-    }
-
-    [[nodiscard]] std::shared_ptr<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows) {
         const uint threadCount = std::thread::hardware_concurrency();
 
+        const ClassCount count = SeriesUtils::GetCount(series);
+        const double entropy = InformationGain::CalculateEntropy(series);
+
         std::thread threads[maxThreads];
-        std::shared_ptr<Feature> returns[maxThreads];
+        std::shared_ptr<Feature> optimalFeature;
+        std::mutex featureMutex;
 
         for (uint i = 0; i < threadCount; i++) {
             const uint startIndex = i * (windows.size() / threadCount);
             const uint endIndex = (i + 1) * (windows.size() / threadCount);
-            threads[i] = std::thread([&, i] { returns[i] = FindOptimalFeature(series, windows, startIndex, endIndex); } );
+            threads[i] = std::thread([&, i] { FindOptimalFeature(series, count, entropy, windows, startIndex, endIndex, optimalFeature, featureMutex); } );
         }
 
         for (uint i = 0; i < threadCount; i++)
             threads[i].join();
 
-        std::optional<uint> optimalIndex;
-        double optimalGain;
-
-        for (uint i = 0; i < threadCount; i++)
-            if (returns[i] != nullptr && (!optimalIndex.has_value() || returns[i]->gain > optimalGain)) {
-                optimalIndex = i;
-                optimalGain = returns[i]->gain;
-            }
-
-        if (optimalIndex.has_value())
-            return returns[optimalIndex.value()];
-        else
-            return nullptr;
+        return optimalFeature;
     }
 
     // *Not actually a tree
