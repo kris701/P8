@@ -55,12 +55,16 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
 
     id = Logger::Begin("Writing Feature Series to Files");
     const auto featureSeriesPath = arguments.outPath + "data/";
-    const auto trainFiles = FileHanding::WriteToFiles(featureSeriesPath, trainFeatures);
-    const auto testFiles = FileHanding::WriteToFiles(featureSeriesPath, testFeatures);
-    const auto valFiles = FileHanding::WriteToFiles(featureSeriesPath, valFeatures);
+    std::vector<std::string> trainFiles = FileHanding::WriteToFiles(featureSeriesPath, trainFeatures);
+    std::vector<std::string> testFiles = FileHanding::WriteToFiles(featureSeriesPath, testFeatures);
+    std::vector<std::string> valFiles = FileHanding::WriteToFiles(featureSeriesPath, valFeatures);
     Logger::End(id);
 
     id = Logger::Begin("Writing Split Files");
+    std::shuffle(std::begin(trainFiles), std::end(trainFiles), g);
+    std::shuffle(std::begin(testFiles), std::end(testFiles), g);
+    std::shuffle(std::begin(valFiles), std::end(valFiles), g);
+
     const auto splitPath = arguments.outPath + "split/";
     FileHanding::WriteFile(splitPath + "train.txt", FileHanding::RemoveSubPath(arguments.outPath, trainFiles));
     FileHanding::WriteFile(splitPath + "test.txt", FileHanding::RemoveSubPath(arguments.outPath, testFiles));
