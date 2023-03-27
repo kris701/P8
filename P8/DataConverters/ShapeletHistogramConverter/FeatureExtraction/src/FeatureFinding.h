@@ -1,6 +1,7 @@
 #ifndef FEATUREEXTRACTION_FEATUREFINDING_H
 #define FEATUREEXTRACTION_FEATUREFINDING_H
 
+#include <memory>
 #include <stdexcept>
 #include <random>
 #include <algorithm>
@@ -18,13 +19,13 @@
 #include "attributes/Frequency.h"
 #include "attributes/MinDist.h"
 #include "attributes/RelFrequency.h"
+#include <thread>
+#include <future>
 
 namespace FeatureFinding {
     const std::vector<Attribute*> attributes {
             new Frequency(0.04),
             new Frequency(0.4),
-            new RelFrequency(0.04),
-            new RelFrequency(0.4),
             new MinDist()
     }; // Intentionally not freed
 
@@ -59,60 +60,59 @@ namespace FeatureFinding {
             return InformationGain::CalculateInformationGain(valueCount, priorEntropy);
     }
 
-    [[nodiscard]] std::optional<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows) {
+    static void FindOptimalFeature(const std::vector<LabelledSeries> &series,
+                                   const ClassCount &counts,
+                                   double entropy,
+                                   const std::vector<Series> &windows,
+                                   uint startIndex,
+                                   uint endIndex,
+                                   std::shared_ptr<Feature> &optimalFeature,
+                                   std::mutex &featureMutex) {
+        for (uint i = startIndex; i < endIndex; i++) {
+            const auto& window = windows.at(i);
+            for (const auto &attribute: attributes) {
+                double optimalGain = 0;
+                while (!featureMutex.try_lock()){}
+                if (optimalFeature != nullptr)
+                    optimalGain = optimalFeature->gain;
+                featureMutex.unlock();
+                const double gain = EvaluateWindow(entropy, optimalGain, counts, attribute, series, window);
+
+                if (gain > optimalGain) {
+                    while (!featureMutex.try_lock()){}
+                    if (optimalFeature == nullptr || gain > optimalFeature->gain)
+                        optimalFeature = std::make_shared<Feature>(Feature(window, attribute, gain));
+                    featureMutex.unlock();
+                }
+            }
+        }
+    }
+
+    [[nodiscard]] std::shared_ptr<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows) {
         if (series.size() < 2)
             throw std::logic_error("Cannot find features for less than two series.");
         if (windows.empty())
             throw std::logic_error("Missing windows.");
 
-        const ClassCount counts = SeriesUtils::GetCount(series);
-        const double currentEntropy = InformationGain::CalculateEntropy(counts);
+        const uint threadCount = std::thread::hardware_concurrency();
 
-        std::optional<Series> optimalShapelet;
-        std::optional<Attribute*> optimalAttribute;
-        double optimalGain = 0;
+        const ClassCount count = SeriesUtils::GetCount(series);
+        const double entropy = InformationGain::CalculateEntropy(series);
 
-        indicators::show_console_cursor(false);
-        using namespace indicators;
-        ProgressBar bar{
-                option::BarWidth{80},
-                option::Start{"["},
-                option::Fill{"="},
-                option::Lead{">"},
-                option::Remainder{" "},
-                option::End{" ]"},
-                option::ForegroundColor{Color::white},
-                option::FontStyles{
-                    std::vector<FontStyle>{FontStyle::bold}},
-                option::ShowElapsedTime{true}, option::ShowRemainingTime{true},
-                option::MaxProgress{windows.size()}
-        };
+        std::thread threads[maxThreads];
+        std::shared_ptr<Feature> optimalFeature;
+        std::mutex featureMutex;
 
-        for (uint i = 0; i < windows.size(); i++) {
-            const auto& window = windows.at(i);
-            for (const auto &attribute: attributes) {
-                const double gain = EvaluateWindow(currentEntropy, optimalGain, counts, attribute, series, window);
-
-                if (!optimalShapelet.has_value() || gain > optimalGain) {
-                    optimalShapelet = window;
-                    optimalAttribute = attribute;
-                    optimalGain = gain;
-                }
-            }
-            if (i % 1000 == 0) {
-                bar.set_option(option::PostfixText{
-                        std::to_string(i) + "/" + std::to_string(windows.size())
-                    });
-                bar.set_progress(i);
-            }
+        for (uint i = 0; i < threadCount; i++) {
+            const uint startIndex = i * (windows.size() / threadCount);
+            const uint endIndex = (i + 1) * (windows.size() / threadCount);
+            threads[i] = std::thread([&, i] { FindOptimalFeature(series, count, entropy, windows, startIndex, endIndex, optimalFeature, featureMutex); } );
         }
-        bar.mark_as_completed();
-        indicators::show_console_cursor(true);
 
-        if (optimalGain > 0)
-            return Feature(optimalShapelet.value(), optimalAttribute.value(), optimalGain);
-        else
-            return std::optional<Feature>();
+        for (uint i = 0; i < threadCount; i++)
+            threads[i].join();
+
+        return optimalFeature;
     }
 
     // *Not actually a tree
@@ -126,9 +126,9 @@ namespace FeatureFinding {
         const auto counts = SeriesUtils::GetCount(series);
         const auto windows = WindowGeneration::GenerateWindows(series, minWindowSize, maxWindowSize);
         const auto oFeature = FindOptimalFeature(series, windows);
-        if (!oFeature.has_value())
+        if (oFeature == nullptr)
             return features;
-        const auto& feature = oFeature.value();
+        const auto& feature = *oFeature;
         features.push_back(feature);
 
         uint splitId = Logger::Begin("Retrieving optimal split");
@@ -162,17 +162,44 @@ namespace FeatureFinding {
     [[nodiscard]] std::vector<Feature> GenerateFeaturePairs(const std::unordered_map<int, std::vector<Series>> &data, uint minWindowSize, uint maxWindowSize) {
         std::vector<Feature> features;
 
+        uint pairCount = 0;
+        for (auto iter = data.begin(); iter != data.end(); iter++)
+            for (auto iter2 = std::next(iter, 1); iter2 != data.end(); iter2++)
+                pairCount++;
+
+        using namespace indicators;
+
+        printf("\n");
+
+        ProgressBar bar{
+                option::BarWidth{50},
+                option::Start{"["},
+                option::Fill{"="},
+                option::Lead{">"},
+                option::Remainder{" "},
+                option::End{"]"},
+                option::FontStyles{std::vector<FontStyle>{FontStyle::bold}},
+                option::ShowElapsedTime{true},
+                option::ShowRemainingTime{true},
+                option::MaxProgress{pairCount}
+        };
+
+        show_console_cursor(false);
+
         for (auto iter = data.begin(); iter != data.end(); iter++)
             for (auto iter2 = std::next(iter, 1); iter2 != data.end(); iter2++) {
                 const auto series = SeriesUtils::Mix((*iter).first, (*iter).second, (*iter2).first, (*iter2).second);
                 const auto windows = WindowGeneration::GenerateWindows(series, minWindowSize, maxWindowSize);
 
                 const auto feature = FindOptimalFeature(series, windows);
-                if (!feature.has_value() || feature.value().gain == 0)
+                if (feature == nullptr || feature->gain == 0)
                     continue;
 
-                features.push_back(feature.value());
+                features.push_back(*feature);
+                bar.tick();
             }
+
+        show_console_cursor(true);
 
         return features;
     }
