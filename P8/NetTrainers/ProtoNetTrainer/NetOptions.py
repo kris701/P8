@@ -61,9 +61,9 @@ class NetOptions():
     # input dimensions
     x_dim : int = 1;
     # hidden dimensions
-    hid_dim : int = 8;
+    hid_dim : int = 64;
     # output dimensions
-    z_dim = int = 8;
+    z_dim = int = 64;
     # Backbone protonet to use
     backbone : nn.Module = slProtoNet;
     

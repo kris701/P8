@@ -124,6 +124,8 @@
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TRAIN.tsv" />
     <Content Include="Experiments\Configs\CricketX.ini" />
     <Content Include="Experiments\Configs\Beef.ini" />
+    <Content Include="Experiments\Configs\ElectricDevices.ini" />
+    <Content Include="Experiments\Configs\Wine.ini" />
     <Content Include="Experiments\Configs\SwedishLeaf.ini" />
     <Content Include="Experiments\readme.md" />
     <Content Include="Formatted\readme.md" />
