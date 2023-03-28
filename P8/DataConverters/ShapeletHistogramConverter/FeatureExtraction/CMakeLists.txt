@@ -14,13 +14,29 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 
+FetchContent_Declare(
+    cxxopts 
+    URL https://raw.githubusercontent.com/jarro2783/cxxopts/v3.1.1/include/cxxopts.hpp
+    DOWNLOAD_NO_EXTRACT TRUE
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/include/cxxopts
+)
+FetchContent_MakeAvailable(cxxopts)
+
+FetchContent_Declare(
+    indicators 
+    URL https://raw.githubusercontent.com/p-ranav/indicators/v2.3/single_include/indicators/indicators.hpp
+    DOWNLOAD_NO_EXTRACT TRUE
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/include/indicators
+)
+FetchContent_MakeAvailable(indicators)
+
 add_library(Sources INTERFACE
         src/FileHanding.h src/Types.h src/WindowGeneration.h src/SeriesUtils.h src/InformationGain.h src/FeatureFinding.h src/Logger.h
         src/ArgumentParser.h src/FeatureUtils.h src/attributes/Attribute.h src/Feature.h src/attributes/Frequency.h src/attributes/MinDist.h src/attributes/RelFrequency.h)
 
 add_executable(FeatureExtraction main.cpp
         include/cxxopts/cxxopts.hpp
-        include/indicators/block_progress_bar.hpp include/indicators/cursor_control.hpp)
+        include/indicators/indicators.hpp)
 target_include_directories(FeatureExtraction PRIVATE include)
 
 
