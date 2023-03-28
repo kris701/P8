@@ -4,8 +4,6 @@
 #include "Types.h"
 
 namespace SeriesUtils {
-    std::random_device rd;
-    std::mt19937 g(rd());
     [[nodiscard]] static ClassCount GetCount(const std::vector<LabelledSeries> &series) {
         ClassCount counts { 0 };
         for (const auto &s : series)

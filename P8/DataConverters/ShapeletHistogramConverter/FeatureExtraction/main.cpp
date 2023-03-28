@@ -38,13 +38,7 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Set");
-    auto features = FeatureFinding::GenerateFeatureTree(arguments.depth, trainData, arguments.minWindowSize, arguments.maxWindowSize);
-    Logger::End(id);
-
-    id = Logger::Begin("Generating Feature Pairs");
-    const auto pairFeatures = FeatureFinding::GenerateFeaturePairs(trainMap, arguments.minWindowSize, arguments.maxWindowSize);
-    for (const auto &feature : pairFeatures)
-        features.emplace_back(feature.shapelet, feature.attribute, feature.gain);
+    auto features = FeatureFinding::GenerateFeaturesFromSamples(trainMap, arguments.minWindowSize, arguments.maxWindowSize);
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Points");

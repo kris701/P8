@@ -4,6 +4,10 @@
 #include <utility>
 #include <vector>
 #include <array>
+#include <random>
+
+std::random_device rd;
+std::mt19937 g(rd());
 
 using uint = unsigned int;
 constexpr uint MAX_CLASSES = 20;
@@ -17,5 +21,7 @@ struct LabelledSeries {
     Series series;
     LabelledSeries(int label, const Series &series) : label(label), series(series) {};
 };
+
+
 
 #endif //FEATUREEXTRACTION_TYPES_H
