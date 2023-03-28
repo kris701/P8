@@ -3,7 +3,6 @@ project(FeatureExtraction)
 
 set(CMAKE_CXX_STANDARD 20)
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Release)
-
 Include(FetchContent)
 
 FetchContent_Declare(
@@ -11,8 +10,27 @@ FetchContent_Declare(
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
         GIT_TAG        v3.0.1 # or a later release
 )
-FetchContent_MakeAvailable(Catch2)
-list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
+FetchContent_GetProperties(Catch2)
+if(NOT Catch2_POPULATED)
+    FetchContent_Populate(Catch2)
+    add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR})
+endif() 
+
+FetchContent_Declare(
+    cxxopts 
+    URL https://raw.githubusercontent.com/jarro2783/cxxopts/v3.1.1/include/cxxopts.hpp
+    DOWNLOAD_NO_EXTRACT TRUE
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/include/cxxopts
+)
+FetchContent_MakeAvailable(cxxopts)
+
+FetchContent_Declare(
+    indicators 
+    URL https://raw.githubusercontent.com/p-ranav/indicators/v2.3/single_include/indicators/indicators.hpp
+    DOWNLOAD_NO_EXTRACT TRUE
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/include/indicators
+)
+FetchContent_MakeAvailable(indicators)
 
 add_library(Sources INTERFACE
         src/FileHanding.h src/Types.h src/WindowGeneration.h src/SeriesUtils.h src/InformationGain.h src/FeatureFinding.h src/Logger.h
@@ -20,9 +38,8 @@ add_library(Sources INTERFACE
 
 add_executable(FeatureExtraction main.cpp
         include/cxxopts/cxxopts.hpp
-        include/indicators/block_progress_bar.hpp include/indicators/cursor_control.hpp)
+        include/indicators/indicators.hpp)
 target_include_directories(FeatureExtraction PRIVATE include)
-
 
 include(CTest)
 include(Catch)
