@@ -37,9 +37,10 @@ class ShapeletHistogramConverter(BaseDataConverter):
                             "--out", str(os.path.join(workingDir, self.Options.FormatedFolder.replace("./","").replace("/",os.sep))),
                             "--split", str(self.Options.TestClassesSplit),
                             "--valtrainsplit", str(self.Options.TrainValSplit),
-                            "--depth", str(self.Options.depth),
                             "--minWindowSize", str(self.Options.minWindowSize),
                             "--maxWindowSize", str(self.Options.minWindowSize),
+                            "--featureCount", str(self.Options.featureCount),
+                            "--sampleSize", str(self.Options.sampleSize)
                             ]) 
 
             self.OutputChecksum();
