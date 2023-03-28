@@ -82,7 +82,7 @@ namespace SeriesUtils {
 
     static void MinMaxNormalize(std::vector<LabelledSeries> &series) {
         const auto min = MinValue(series);
-        const auto max = MaxValue(series) + std::abs(min);
+        const auto max = MaxValue(series) - min;
 
         // First move all values into positive range
         // Does this moving all values such that minimum is in zero
