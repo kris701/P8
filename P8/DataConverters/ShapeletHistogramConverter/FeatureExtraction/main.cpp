@@ -60,11 +60,13 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     std::vector<std::string> valFiles = FileHanding::WriteToFiles(featureSeriesPath, valFeatures);
     Logger::End(id);
 
-    id = Logger::Begin("Writing Split Files");
+    id = Logger::Begin("Shuffles File Order");
     std::shuffle(std::begin(trainFiles), std::end(trainFiles), g);
     std::shuffle(std::begin(testFiles), std::end(testFiles), g);
     std::shuffle(std::begin(valFiles), std::end(valFiles), g);
+    Logger::End(id);
 
+    id = Logger::Begin("Writing Split Files");
     const auto splitPath = arguments.outPath + "split/";
     FileHanding::WriteFile(splitPath + "train.txt", FileHanding::RemoveSubPath(arguments.outPath, trainFiles));
     FileHanding::WriteFile(splitPath + "test.txt", FileHanding::RemoveSubPath(arguments.outPath, testFiles));
