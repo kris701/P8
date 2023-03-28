@@ -6,7 +6,7 @@ def conv_block(in_channels, out_channels):
     returns a block conv-bn-relu-pool
     '''
     return nn.Sequential(
-        nn.Conv1d(in_channels, out_channels, kernel_size=4, stride=1, padding=1),
+        nn.Conv1d(in_channels, out_channels, kernel_size=2, stride=1, padding=1),
         nn.BatchNorm1d(out_channels),
         nn.ReLU(),
         nn.MaxPool1d(2)
