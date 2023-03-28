@@ -5,9 +5,9 @@ set(CMAKE_CXX_STANDARD 20)
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Release)
 
 Include(FetchContent)
+string(TOUPPER ${CMAKE_BUILD_TYPE} buildTypeUppercase)
 
-
-if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
+if (${buildTypeUppercase} MATCHES "DEBUG")
     FetchContent_Declare(
             Catch2
             GIT_REPOSITORY https://github.com/catchorg/Catch2.git
@@ -15,7 +15,7 @@ if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
     )
     FetchContent_MakeAvailable(Catch2)
     list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
-endif (CMAKE_BUILD_TYPE EQUAL "DEBUG")
+endif (${buildTypeUppercase} MATCHES "DEBUG")
 
 FetchContent_Declare(
     cxxopts 
@@ -42,8 +42,8 @@ add_executable(FeatureExtraction main.cpp
         include/indicators/indicators.hpp)
 target_include_directories(FeatureExtraction PRIVATE include)
 
-if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
+if (${buildTypeUppercase} MATCHES "DEBUG")
     include(CTest)
     include(Catch)
     include(test/CMakeLists.txt)
-endif (CMAKE_BUILD_TYPE EQUAL "DEBUG")
+endif (${buildTypeUppercase} MATCHES "DEBUG")
