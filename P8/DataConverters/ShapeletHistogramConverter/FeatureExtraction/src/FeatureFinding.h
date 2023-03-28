@@ -150,7 +150,8 @@ namespace FeatureFinding {
             // Retrieve n samples from each class
             for (const auto &seriesSet : seriesMap) {
                 std::vector<Series> tempSamples;
-                std::sample(seriesSet.second.begin(), seriesSet.second.end(), std::back_inserter(tempSamples), sampleSize, rd);
+                const uint tempSampleSize = std::max(sampleSize, (uint) seriesSet.second.size()); // If sampleSize is larger than the number of available data points, set to max possible
+                std::sample(seriesSet.second.begin(), seriesSet.second.end(), std::back_inserter(tempSamples), tempSampleSize, rd);
                 for (const auto &sample : tempSamples)
                     samples.emplace_back(seriesSet.first, sample);
             }
