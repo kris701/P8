@@ -10,7 +10,7 @@ std::random_device rd;
 std::mt19937 g(rd());
 
 using uint = unsigned int;
-constexpr uint MAX_CLASSES = 20;
+constexpr uint MAX_CLASSES = 64;
 constexpr uint maxThreads = 100;
 
 using Series = std::vector<double>;

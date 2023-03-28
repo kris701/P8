@@ -22,8 +22,6 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     Logger::End(id);
 
     id = Logger::Begin("Shuffling Data");
-    std::random_device rd;
-    std::mt19937 g(rd());
     std::shuffle(data.begin(), data.end(), g);
     Logger::End(id);
 

@@ -99,7 +99,7 @@ namespace FeatureFinding {
         const uint threadCount = std::thread::hardware_concurrency();
 
         const ClassCount count = SeriesUtils::GetCount(series);
-        const double entropy = InformationGain::CalculateEntropy(series);
+        const double entropy = InformationGain::CalculateEntropy(count);
 
         std::thread threads[maxThreads];
         std::shared_ptr<Feature> optimalFeature;
