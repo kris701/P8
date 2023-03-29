@@ -24,6 +24,8 @@ namespace WindowGeneration {
 
     [[nodiscard]] static std::vector<Series> GenerateWindows(const Series &series, uint minLength, uint maxLength) {
         std::vector<Series> windows;
+        if (maxLength == 0 || maxLength >= series.size())
+            maxLength = series.size() - 1;
 
         for (uint i = minLength; i <= maxLength; i++) {
             auto tWindows = GenerateWindows(series, i);

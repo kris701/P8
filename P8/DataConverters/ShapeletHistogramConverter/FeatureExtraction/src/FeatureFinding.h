@@ -67,19 +67,16 @@ namespace FeatureFinding {
                                    uint endIndex,
                                    std::shared_ptr<Feature> &optimalFeature,
                                    std::mutex &featureMutex) {
+        double optimalGain = 0;
         for (uint i = startIndex; i < endIndex; i++) {
             const auto& window = windows.at(i);
             for (const auto &attribute: attributes) {
-                double optimalGain = 0;
-                while (!featureMutex.try_lock()){}
-                if (optimalFeature != nullptr)
-                    optimalGain = optimalFeature->gain;
-                featureMutex.unlock();
                 const double gain = EvaluateWindow(entropy, optimalGain, counts, attribute, series, window);
 
                 if (gain > optimalGain) {
                     while (!featureMutex.try_lock()){}
-                    if (optimalFeature == nullptr || gain > optimalFeature->gain)
+                    optimalGain = ((optimalFeature != nullptr) ? optimalFeature->gain : 0);
+                    if (optimalFeature == nullptr || gain > optimalGain)
                         optimalFeature = std::make_shared<Feature>(Feature(window, attribute, gain));
                     featureMutex.unlock();
                 }
@@ -87,6 +84,8 @@ namespace FeatureFinding {
         }
     }
 
+    /// Multi-threaded. Evaluates each window in \p windows, in combination with each attribute
+    /// \return Returns the feature with highest information gain. Can be nullptr if no valid feature found.
     [[nodiscard]] std::shared_ptr<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows) {
         if (series.size() < 2)
             throw std::logic_error("Cannot find features for less than two series.");
@@ -96,7 +95,7 @@ namespace FeatureFinding {
         const uint threadCount = std::thread::hardware_concurrency();
 
         const ClassCount count = SeriesUtils::GetCount(series);
-        const double entropy = InformationGain::CalculateEntropy(series);
+        const double entropy = InformationGain::CalculateEntropy(count);
 
         std::thread threads[maxThreads];
         std::shared_ptr<Feature> optimalFeature;
@@ -114,62 +113,20 @@ namespace FeatureFinding {
         return optimalFeature;
     }
 
-    // *Not actually a tree
-    [[nodiscard]] std::vector<Feature> GenerateFeatureTree(uint depth, const std::vector<LabelledSeries> &series, uint minWindowSize, uint maxWindowSize) {
-        std::vector<Feature> features;
-        if (depth == 0)
-            return features;
-
-        uint featureId = Logger::Begin("Generating Feature for Depth " + std::to_string(depth));
-
-        const auto counts = SeriesUtils::GetCount(series);
-        const auto windows = WindowGeneration::GenerateWindows(series, minWindowSize, maxWindowSize);
-        const auto oFeature = FindOptimalFeature(series, windows);
-        if (oFeature == nullptr)
-            return features;
-        const auto& feature = *oFeature;
-        features.push_back(feature);
-
-        uint splitId = Logger::Begin("Retrieving optimal split");
-        const double splitPoint = InformationGain::GetOptimalSplitPoint(feature.attribute->GenerateValues(series, feature.shapelet));
-        const auto split = feature.attribute->SplitSeries(series, feature.shapelet, splitPoint);
-        Logger::End(splitId);
-
-        Logger::End(featureId);
-
-        for (const auto &s : { split.at(0), split.at(1) }) {
-            if (s.size() < 2)
-                continue;
-            const auto tempCounts = SeriesUtils::GetCount(s);
-
-            bool harmonious = true; // All elements in either side of split, or it is empty
-            for (uint i = 0; i < MAX_CLASSES; i++)
-                if (tempCounts[i] != 0 && tempCounts[i] != counts[i]) {
-                    harmonious = false;
-                    break;
-                }
-            if (harmonious)
-                continue;
-
-            for (const auto &f: GenerateFeatureTree(depth - 1, s, minWindowSize, maxWindowSize))
-                features.push_back(f);
-        }
-
-        return features;
-    }
-
-    [[nodiscard]] std::vector<Feature> GenerateFeaturePairs(const std::unordered_map<int, std::vector<Series>> &data, uint minWindowSize, uint maxWindowSize) {
+    /// Generates a number of features based upon samples from each class
+    /// \param seriesMap Data to generate features from, where the key is class and value is series set
+    /// \param featureCount How many features to generate
+    /// \param sampleSize How many samples to take from each class for each feature. If \p sampleSize is 3, it takes
+    /// a 3 samples from each class.
+    /// \return A list of features. Can be empty if no valid features are found.
+    [[nodiscard]] std::vector<Feature> GenerateFeaturesFromSamples(const std::unordered_map<int, std::vector<Series>> &seriesMap,
+                                                                   uint minWindowSize, uint maxWindowSize,
+                                                                   uint featureCount, uint sampleSize) {
         std::vector<Feature> features;
 
-        uint pairCount = 0;
-        for (auto iter = data.begin(); iter != data.end(); iter++)
-            for (auto iter2 = std::next(iter, 1); iter2 != data.end(); iter2++)
-                pairCount++;
 
         using namespace indicators;
-
-        printf("\n");
-
+        show_console_cursor(false);
         ProgressBar bar{
                 option::BarWidth{50},
                 option::Start{"["},
@@ -180,46 +137,32 @@ namespace FeatureFinding {
                 option::FontStyles{std::vector<FontStyle>{FontStyle::bold}},
                 option::ShowElapsedTime{true},
                 option::ShowRemainingTime{true},
-                option::MaxProgress{pairCount}
+                option::MaxProgress{featureCount}
         };
+        printf("\n");
 
-        show_console_cursor(false);
+        for (uint i = 0; i < featureCount; i++) {
+            bar.print_progress();
+            std::vector<LabelledSeries> samples;
 
-        for (auto iter = data.begin(); iter != data.end(); iter++)
-            for (auto iter2 = std::next(iter, 1); iter2 != data.end(); iter2++) {
-                const auto series = SeriesUtils::Mix((*iter).first, (*iter).second, (*iter2).first, (*iter2).second);
-                const auto windows = WindowGeneration::GenerateWindows(series, minWindowSize, maxWindowSize);
-
-                const auto feature = FindOptimalFeature(series, windows);
-                if (feature == nullptr || feature->gain == 0)
-                    continue;
-
-                features.push_back(*feature);
-                bar.tick();
+            // Retrieve n samples from each class
+            for (const auto &seriesSet : seriesMap) {
+                std::vector<Series> tempSamples;
+                const uint tempSampleSize = std::min(sampleSize, (uint) seriesSet.second.size()); // If sampleSize is larger than the number of available data points, set to max possible
+                std::sample(seriesSet.second.begin(), seriesSet.second.end(), std::back_inserter(tempSamples), tempSampleSize, rd);
+                for (const auto &sample : tempSamples)
+                    samples.emplace_back(seriesSet.first, sample);
             }
 
+            // Generate feature based on samples
+            const auto feature = FindOptimalFeature(samples, WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize));
+            if (feature != nullptr)
+                features.push_back(*feature);
+            bar.tick();
+        }
         show_console_cursor(true);
 
         return features;
-    }
-
-    std::vector<double> GenerateFeatureSeries(const Series &series, const std::vector<Feature> &features) {
-        std::vector<double> featureSeries;
-
-        for (const auto &feature : features)
-            featureSeries.push_back(feature.attribute->GenerateValue(series, feature.shapelet));
-
-        return featureSeries;
-    }
-
-    std::unordered_map<int, std::vector<std::vector<double>>> GenerateFeatureSeries
-    (const std::vector<LabelledSeries> &series, const std::vector<Feature> &features) {
-        std::unordered_map<int, std::vector<std::vector<double>>> featureSeriesSet;
-
-        for (const auto &s : series)
-            featureSeriesSet[s.label].push_back(GenerateFeatureSeries(s.series, features));
-
-        return featureSeriesSet;
     }
 }
 

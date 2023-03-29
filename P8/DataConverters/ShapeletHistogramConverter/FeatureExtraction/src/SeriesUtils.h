@@ -4,8 +4,6 @@
 #include "Types.h"
 
 namespace SeriesUtils {
-    std::random_device rd;
-    std::mt19937 g(rd());
     [[nodiscard]] static ClassCount GetCount(const std::vector<LabelledSeries> &series) {
         ClassCount counts { 0 };
         for (const auto &s : series)
@@ -84,7 +82,7 @@ namespace SeriesUtils {
 
     static void MinMaxNormalize(std::vector<LabelledSeries> &series) {
         const auto min = MinValue(series);
-        const auto max = MaxValue(series) + std::abs(min);
+        const auto max = MaxValue(series) - min;
 
         // First move all values into positive range
         // Does this moving all values such that minimum is in zero

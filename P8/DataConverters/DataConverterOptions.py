@@ -17,7 +17,8 @@ class DataConverterOptions():
     # Settings for the ShapeletHistogramConverter
     minWindowSize : int = 2;
     maxWindowSize : int = 4;
-    depth : int = 1;
+    featureCount : int = 128;
+    sampleSize : int = 3;
 
     def VerifySettings(self):
         if not os.path.isfile(self.SourceTrainData): raise Exception("Source train dataset not found: '" + self.SourceTrainData + "'")

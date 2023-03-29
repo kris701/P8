@@ -7,12 +7,16 @@
 #include "src/ArgumentParser.h"
 #include "src/FeatureUtils.h"
 
-int ConvertData(ArgumentParsing::Arguments arguments) {
-    uint id = Logger::Begin("Reading Data");
+int main(int argc, char** argv) {
+    uint id = Logger::Begin("Parsing Arguments");
+    auto arguments = ArgumentParsing::ParseArguments(argc, argv);
+    Logger::End(id);
+
+    id = Logger::Begin("Reading Data");
     auto data = SeriesUtils::Combine(
             FileHanding::ReadCSV(arguments.trainPath, "\t"),
             FileHanding::ReadCSV(arguments.testPath, "\t")
-            );
+    );
 
     const auto mappedData = SeriesUtils::ToMap(data);
     Logger::End(id);
@@ -22,8 +26,6 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     Logger::End(id);
 
     id = Logger::Begin("Shuffling Data");
-    std::random_device rd;
-    std::mt19937 g(rd());
     std::shuffle(data.begin(), data.end(), g);
     Logger::End(id);
 
@@ -38,19 +40,14 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Set");
-    auto features = FeatureFinding::GenerateFeatureTree(arguments.depth, trainData, arguments.minWindowSize, arguments.maxWindowSize);
-    Logger::End(id);
-
-    id = Logger::Begin("Generating Feature Pairs");
-    const auto pairFeatures = FeatureFinding::GenerateFeaturePairs(trainMap, arguments.minWindowSize, arguments.maxWindowSize);
-    for (const auto &feature : pairFeatures)
-        features.emplace_back(feature.shapelet, feature.attribute, feature.gain);
+    auto features = FeatureFinding::GenerateFeaturesFromSamples(
+            trainMap, arguments.minWindowSize, arguments.maxWindowSize, arguments.featureCount, arguments.sampleSize);
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Points");
-    const auto trainFeatures = FeatureFinding::GenerateFeatureSeries(trainData, features);
-    const auto testFeatures = FeatureFinding::GenerateFeatureSeries(testData, features);
-    const auto valFeatures = FeatureFinding::GenerateFeatureSeries(valData, features);
+    const auto trainFeatures = FeatureUtils::GenerateFeatureSeries(trainData, features);
+    const auto testFeatures = FeatureUtils::GenerateFeatureSeries(testData, features);
+    const auto valFeatures = FeatureUtils::GenerateFeatureSeries(valData, features);
     Logger::End(id);
 
     id = Logger::Begin("Writing Feature Series to Files");
@@ -84,12 +81,4 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     Logger::End(id);
 
     return 0;
-}
-
-int main(int argc, char** argv) {
-    uint id = Logger::Begin("Parsing Arguments");
-    auto arguments = ArgumentParsing::ParseArguments(argc, argv);
-    Logger::End(id);
-
-    return ConvertData(arguments);
 }
