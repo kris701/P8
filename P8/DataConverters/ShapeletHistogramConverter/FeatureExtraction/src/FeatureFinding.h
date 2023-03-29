@@ -67,19 +67,16 @@ namespace FeatureFinding {
                                    uint endIndex,
                                    std::shared_ptr<Feature> &optimalFeature,
                                    std::mutex &featureMutex) {
+        double optimalGain = 0;
         for (uint i = startIndex; i < endIndex; i++) {
             const auto& window = windows.at(i);
             for (const auto &attribute: attributes) {
-                double optimalGain = 0;
-                while (!featureMutex.try_lock()){}
-                if (optimalFeature != nullptr)
-                    optimalGain = optimalFeature->gain;
-                featureMutex.unlock();
                 const double gain = EvaluateWindow(entropy, optimalGain, counts, attribute, series, window);
 
                 if (gain > optimalGain) {
                     while (!featureMutex.try_lock()){}
-                    if (optimalFeature == nullptr || gain > optimalFeature->gain)
+                    optimalGain = ((optimalFeature != nullptr) ? optimalFeature->gain : 0);
+                    if (optimalFeature == nullptr || gain > optimalGain)
                         optimalFeature = std::make_shared<Feature>(Feature(window, attribute, gain));
                     featureMutex.unlock();
                 }
