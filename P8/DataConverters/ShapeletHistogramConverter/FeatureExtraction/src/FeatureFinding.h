@@ -164,26 +164,6 @@ namespace FeatureFinding {
 
         return features;
     }
-
-
-    std::vector<double> GenerateFeatureSeries(const Series &series, const std::vector<Feature> &features) {
-        std::vector<double> featureSeries;
-
-        for (const auto &feature : features)
-            featureSeries.push_back(feature.attribute->GenerateValue(series, feature.shapelet));
-
-        return featureSeries;
-    }
-
-    std::unordered_map<int, std::vector<std::vector<double>>> GenerateFeatureSeries
-    (const std::vector<LabelledSeries> &series, const std::vector<Feature> &features) {
-        std::unordered_map<int, std::vector<std::vector<double>>> featureSeriesSet;
-
-        for (const auto &s : series)
-            featureSeriesSet[s.label].push_back(GenerateFeatureSeries(s.series, features));
-
-        return featureSeriesSet;
-    }
 }
 
 #endif //FEATUREEXTRACTION_FEATUREFINDING_H

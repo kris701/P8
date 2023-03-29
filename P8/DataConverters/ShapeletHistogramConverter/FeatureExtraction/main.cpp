@@ -40,9 +40,9 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Points");
-    const auto trainFeatures = FeatureFinding::GenerateFeatureSeries(trainData, features);
-    const auto testFeatures = FeatureFinding::GenerateFeatureSeries(testData, features);
-    const auto valFeatures = FeatureFinding::GenerateFeatureSeries(valData, features);
+    const auto trainFeatures = FeatureUtils::GenerateFeatureSeries(trainData, features);
+    const auto testFeatures = FeatureUtils::GenerateFeatureSeries(testData, features);
+    const auto valFeatures = FeatureUtils::GenerateFeatureSeries(valData, features);
     Logger::End(id);
 
     id = Logger::Begin("Writing Feature Series to Files");
