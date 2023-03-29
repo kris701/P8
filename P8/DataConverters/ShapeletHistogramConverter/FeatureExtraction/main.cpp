@@ -7,12 +7,16 @@
 #include "src/ArgumentParser.h"
 #include "src/FeatureUtils.h"
 
-int ConvertData(ArgumentParsing::Arguments arguments) {
-    uint id = Logger::Begin("Reading Data");
+int main(int argc, char** argv) {
+    uint id = Logger::Begin("Parsing Arguments");
+    auto arguments = ArgumentParsing::ParseArguments(argc, argv);
+    Logger::End(id);
+
+    id = Logger::Begin("Reading Data");
     auto data = SeriesUtils::Combine(
             FileHanding::ReadCSV(arguments.trainPath, "\t"),
             FileHanding::ReadCSV(arguments.testPath, "\t")
-            );
+    );
 
     const auto mappedData = SeriesUtils::ToMap(data);
     Logger::End(id);
@@ -76,12 +80,4 @@ int ConvertData(ArgumentParsing::Arguments arguments) {
     Logger::End(id);
 
     return 0;
-}
-
-int main(int argc, char** argv) {
-    uint id = Logger::Begin("Parsing Arguments");
-    auto arguments = ArgumentParsing::ParseArguments(argc, argv);
-    Logger::End(id);
-
-    return ConvertData(arguments);
 }
