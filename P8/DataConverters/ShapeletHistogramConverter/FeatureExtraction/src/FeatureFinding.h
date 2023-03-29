@@ -88,7 +88,7 @@ namespace FeatureFinding {
     }
 
     /// Multi-threaded. Evaluates each window in \p windows, in combination with each attribute
-    /// \return Returns the feature with highest information gain. Can be nullptr if not valid feature found.
+    /// \return Returns the feature with highest information gain. Can be nullptr if no valid feature found.
     [[nodiscard]] std::shared_ptr<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows) {
         if (series.size() < 2)
             throw std::logic_error("Cannot find features for less than two series.");
@@ -124,7 +124,7 @@ namespace FeatureFinding {
     /// \return A list of features. Can be empty if no valid features are found.
     [[nodiscard]] std::vector<Feature> GenerateFeaturesFromSamples(const std::unordered_map<int, std::vector<Series>> &seriesMap,
                                                                    uint minWindowSize, uint maxWindowSize,
-                                                                   uint featureCount = 20, uint sampleSize = 3) {
+                                                                   uint featureCount, uint sampleSize) {
         std::vector<Feature> features;
 
         using namespace indicators;
