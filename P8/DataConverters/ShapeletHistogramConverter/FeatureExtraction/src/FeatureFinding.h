@@ -127,7 +127,9 @@ namespace FeatureFinding {
                                                                    uint featureCount, uint sampleSize) {
         std::vector<Feature> features;
 
+
         using namespace indicators;
+        show_console_cursor(false);
         ProgressBar bar{
                 option::BarWidth{50},
                 option::Start{"["},
@@ -149,7 +151,7 @@ namespace FeatureFinding {
             // Retrieve n samples from each class
             for (const auto &seriesSet : seriesMap) {
                 std::vector<Series> tempSamples;
-                const uint tempSampleSize = std::max(sampleSize, (uint) seriesSet.second.size()); // If sampleSize is larger than the number of available data points, set to max possible
+                const uint tempSampleSize = std::min(sampleSize, (uint) seriesSet.second.size()); // If sampleSize is larger than the number of available data points, set to max possible
                 std::sample(seriesSet.second.begin(), seriesSet.second.end(), std::back_inserter(tempSamples), tempSampleSize, rd);
                 for (const auto &sample : tempSamples)
                     samples.emplace_back(seriesSet.first, sample);
@@ -161,6 +163,7 @@ namespace FeatureFinding {
                 features.push_back(*feature);
             bar.tick();
         }
+        show_console_cursor(true);
 
         return features;
     }
