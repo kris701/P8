@@ -42,6 +42,30 @@ namespace FeatureUtils {
         return lines;
     }
 
+    static std::vector<std::vector<std::string>> ClassCountCSV(const ClassCount &cc1,
+                                                               const ClassCount &cc2) {
+        std::vector<std::vector<std::string>> values;
+
+        for (uint i = 0; i < MAX_CLASSES; i++)
+            if (cc1[i] > 0 || cc2[i] > 0)
+                values.push_back({std::to_string(i), std::to_string(cc1[i]), std::to_string(cc2[i])});
+
+        return values;
+    }
+
+    static std::vector<std::vector<std::vector<std::string>>> ClassCountCSV(const std::vector<LabelledSeries> &trainData,
+                                                               const std::vector<Feature> &features) {
+        std::vector<std::vector<std::vector<std::string>>> files;
+        for (const auto &feature : features) {
+            const double splitPoint = InformationGain::GetOptimalSplitPoint(feature.attribute->GenerateValues(trainData, feature.shapelet));
+            const auto split = feature.attribute->SplitSeries(trainData, feature.shapelet, splitPoint);
+            const auto cc1 = SeriesUtils::GetCount(split[0]);
+            const auto cc2 = SeriesUtils::GetCount(split[1]);
+            files.push_back(ClassCountCSV(cc1, cc2));
+        }
+        return files;
+    }
+
     std::vector<double> GenerateFeatureSeries(const Series &series, const std::vector<Feature> &features) {
         std::vector<double> featureSeries;
 

@@ -70,8 +70,18 @@ int main(int argc, char** argv) {
     FileHanding::WriteFile(splitPath + "val.txt", FileHanding::RemoveSubPath(arguments.outPath, valFiles));
     Logger::End(id);
 
-    id = Logger::Begin("Writing Feature Files");
+    id = Logger::Begin("Writing Feature Split Files");
     const auto featurePath = arguments.outPath + "features/";
+    const auto featureSplitPath = featurePath + "splits/";
+    const auto featureSplitFiles = FeatureUtils::ClassCountCSV(trainData, features);
+    std::vector<std::string> splitPaths;
+    for (uint i = 0; i < featureSplitFiles.size(); i++) {
+        const auto path = featureSplitPath + std::to_string(i) + ".csv";
+        FileHanding::WriteCSV(path, std::optional<std::vector<std::string>>(), featureSplitFiles.at(i));
+    }
+    Logger::End(id);
+
+    id = Logger::Begin("Writing Feature Files");
     const auto shapeletPath = featurePath + "shapelets/";
     const auto shapelets = FeatureUtils::RetrieveShapelets(features);
     const auto shapeletFiles = FileHanding::RemoveSubPath(featurePath, FileHanding::WriteToFiles(shapeletPath, shapelets));
