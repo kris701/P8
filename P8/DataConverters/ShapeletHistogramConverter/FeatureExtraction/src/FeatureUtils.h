@@ -42,17 +42,6 @@ namespace FeatureUtils {
         return lines;
     }
 
-    static std::vector<std::vector<std::string>> ClassCountCSV(const ClassCount &cc1,
-                                                               const ClassCount &cc2) {
-        std::vector<std::vector<std::string>> values;
-
-        for (uint i = 0; i < MAX_CLASSES; i++)
-            if (cc1[i] > 0 || cc2[i] > 0)
-                values.push_back({std::to_string(i), std::to_string(cc1[i]), std::to_string(cc2[i])});
-
-        return values;
-    }
-
     std::vector<double> GenerateFeatureSeries(const Series &series, const std::vector<Feature> &features) {
         std::vector<double> featureSeries;
 
