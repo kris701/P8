@@ -9,9 +9,11 @@ public:
     [[nodiscard]] inline std::string Name() const final { return "MinDist"; };
 
     [[nodiscard]] static double MinimumDistance(const Series &series, uint offset, const Series &window, std::optional<double> currentMin) {
+        const double yOffset = series[offset];
         double dist = 0;
+
         for (uint i = 1; i < window.size(); i++) {
-            dist += std::abs(series[i + offset] - window.at(i));
+            dist += std::abs(series[i + offset] - (yOffset + window.at(i)));
             if (currentMin.has_value() && dist > currentMin.value())
                 return dist;
         }
