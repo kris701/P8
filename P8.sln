@@ -11,6 +11,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ComparisonData", "Compariso
 		ComparisonData\readme.md = ComparisonData\readme.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Classifier", "Classifier", "{73EE7BBB-0BA3-4562-80A8-886BF88BAD39}"
+	ProjectSection(SolutionItems) = preProject
+		Classifier\CMakeLists.txt = Classifier\CMakeLists.txt
+		Classifier\main.cpp = Classifier\main.cpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CECEA3B9-B43C-4A01-A20B-9C6BEB4E7FDD}"
+	ProjectSection(SolutionItems) = preProject
+		Classifier\src\ArgumentParsing.h = Classifier\src\ArgumentParsing.h
+		Classifier\src\Classification.h = Classifier\src\Classification.h
+		Classifier\src\FileReading.h = Classifier\src\FileReading.h
+		Classifier\src\Types.h = Classifier\src\Types.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +36,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CECEA3B9-B43C-4A01-A20B-9C6BEB4E7FDD} = {73EE7BBB-0BA3-4562-80A8-886BF88BAD39}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4127FEE0-AD61-4EA6-B375-6EB31E903073}
