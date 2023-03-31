@@ -59,29 +59,57 @@ namespace FeatureFinding {
             return InformationGain::CalculateInformationGain(valueCount, priorEntropy);
     }
 
-    /// Evaluates each window in \p windows, in combination with each attribute
+    static void FindOptimalFeature(const std::vector<LabelledSeries> &series,
+                                   const ClassCount &counts,
+                                   double entropy,
+                                   const std::vector<Series> &windows,
+                                   uint startIndex,
+                                   uint endIndex,
+                                   std::shared_ptr<Feature> &optimalFeature,
+                                   std::mutex &featureMutex) {
+        double optimalGain = 0;
+        for (uint i = startIndex; i < endIndex; i++) {
+            const auto& window = windows.at(i);
+            for (const auto &attribute: attributes) {
+                const double gain = EvaluateWindow(entropy, optimalGain, counts, attribute, series, window);
+
+                if (gain > optimalGain) {
+                    while (!featureMutex.try_lock()){}
+                    optimalGain = ((optimalFeature != nullptr) ? optimalFeature->gain : 0);
+                    if (optimalFeature == nullptr || gain > optimalGain)
+                        optimalFeature = std::make_shared<Feature>(Feature(window, attribute, gain));
+                    featureMutex.unlock();
+                }
+            }
+        }
+    }
+
+    /// Multi-threaded. Evaluates each window in \p windows, in combination with each attribute
     /// \return Returns the feature with highest information gain. Can be nullptr if no valid feature found.
-    static std::shared_ptr<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series,
-                                   const std::vector<Series> &windows) {
+    [[nodiscard]] std::shared_ptr<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows) {
         if (series.size() < 2)
             throw std::logic_error("Cannot find features for less than two series.");
         if (windows.empty())
             throw std::logic_error("Missing windows.");
 
-        const auto counts = SeriesUtils::GetCount(series);
-        const auto entropy = InformationGain::CalculateEntropy(counts);
-        double optimalGain = 0;
-        std::shared_ptr<Feature> optimalFeature = nullptr;
-        for (const auto & window : windows) {
-            for (const auto &attribute: attributes) {
-                const double gain = EvaluateWindow(entropy, optimalGain, counts, attribute, series, window);
-                if (gain > optimalGain)
-                    if (optimalFeature == nullptr || gain > optimalGain) {
-                        optimalGain = gain;
-                        optimalFeature = std::make_shared<Feature>(Feature(window, attribute, gain));
-                    }
-            }
+        const uint threadCount = std::thread::hardware_concurrency();
+
+        const ClassCount count = SeriesUtils::GetCount(series);
+        const double entropy = InformationGain::CalculateEntropy(count);
+
+        std::thread threads[maxThreads];
+        std::shared_ptr<Feature> optimalFeature;
+        std::mutex featureMutex;
+
+        for (uint i = 0; i < threadCount; i++) {
+            const uint startIndex = i * (windows.size() / threadCount);
+            const uint endIndex = (i + 1) * (windows.size() / threadCount);
+            threads[i] = std::thread([&, i] { FindOptimalFeature(series, count, entropy, windows, startIndex, endIndex, optimalFeature, featureMutex); } );
         }
+
+        for (uint i = 0; i < threadCount; i++)
+            threads[i].join();
+
         return optimalFeature;
     }
 
