@@ -13,10 +13,7 @@ int main(int argc, char** argv) {
     Logger::End(id);
 
     id = Logger::Begin("Reading Data");
-    auto data = SeriesUtils::Combine(
-            FileHanding::ReadCSV(arguments.trainPath, "\t"),
-            FileHanding::ReadCSV(arguments.testPath, "\t")
-    );
+    auto data = FileHanding::ReadCSV({ arguments.trainPath, arguments.testPath }, "\t");
 
     const auto mappedData = SeriesUtils::ToMap(data);
     Logger::End(id);
