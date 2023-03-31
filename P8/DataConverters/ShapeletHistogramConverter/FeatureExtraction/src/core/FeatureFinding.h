@@ -94,11 +94,27 @@ namespace FeatureFinding {
     [[nodiscard]] std::vector<Feature> GenerateFeaturesFromSamples(const std::unordered_map<int, std::vector<Series>> &seriesMap,
                                                                    uint minWindowSize, uint maxWindowSize,
                                                                    uint featureCount, uint sampleSize) {
-        std::array<std::future<std::shared_ptr<Feature>>, MAX_FEATURES> fFeatures;
+        std::vector<Feature> features;
 
+
+        using namespace indicators;
+        show_console_cursor(false);
+        ProgressBar bar{
+                option::BarWidth{50},
+                option::Start{"["},
+                option::Fill{"="},
+                option::Lead{">"},
+                option::Remainder{" "},
+                option::End{"]"},
+                option::FontStyles{std::vector<FontStyle>{FontStyle::bold}},
+                option::ShowElapsedTime{true},
+                option::ShowRemainingTime{true},
+                option::MaxProgress{featureCount}
+        };
         printf("\n");
 
         for (uint i = 0; i < featureCount; i++) {
+            bar.print_progress();
             std::vector<LabelledSeries> samples;
 
             // Retrieve n samples from each class
@@ -111,18 +127,13 @@ namespace FeatureFinding {
             }
 
             // Generate feature based on samples
-            fFeatures[i] = std::async(std::launch::async,
-                    FindOptimalFeature,
-                    samples,
-                    WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize));
-        }
-
-        std::vector<Feature> features;
-        for (uint i = 0; i < featureCount; i++) {
-            const auto feature = fFeatures[i].get();
+            const auto feature = FindOptimalFeature(samples, WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize));
             if (feature != nullptr)
                 features.push_back(*feature);
+            bar.tick();
         }
+        show_console_cursor(true);
+
         return features;
     }
 }
