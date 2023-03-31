@@ -16,6 +16,10 @@ class NetTrainer(BaseNetTrainer):
         super().__init__(options, dataset)
 
     def Train(self) -> float:
+        print("No training needed for KNN")
+        return -1;
+
+    def Test(self) -> float:
         workingDir = pathlib.Path().resolve();
         thisFile = pathlib.Path(__file__).parent.resolve();
 
@@ -32,9 +36,6 @@ class NetTrainer(BaseNetTrainer):
                         "--out", str(os.path.join(workingDir, self.Options.experiment_root.replace("./","").replace("/",os.sep)))
                         ]) 
         self.OutputChecksum();
-
-    def Test(self) -> float:
-        pass
 
     def _CompileFeatureExtractor(self, compileDir):
         if os.name == "nt":
