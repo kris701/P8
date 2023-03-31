@@ -58,6 +58,9 @@ class NetOptions():
     # option to select other cuda devices to run on
     cudaDevice : str = "cuda:0";
 
+    # How many neighbors to consider for the KNN
+    KNN_Neighbors : int = 3;
+
     # input dimensions
     x_dim : int = 1;
     # hidden dimensions
@@ -66,9 +69,6 @@ class NetOptions():
     z_dim = int = 64;
     # Backbone protonet to use
     backbone : nn.Module = slProtoNet;
-
-    # How many neighbors to consider for the KNN
-    KNN_Neighbors : int = 3;
     
     def VerifySettings(self):
         if not os.path.isdir(self.dataset_root): raise Exception("Target formatted dataset not found: '" + self.dataset_root + "'")
