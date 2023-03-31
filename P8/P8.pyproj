@@ -34,6 +34,7 @@
     <Compile Include="Datasets\UCR\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DataVisualisers\ShapeletHistogramVisualiser.py" />
     <Compile Include="ExperimentSuite.py" />
     <Compile Include="NetTrainers\BaseNetTrainer.py" />
     <Compile Include="NetTrainers\NaiveKNN\NetTrainer.py" />
@@ -78,6 +79,7 @@
     <Folder Include="NetTrainers\NaiveKNN\NaiveKNN\src\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\Backbones\" />
+    <Folder Include="DataVisualisers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataConverters\readme.md" />
