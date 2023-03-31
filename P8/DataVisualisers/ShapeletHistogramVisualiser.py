@@ -22,7 +22,6 @@ class ShapeletHistogramVisualiser():
         index : int = 0
         for key in shapeletData:
             shapeletAxis = fig.add_subplot(gs[2, index])
-            shapeletAxis.set_xticks([])
             shapeletAxis.set_title(str(featureData["Attribute"][key]));
             shapeletAxis.set_yticks([])
             shapeletAxis.plot(shapeletData[key])
