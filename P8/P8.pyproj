@@ -35,14 +35,16 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExperimentSuite.py" />
+    <Compile Include="NetTrainers\BaseNetTrainer.py" />
+    <Compile Include="NetTrainers\NaiveKNN\NetTrainer.py" />
+    <Compile Include="NetTrainers\NaiveKNN\__init__.py" />
     <Compile Include="NetTrainers\NetTrainerBuilder.py" />
-    <Compile Include="NetTrainers\ProtoNetTrainer\BaseNetTrainer.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\DataloaderVerifier.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\NetTrainer.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\prototypical_loss.py" />
     <Compile Include="P8.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\Backbones\protonet.py" />
-    <Compile Include="NetTrainers\ProtoNetTrainer\NetOptions.py" />
+    <Compile Include="NetTrainers\NetOptions.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\prototypical_batch_sampler.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\Backbones\slprotonet.py" />
     <Compile Include="NetTrainers\ProtoNetTrainer\__init__.py">
@@ -68,6 +70,12 @@
     <Folder Include="Experiments\Results\" />
     <Folder Include="Formatted\" />
     <Folder Include="NetTrainers\" />
+    <Folder Include="NetTrainers\NaiveKNN\" />
+    <Folder Include="NetTrainers\NaiveKNN\NaiveKNN\" />
+    <Folder Include="NetTrainers\NaiveKNN\NaiveKNN\include\" />
+    <Folder Include="NetTrainers\NaiveKNN\NaiveKNN\include\cxxopts\" />
+    <Folder Include="NetTrainers\NaiveKNN\NaiveKNN\include\indicators\" />
+    <Folder Include="NetTrainers\NaiveKNN\NaiveKNN\src\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\Backbones\" />
   </ItemGroup>
@@ -107,6 +115,14 @@
     <Content Include="Experiments\Configs\SwedishLeaf.ini" />
     <Content Include="Experiments\readme.md" />
     <Content Include="Formatted\readme.md" />
+    <Content Include="NetTrainers\NaiveKNN\NaiveKNN\CMakeLists.txt" />
+    <Content Include="NetTrainers\NaiveKNN\NaiveKNN\include\cxxopts\cxxopts.hpp" />
+    <Content Include="NetTrainers\NaiveKNN\NaiveKNN\include\indicators\indicators.hpp" />
+    <Content Include="NetTrainers\NaiveKNN\NaiveKNN\main.cpp" />
+    <Content Include="NetTrainers\NaiveKNN\NaiveKNN\src\ArgumentParsing.h" />
+    <Content Include="NetTrainers\NaiveKNN\NaiveKNN\src\Classification.h" />
+    <Content Include="NetTrainers\NaiveKNN\NaiveKNN\src\FileReading.h" />
+    <Content Include="NetTrainers\NaiveKNN\NaiveKNN\src\Types.h" />
     <Content Include="NetTrainers\readme.md" />
   </ItemGroup>
   <ItemGroup>

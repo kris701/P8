@@ -38,7 +38,7 @@ class ShapeletHistogramConverter(BaseDataConverter):
                             "--split", str(self.Options.TestClassesSplit),
                             "--valtrainsplit", str(self.Options.TrainValSplit),
                             "--minWindowSize", str(self.Options.minWindowSize),
-                            "--maxWindowSize", str(self.Options.minWindowSize),
+                            "--maxWindowSize", str(self.Options.maxWindowSize),
                             "--featureCount", str(self.Options.featureCount),
                             "--sampleSize", str(self.Options.sampleSize)
                             ]) 
