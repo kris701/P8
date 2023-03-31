@@ -1,6 +1,6 @@
 from .prototypical_loss import prototypical_loss as loss_fn
-from .BaseNetTrainer import BaseNetTrainer
-from .NetOptions import NetOptions
+from ..BaseNetTrainer import BaseNetTrainer
+from ..NetOptions import NetOptions
 
 import torch.utils.data as data
 from tqdm import tqdm
@@ -10,8 +10,38 @@ import os
 import torch.nn as nn
 
 class NetTrainer(BaseNetTrainer):
+    
+    Dataset : data.Dataset = None;
+    TrainDataloader : data.DataLoader = None;
+    ValDataloader : data.DataLoader = None;
+    TestDataloader : data.DataLoader = None;
+
+    _isTrained : bool = False;
+    BestModel : nn.Module = None;
+
     def __init__(self, options: NetOptions, dataset: data.Dataset):
         super().__init__(options, dataset)
+        
+        self.Dataset = dataset;
+
+        # Check if CUDA is available 
+        if torch.cuda.is_available() and not self.Options.cuda:
+            print("WARNING: You have a CUDA device, so you should probably run with --cuda")
+
+        # Initialize torch seeds
+        self._init_seed()
+
+        # Setup the dataloaders for the dataset 
+        self.Dataset = dataset;
+        if self.Options.load_train_set:
+            self.TrainDataloader = self._init_dataloader('train', self.Dataset)
+        if self.Options.load_val_set:
+            self.ValDataloader = self._init_dataloader('val', self.Dataset)
+        if self.Options.load_test_set:
+            self.TestDataloader = self._init_dataloader('test', self.Dataset)
+
+        # Verify that there are no overlap between the dataloaders.
+        DataLoaderVerifier.Verify([self.ValDataloader, self.TrainDataloader, self.TestDataloader])
 
     def Train(self) -> float:
         '''

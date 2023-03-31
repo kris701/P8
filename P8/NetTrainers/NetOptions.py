@@ -1,6 +1,6 @@
 import torch.nn as nn
 import os
-from .Backbones.slprotonet import slProtoNet
+from .ProtoNetTrainer.Backbones.slprotonet import slProtoNet
 
 class NetOptions():
     # What net trainer to use

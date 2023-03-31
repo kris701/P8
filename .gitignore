@@ -382,5 +382,5 @@ P8/Data/*
 P8/DataConverters/ShapeletHistogramConverter/checksum/**
 P8/DataConverters/ShapeletHistogramConverter/FeatureExtraction/include/**
 P8/Experiments/Results/**
-Classifier/include/cxxopts/cxxopts.hpp
-Classifier/include/indicators/indicators.hpp
+P8/NetTrainers/NaiveKNN/checksum/**
+P8/NetTrainers/NaiveKNN/NaiveKNN/include/**
