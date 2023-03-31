@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <array>
 
 using uint = unsigned int;
 constexpr uint MAX_CLASSES = 512;

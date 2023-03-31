@@ -25,7 +25,7 @@ namespace FileReading {
         namespace fs = std::filesystem;
         MappedSeries mappedSeries;
         for (const auto &path : paths) {
-            int label = std::atoi(fs::path(fs::path(path).parent_path().string()).filename().c_str());
+            int label = std::atoi(fs::path(fs::path(path).parent_path().string()).filename().string().c_str());
             mappedSeries[label].push_back(ReadFeatureSeries(rootPath + "/" + path));
         }
         return mappedSeries;
