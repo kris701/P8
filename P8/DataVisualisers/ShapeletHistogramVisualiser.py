@@ -7,7 +7,7 @@ class ShapeletHistogramVisualiser():
     DatasetPath : str = "";
 
     def __init__(self, datasetPath : str) -> None:
-        self.DatasetPath = datasetPath
+        self.DatasetPath = datasetPath.replace("/",os.sep).replace("\\",os.sep)
 
     def VisualizeClass(self, classIndex):
         classData = self._GetClassData();
