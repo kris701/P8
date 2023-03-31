@@ -6,7 +6,7 @@ import shutil
 
 from DataConverters.DataConverterOptions import DataConverterOptions
 from DataConverters import DataConverterBuilder
-from NetTrainers.ProtoNetTrainer.NetOptions import NetOptions
+from NetTrainers.NetOptions import NetOptions
 from NetTrainers import NetTrainerBuilder
 from Datasets import DatasetBuilder
 
