@@ -25,7 +25,7 @@ class ExperimentSuite():
 
         with open(os.path.join(self.ExperimentResultsDir, timestamp, "run " + timestamp + ".csv"), 'w', newline='') as csvfile:
             csvWriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            csvWriter.writerow(['Experiment Name', 'Best train accuracy', 'Best test accuracy'])
+            csvWriter.writerow(['Experiment Name', 'Feature Extractor', 'Net Trainer', 'Best train accuracy', 'Best test accuracy'])
 
             for expName in self.ExperimentsToRun:
                 configName = os.path.join(self.ExperimentConfigDir, expName + ".ini")
@@ -55,7 +55,7 @@ class ExperimentSuite():
                 print("Copying dataset...")
                 shutil.make_archive(os.path.join(self.ExperimentResultsDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
 
-                csvWriter.writerow([expName, bestTrainAcc, bestTestAcc])
+                csvWriter.writerow([expName, dataLoaderOptions.UseConverter, protonetOptions.trainer_name, bestTrainAcc, bestTestAcc])
 
         print("Experiments finished!")
 

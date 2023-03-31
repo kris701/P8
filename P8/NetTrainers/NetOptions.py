@@ -5,12 +5,12 @@ from .ProtoNetTrainer.Backbones.slprotonet import slProtoNet
 class NetOptions():
     # What net trainer to use
     trainer_name : str = "ProtoNetTrainer";
-    # name of the dataset to use
-    dataset_name : str = "UCR";
     # path to dataset
     dataset_root : str = "Formatted/BaseOutput";
     # root where to store models, losses and accuracies
     experiment_root : str = "Output";
+    # name of the dataset to use
+    dataset_name : str = "UCR";
     # number of epochs to train for
     train_epochs : int = 10;
     # number of epochs to test for
@@ -66,6 +66,9 @@ class NetOptions():
     z_dim = int = 64;
     # Backbone protonet to use
     backbone : nn.Module = slProtoNet;
+
+    # How many neighbors to consider for the KNN
+    KNN_Neighbors : int = 3;
     
     def VerifySettings(self):
         if not os.path.isdir(self.dataset_root): raise Exception("Target formatted dataset not found: '" + self.dataset_root + "'")

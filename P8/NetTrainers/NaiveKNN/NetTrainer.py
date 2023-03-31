@@ -31,11 +31,14 @@ class NetTrainer(BaseNetTrainer):
         if os.name == "nt":
             extension = ".exe"
         executable = os.path.join(thisFile, "NaiveKNN/out/Release/Classifier" + extension)
-        subprocess.run([executable, 
+        res = subprocess.run([executable, 
                         "--data", str(os.path.join(workingDir, self.Options.dataset_root.replace("./","").replace("/",os.sep))),
-                        "--out", str(os.path.join(workingDir, self.Options.experiment_root.replace("./","").replace("/",os.sep)))
+                        "--neighbors", str(self.Options.KNN_Neighbors)
                         ]) 
-        self.OutputChecksum();
+        if (res.returncode > 100):
+            raise Exception("Something went wrong with the KNN!");
+
+        return res.returncode / 100;
 
     def _CompileFeatureExtractor(self, compileDir):
         if os.name == "nt":
@@ -67,14 +70,3 @@ class NetTrainer(BaseNetTrainer):
     def _GetExtractorChecksum(self):
         thisFile = pathlib.Path(__file__).parent.resolve();
         return checksumdir.dirhash(os.path.join(thisFile, "NaiveKNN"))
-
-    def GetChecksum(self):
-        data = str(
-            json.dumps(self.Options.__dict__, sort_keys=True) + self._GetExtractorChecksum()
-            ).encode('utf-8')
-        return hashlib.md5(data).hexdigest()
-
-    def OutputChecksum(self):
-        checksum = self.GetChecksum();
-        with open(os.path.join(self.Options.FormatedFolder, "checksum.txt"), "w") as f:
-            f.write(checksum + "\n")
