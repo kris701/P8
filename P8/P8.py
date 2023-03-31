@@ -8,5 +8,5 @@ expSuite = ExperimentSuite(experiments)
 #expSuite.RunExperiments()
 
 visualizer = ShapeletHistogramVisualiser(".\\Formatted\\SwedishLeaf");
-visualizer.Visualize();
-#visualizer.VisualizeClass(1);
+#visualizer.Visualize();
+visualizer.VisualizeClass(1);

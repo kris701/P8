@@ -1,5 +1,6 @@
 import os
 import matplotlib.pyplot as plt
+import pandas as pd
 from math import sqrt
 
 class ShapeletHistogramVisualiser():
@@ -11,7 +12,8 @@ class ShapeletHistogramVisualiser():
     def VisualizeClass(self, classIndex):
         classData = self._GetClassData();
         shapeletData = self._GetShapeletData();
-        
+        featureData = self._GetFeatureData();
+
         fig = plt.figure(constrained_layout=True)
         gs = fig.add_gridspec(3, len(shapeletData))
 
@@ -21,6 +23,7 @@ class ShapeletHistogramVisualiser():
         for key in shapeletData:
             shapeletAxis = fig.add_subplot(gs[2, index])
             shapeletAxis.set_xticks([])
+            shapeletAxis.set_title(str(featureData["Attribute"][key]));
             shapeletAxis.set_yticks([])
             shapeletAxis.plot(shapeletData[key])
             index += 1
@@ -75,6 +78,13 @@ class ShapeletHistogramVisualiser():
                     fileData.append(value)
             shapeletData[int(shapeletName)] = fileData
         return shapeletData
+
+    def _GetFeatureData(self) -> dict:
+        featureData = {};
+        featureDataCsv = os.path.join(self.DatasetPath, "features", "features.csv");
+        csvData = pd.read_csv(featureDataCsv);
+        featureData = csvData.to_dict();
+        return featureData
 
     # https://stackoverflow.com/questions/16907526/how-to-maximize-grid-dimensions-given-the-number-of-elements
     def _GetPlotSize(self, nClasses) -> tuple[int,int]:
