@@ -34,7 +34,7 @@ class ShapeletHistogramVisualiser():
 
         pass
 
-    def Visualize(self):
+    def VisualizeAllClasses(self):
         classData = self._GetClassData();
         
         rows, cols = self._GetPlotSize(len(classData));

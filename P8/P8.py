@@ -5,8 +5,9 @@ from DataVisualisers.ShapeletHistogramVisualiser import ShapeletHistogramVisuali
 experiments = ["SwedishLeaf"]
 
 expSuite = ExperimentSuite(experiments)
-#expSuite.RunExperiments()
+expSuite.RunExperiments()
 
+print("Visualizing swedish leafs")
 visualizer = ShapeletHistogramVisualiser(".\\Formatted\\SwedishLeaf");
-#visualizer.Visualize();
+visualizer.VisualizeAllClasses();
 visualizer.VisualizeClass(1);
