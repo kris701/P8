@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 
         const double accuracy = (double) correct / (double) (correct + incorrect);
 
-        printf("%s: %f%%\n", path.filename().c_str(), accuracy);
+        printf("%s: %f%%\n", path.filename().string().c_str(), accuracy);
     }
     return 0;
 }
