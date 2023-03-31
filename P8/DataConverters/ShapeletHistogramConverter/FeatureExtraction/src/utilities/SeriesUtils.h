@@ -1,7 +1,7 @@
 #ifndef FEATUREEXTRACTION_SERIESUTILS_H
 #define FEATUREEXTRACTION_SERIESUTILS_H
 
-#include "Types.h"
+#include "misc/Constants.h"
 
 namespace SeriesUtils {
     [[nodiscard]] static ClassCount GetCount(const std::vector<LabelledSeries> &series) {

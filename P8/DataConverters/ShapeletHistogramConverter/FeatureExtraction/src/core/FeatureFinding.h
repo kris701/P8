@@ -8,16 +8,16 @@
 #include <iterator>
 #include <iostream>
 #include <vector>
-#include "Types.h"
-#include "SeriesUtils.h"
+#include "misc/Constants.h"
+#include "utilities/SeriesUtils.h"
 #include "InformationGain.h"
 #include "WindowGeneration.h"
-#include "Logger.h"
-#include "../include/indicators/indicators.hpp"
-#include "Feature.h"
-#include "attributes/Frequency.h"
-#include "attributes/MinDist.h"
-#include "attributes/RelFrequency.h"
+#include "IO/Logger.h"
+#include "../../include/indicators/indicators.hpp"
+#include "types/Feature.h"
+#include "types/attributes/Frequency.h"
+#include "types/attributes/MinDist.h"
+#include "types/attributes/RelFrequency.h"
 #include <thread>
 #include <future>
 

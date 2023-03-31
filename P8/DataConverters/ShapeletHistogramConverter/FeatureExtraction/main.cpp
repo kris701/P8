@@ -1,11 +1,11 @@
 #include <iostream>
 #include <string>
-#include "src/FileHanding.h"
-#include "src/FeatureFinding.h"
-#include "src/SeriesUtils.h"
-#include "src/Logger.h"
-#include "src/ArgumentParser.h"
-#include "src/FeatureUtils.h"
+#include "src/IO/FileHanding.h"
+#include "src/core/FeatureFinding.h"
+#include "src/utilities/SeriesUtils.h"
+#include "src/IO/Logger.h"
+#include "src/IO/ArgumentParser.h"
+#include "src/utilities/FeatureUtils.h"
 
 int main(int argc, char** argv) {
     uint id = Logger::Begin("Parsing Arguments");

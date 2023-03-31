@@ -1,7 +1,7 @@
 #ifndef FEATUREEXTRACTION_FEATUREUTILS_H
 #define FEATUREEXTRACTION_FEATUREUTILS_H
 
-#include "Types.h"
+#include "misc/Constants.h"
 
 namespace FeatureUtils {
     [[nodiscard]] static std::vector<Series> RetrieveShapelets(const std::vector<Feature> &features) {
