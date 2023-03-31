@@ -14,8 +14,6 @@ int main(int argc, char** argv) {
 
     id = Logger::Begin("Reading Data");
     auto data = FileHanding::ReadCSV({ arguments.trainPath, arguments.testPath }, "\t");
-
-    const auto mappedData = SeriesUtils::ToMap(data);
     Logger::End(id);
 
     id = Logger::Begin("Normalizing Data");
