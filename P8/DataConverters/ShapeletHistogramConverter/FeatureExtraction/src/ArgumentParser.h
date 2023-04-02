@@ -15,11 +15,10 @@ namespace ArgumentParsing {
         const uint minWindowSize;
         const uint maxWindowSize;
         const uint featureCount;
-        const uint sampleSize;
         Arguments(const std::string &trainPath, const std::string &testPath, const std::string outPath, double split, double valTrainSplit,
-                  uint minWindowSize, uint maxWindowSize, uint featureCount, uint sampleSize) :
+                  uint minWindowSize, uint maxWindowSize, uint featureCount) :
                   trainPath(trainPath), testPath(testPath), outPath(outPath), split(split), valtrainsplit(valTrainSplit),
-                  minWindowSize(minWindowSize), maxWindowSize(maxWindowSize), featureCount(featureCount), sampleSize(sampleSize) {}
+                  minWindowSize(minWindowSize), maxWindowSize(maxWindowSize), featureCount(featureCount) {}
     };
 
     Arguments ParseArguments(int argc, char **argv) {
@@ -31,9 +30,8 @@ namespace ArgumentParsing {
                 ("split", "How much of the data should be training data. [0.0,1.0) for percent, [1, n) for data points", cxxopts::value<double>() -> default_value("5"))
                 ("valtrainsplit", "How much of the data should be put into the validation set (0,1)", cxxopts::value<double>() -> default_value("0"))
                 ("minWindowSize", "Minimum size of windows. Should be between 2 and maxWindowSize.", cxxopts::value<uint>() -> default_value("2"))
-                ("maxWindowSize", "Maximum size of windows. 0 for max possible, same if larger than series length.", cxxopts::value<uint>() -> default_value("32"))
-                ("featureCount", "How many features to generate", cxxopts::value<uint>() -> default_value("32"))
-                ("sampleSize", "How many samples of each class is used to generate a single feature", cxxopts::value<uint>() -> default_value("3"))
+                ("maxWindowSize", "Maximum size of windows. 0 for max possible, same if larger than series length.", cxxopts::value<uint>() -> default_value("64"))
+                ("featureCount", "How many features to generate", cxxopts::value<uint>() -> default_value("128"))
                 ("h,help", "Print usage")
                 ;
         auto result = options.parse(argc, argv);
@@ -52,8 +50,7 @@ namespace ArgumentParsing {
                     result["valtrainsplit"].as<double>(),
                     result["minWindowSize"].as<uint>(),
                     result["maxWindowSize"].as<uint>(),
-                    result["featureCount"].as<uint>(),
-                    result["sampleSize"].as<uint>()
+                    result["featureCount"].as<uint>()
                     );
         } catch (const cxxopts::exceptions::option_has_no_value& e) {
             printf("\nMissing argument: %s\n", e.what());
