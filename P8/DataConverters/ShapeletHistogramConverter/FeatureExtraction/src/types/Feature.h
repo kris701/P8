@@ -2,7 +2,7 @@
 #define FEATUREEXTRACTION_FEATURE_H
 
 #include "attributes/Attribute.h"
-#include "Types.h"
+#include "misc/Constants.h"
 
 struct Feature {
     const double gain;

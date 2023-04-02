@@ -5,8 +5,8 @@
 #include <map>
 #include <numeric>
 #include <optional>
-#include "Types.h"
-#include "SeriesUtils.h"
+#include "misc/Constants.h"
+#include "utilities/SeriesUtils.h"
 
 namespace InformationGain {
     [[nodiscard]] static double CalculateEntropy(uint total, const ClassCount &counts) {

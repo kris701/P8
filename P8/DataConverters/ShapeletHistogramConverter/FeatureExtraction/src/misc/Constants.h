@@ -1,5 +1,5 @@
-#ifndef FEATUREEXTRACTION_TYPES_H
-#define FEATUREEXTRACTION_TYPES_H
+#ifndef FEATUREEXTRACTION_CONSTANTS_H
+#define FEATUREEXTRACTION_CONSTANTS_H
 
 #include <utility>
 #include <vector>
@@ -24,4 +24,4 @@ struct LabelledSeries {
 
 
 
-#endif //FEATUREEXTRACTION_TYPES_H
+#endif //FEATUREEXTRACTION_CONSTANTS_H

@@ -1,8 +1,8 @@
 #ifndef FEATUREEXTRACTION_WINDOWGENERATION_H
 #define FEATUREEXTRACTION_WINDOWGENERATION_H
 
-#include "Types.h"
-#include "Logger.h"
+#include "misc/Constants.h"
+#include "IO/Logger.h"
 
 namespace WindowGeneration {
     [[nodiscard]] static std::vector<Series> GenerateWindows(const Series &series, uint length) {

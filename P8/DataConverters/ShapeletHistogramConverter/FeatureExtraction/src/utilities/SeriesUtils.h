@@ -1,7 +1,7 @@
 #ifndef FEATUREEXTRACTION_SERIESUTILS_H
 #define FEATUREEXTRACTION_SERIESUTILS_H
 
-#include "Types.h"
+#include "misc/Constants.h"
 
 namespace SeriesUtils {
     [[nodiscard]] static ClassCount GetCount(const std::vector<LabelledSeries> &series) {
@@ -25,30 +25,6 @@ namespace SeriesUtils {
             for (const auto &v : s.series)
                 minValue = std::max(v, minValue);
         return minValue;
-    }
-
-    [[nodiscard]] static std::vector<LabelledSeries> Combine(const std::vector<LabelledSeries> &seriesA, const std::vector<LabelledSeries> &seriesB) {
-        std::vector<LabelledSeries> combined;
-
-        for (const auto &seriesSet : { seriesA, seriesB })
-            for (const auto &series : seriesSet)
-                combined.push_back(series);
-
-        return combined;
-    }
-
-    [[nodiscard]] static std::vector<LabelledSeries> Mix(int classA, const std::vector<Series> &seriesA,
-                                                         int classB, const std::vector<Series> &seriesB) {
-        std::vector<LabelledSeries> o;
-
-        for (const auto &s : seriesA)
-            o.emplace_back(classA, s);
-        for (const auto &s : seriesB)
-            o.emplace_back(classB, s);
-
-        std::shuffle(o.begin(), o.end(), g);
-
-        return o;
     }
 
     [[nodiscard]] static std::unordered_map<int, std::vector<Series>> ToMap
