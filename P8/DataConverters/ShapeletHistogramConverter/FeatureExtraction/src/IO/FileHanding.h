@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <filesystem>
 #include <vector>
-#include "Types.h"
+#include "misc/Constants.h"
 
 namespace FileHanding {
     [[nodiscard]] static std::vector<LabelledSeries> ReadCSV(const std::string &path, const std::string &delimiter = ",") {
@@ -45,6 +45,17 @@ namespace FileHanding {
         }
         file.close();
         return dataPoints;
+    }
+
+    [[nodiscard]] static std::vector<LabelledSeries> ReadCSV(const std::vector<std::string> &paths, const std::string &delimiter = ",") {
+        std::vector<LabelledSeries> series;
+
+        for (const auto &path : paths) {
+            const auto tempSeries = ReadCSV(path, delimiter);
+            series.insert(series.end(), tempSeries.begin(), tempSeries.end());
+        }
+
+        return series;
     }
 
     static void WriteFile(const std::string &path, const std::vector<double> &data) {

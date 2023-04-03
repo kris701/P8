@@ -33,13 +33,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(indicators)
 
 add_library(Sources INTERFACE
-        src/FileHanding.h src/Types.h src/WindowGeneration.h src/SeriesUtils.h src/InformationGain.h src/FeatureFinding.h src/Logger.h
-        src/ArgumentParser.h src/FeatureUtils.h src/attributes/Attribute.h src/Feature.h src/attributes/Frequency.h src/attributes/MinDist.h src/attributes/RelFrequency.h)
+        src/IO/FileHanding.h src/misc/Constants.h src/core/WindowGeneration.h src/utilities/SeriesUtils.h src/core/InformationGain.h src/core/FeatureFinding.h src/IO/Logger.h
+        src/IO/ArgumentParser.h src/utilities/FeatureUtils.h src/types/attributes/Attribute.h src/types/Feature.h src/types/attributes/Frequency.h src/types/attributes/MinDist.h src/types/attributes/RelFrequency.h)
 
 add_executable(FeatureExtraction main.cpp
         include/cxxopts/cxxopts.hpp
         include/indicators/indicators.hpp)
-target_include_directories(FeatureExtraction PRIVATE include)
+target_include_directories(FeatureExtraction PRIVATE include src)
 
 include(CTest)
 include(Catch)
