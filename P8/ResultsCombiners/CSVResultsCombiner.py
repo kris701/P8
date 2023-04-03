@@ -1,7 +1,7 @@
 import pandas as pd
 
-class StateOfTheArtCompare():
-    def GetFullComparisons(self, fileSources : list, dictSources : list) -> dict:
+class CSVResultsCombiner():
+    def Combine(self, fileSources : list, dictSources : list) -> dict:
         fullResults = {}
 
         for source in fileSources:

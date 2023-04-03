@@ -1,16 +1,16 @@
 from ExperimentSuite import ExperimentSuite
 from DataVisualisers.ShapeletHistogramVisualiser import ShapeletHistogramVisualiser
 from DataVisualisers.ResultsVisualiser import ResultsVisualiser
-from Comparers.StateOfTheArtCompare import StateOfTheArtCompare
+from ResultsCombiners.CSVResultsCombiner import CSVResultsCombiner
 
 #experiments = ["SwedishLeaf", "Beef", "CricketX", "ElectricDevices", "Wine"]
-experiments = ["SwedishLeaf"]
+experiments = ["SwedishLeaf", "ElectricDevices"]
 
 expSuite = ExperimentSuite(experiments, "Ours")
 ourResults = expSuite.RunExperiments()
 
-fullCompare = StateOfTheArtCompare();
-fullResults = fullCompare.GetFullComparisons(
+combiner = CSVResultsCombiner();
+fullResults = combiner.Combine(
     ["../ComparisonData/5shot.csv"],
     [ourResults]
     );
