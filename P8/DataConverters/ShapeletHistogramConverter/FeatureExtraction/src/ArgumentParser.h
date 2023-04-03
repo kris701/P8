@@ -14,11 +14,14 @@ namespace ArgumentParsing {
         const double valtrainsplit;
         const uint minWindowSize;
         const uint maxWindowSize;
+        const uint minSampleSize;
+        const uint maxSampleSize;
         const uint featureCount;
         Arguments(const std::string &trainPath, const std::string &testPath, const std::string outPath, double split, double valTrainSplit,
-                  uint minWindowSize, uint maxWindowSize, uint featureCount) :
+                  uint minWindowSize, uint maxWindowSize, uint minSampleSize, uint maxSampleSize, uint featureCount) :
                   trainPath(trainPath), testPath(testPath), outPath(outPath), split(split), valtrainsplit(valTrainSplit),
-                  minWindowSize(minWindowSize), maxWindowSize(maxWindowSize), featureCount(featureCount) {}
+                  minWindowSize(minWindowSize), maxWindowSize(maxWindowSize),
+                  minSampleSize(minSampleSize), maxSampleSize(maxSampleSize), featureCount(featureCount) {}
     };
 
     Arguments ParseArguments(int argc, char **argv) {
@@ -31,6 +34,8 @@ namespace ArgumentParsing {
                 ("valtrainsplit", "How much of the data should be put into the validation set (0,1)", cxxopts::value<double>() -> default_value("0"))
                 ("minWindowSize", "Minimum size of windows. Should be between 2 and maxWindowSize.", cxxopts::value<uint>() -> default_value("2"))
                 ("maxWindowSize", "Maximum size of windows. 0 for max possible, same if larger than series length.", cxxopts::value<uint>() -> default_value("64"))
+                ("minSampleSize", "Minimum number of samples for each class in a given feature.", cxxopts::value<uint>() -> default_value("0"))
+                ("maxSampleSize", "Maximum number of samples for each class in a given feature. 0 for maximum possible", cxxopts::value<uint>() -> default_value("5"))
                 ("featureCount", "How many features to generate", cxxopts::value<uint>() -> default_value("128"))
                 ("h,help", "Print usage")
                 ;
@@ -50,6 +55,8 @@ namespace ArgumentParsing {
                     result["valtrainsplit"].as<double>(),
                     result["minWindowSize"].as<uint>(),
                     result["maxWindowSize"].as<uint>(),
+                    result["minSampleSize"].as<uint>(),
+                    result["maxSampleSize"].as<uint>(),
                     result["featureCount"].as<uint>()
                     );
         } catch (const cxxopts::exceptions::option_has_no_value& e) {

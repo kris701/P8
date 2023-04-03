@@ -121,6 +121,7 @@ namespace FeatureFinding {
     /// \return A list of features. Can be empty if no valid features are found.
     [[nodiscard]] std::vector<Feature> GenerateFeaturesFromSamples(const std::unordered_map<int, std::vector<Series>> &seriesMap,
                                                                    uint minWindowSize, uint maxWindowSize,
+                                                                   uint minSampleSize, uint maxSampleSize,
                                                                    uint featureCount) {
         std::vector<Feature> features;
 
@@ -149,7 +150,8 @@ namespace FeatureFinding {
             // Retrieve n samples from each class
             for (const auto &seriesSet : seriesMap) {
                 std::vector<Series> tempSamples;
-                std::sample(seriesSet.second.begin(), seriesSet.second.end(), std::back_inserter(tempSamples), rand() % (seriesSet.second.size() - 1), rd);
+                const uint sampleSize = (rand() % ((maxSampleSize == 0) ? seriesSet.second.size() : maxSampleSize)) + minSampleSize;
+                std::sample(seriesSet.second.begin(), seriesSet.second.end(), std::back_inserter(tempSamples), sampleSize, rd);
                 for (const auto &sample : tempSamples)
                     samples.emplace_back(seriesSet.first, sample);
                 if (!tempSamples.empty())

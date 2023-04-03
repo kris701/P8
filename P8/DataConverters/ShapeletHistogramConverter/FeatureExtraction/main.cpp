@@ -41,7 +41,8 @@ int main(int argc, char** argv) {
 
     id = Logger::Begin("Generating Feature Set");
     auto features = FeatureFinding::GenerateFeaturesFromSamples(
-            trainMap, arguments.minWindowSize, arguments.maxWindowSize, arguments.featureCount);
+            trainMap, arguments.minWindowSize, arguments.maxWindowSize,
+            arguments.minSampleSize, arguments.maxSampleSize, arguments.featureCount);
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Points");
