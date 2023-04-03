@@ -12,7 +12,8 @@ ourResults = expSuite.RunExperiments()
 combiner = CSVResultsCombiner();
 fullResults = combiner.Combine(
     ["../ComparisonData/5shot.csv"],
-    [ourResults]
+    [ourResults],
+    True
     );
 
 fullVisualiser = ResultsVisualiser();
