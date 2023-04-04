@@ -124,6 +124,7 @@
     <Content Include="Data\SwedishLeaf\README.md" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TEST.tsv" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TRAIN.tsv" />
+    <Content Include="Experiments\Configs\GunPointAgeSpan.ini" />
     <Content Include="Experiments\Configs\SonyAIBORobotSurface2.ini" />
     <Content Include="Experiments\Configs\UMD.ini" />
     <Content Include="Experiments\Configs\TwoLeadECG.ini" />
