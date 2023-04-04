@@ -32,8 +32,9 @@ class ExperimentSuite():
             csvWriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             csvWriter.writerow(['Experiment Name', 'Feature Extractor', 'Net Trainer', 'Best train accuracy', 'Best test accuracy'])
 
+            counter : int = 1;
             for expName in self.ExperimentsToRun:
-                print("   === " + expName + " started ===   ")
+                print("   === " + expName + " started (" + str(counter) + "/" + str(len(self.ExperimentsToRun)) + ") ===   ")
 
                 configName = os.path.join(self.ExperimentConfigDir, expName + ".ini")
 
@@ -68,6 +69,7 @@ class ExperimentSuite():
                 csvWriter.writerow([expName, dataLoaderOptions.UseConverter, protonetOptions.trainer_name, bestTrainAcc, bestTestAcc])
 
                 print("   === " + expName + " ended ===   ")
+                counter += 1;
 
         print("Experiments finished!")
         return {self.ExperimentName: results};
