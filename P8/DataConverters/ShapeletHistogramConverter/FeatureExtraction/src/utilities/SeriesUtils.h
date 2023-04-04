@@ -1,6 +1,7 @@
 #ifndef FEATUREEXTRACTION_SERIESUTILS_H
 #define FEATUREEXTRACTION_SERIESUTILS_H
 
+#include <unordered_set>
 #include "misc/Constants.h"
 
 namespace SeriesUtils {
@@ -70,6 +71,20 @@ namespace SeriesUtils {
         for (auto &s : series)
             for (auto &p : s.series)
                 p = p / max;
+    }
+
+    static void ForcePositiveRange(std::vector<LabelledSeries> &series) {
+        std::unordered_set<int> labels;
+        for (const auto &dataPoint : series)
+            labels.emplace(dataPoint.label);
+        std::vector<int> labelPos;
+        for (const auto &label : labels)
+            labelPos.push_back(label);
+        std::sort(labelPos.begin(), labelPos.end());
+        for (uint i = 0; i < labelPos.size(); i++)
+            for (auto &dataPoint : series)
+                if (dataPoint.label == labelPos[i])
+                    dataPoint.label = i;
     }
 }
 

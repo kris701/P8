@@ -19,6 +19,7 @@ int main(int argc, char** argv) {
 
     id = Logger::Begin("Normalizing Data");
     SeriesUtils::MinMaxNormalize(data);
+    SeriesUtils::ForcePositiveRange(data);
     Logger::End(id);
 
     id = Logger::Begin("Shuffling Data");

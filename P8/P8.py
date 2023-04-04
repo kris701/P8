@@ -3,8 +3,7 @@ from DataVisualisers.ShapeletHistogramVisualiser import ShapeletHistogramVisuali
 from DataVisualisers.ResultsVisualiser import ResultsVisualiser
 from ResultsCombiners.CSVResultsCombiner import CSVResultsCombiner
 
-experiments = ["ArrowHead", "BME", "CBF", "Chinatown", "GunPoint", "GunPointAgeSpan", "GunPointOldVersusYoung", "ItalyPowerDemand", "MoteStrain", "Plane", "SonyAIBORobotSurface1", "SonyAIBORobotSurface2", "SyntheticControl", "ToeSegmentation1", "TwoLeadECG", "UMD", "Wine"]
-#experiments = ["ArrowHead", "BME", "CBF", "Chinatown", "ECG200", "GunPoint", "GunPointAgeSpan", "GunPointOldVersusYoung", "ItalyPowerDemand", "MoteStrain", "Plane", "SonyAIBORobotSurface1", "SonyAIBORobotSurface2", "SyntheticControl", "ToeSegmentation1", "TwoLeadECG", "UMD", "Wine"]
+experiments = ["ArrowHead", "BME", "CBF", "Chinatown", "ECG200", "GunPoint", "GunPointAgeSpan", "GunPointOldVersusYoung", "ItalyPowerDemand", "MoteStrain", "Plane", "SonyAIBORobotSurface1", "SonyAIBORobotSurface2", "SyntheticControl", "ToeSegmentation1", "TwoLeadECG", "UMD", "Wine"]
 
 expSuite = ExperimentSuite(experiments, "Experiments/Configs/Base.ini", "Ours")
 ourResults = expSuite.RunExperiments()
