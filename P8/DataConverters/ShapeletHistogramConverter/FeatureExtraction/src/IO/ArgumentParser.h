@@ -17,11 +17,14 @@ namespace ArgumentParsing {
         const uint minSampleSize;
         const uint maxSampleSize;
         const uint featureCount;
+        const std::vector<std::string> attributes;
         Arguments(const std::string &trainPath, const std::string &testPath, const std::string outPath, double split, double valTrainSplit,
-                  uint minWindowSize, uint maxWindowSize, uint minSampleSize, uint maxSampleSize, uint featureCount) :
+                  uint minWindowSize, uint maxWindowSize, uint minSampleSize, uint maxSampleSize, uint featureCount,
+                  std::vector<std::string> attributes) :
                   trainPath(trainPath), testPath(testPath), outPath(outPath), split(split), valtrainsplit(valTrainSplit),
                   minWindowSize(minWindowSize), maxWindowSize(maxWindowSize),
-                  minSampleSize(minSampleSize), maxSampleSize(maxSampleSize), featureCount(featureCount) {}
+                  minSampleSize(minSampleSize), maxSampleSize(maxSampleSize), featureCount(featureCount),
+                  attributes(attributes){}
     };
 
     Arguments ParseArguments(int argc, char **argv) {
@@ -37,6 +40,7 @@ namespace ArgumentParsing {
                 ("minSampleSize", "Minimum number of samples for each class in a given feature.", cxxopts::value<uint>() -> default_value("0"))
                 ("maxSampleSize", "Maximum number of samples for each class in a given feature. 0 for maximum possible", cxxopts::value<uint>() -> default_value("5"))
                 ("featureCount", "How many features to generate", cxxopts::value<uint>() -> default_value("128"))
+                ("attributes", "A given attribute", cxxopts::value<std::vector<std::string>>())
                 ("h,help", "Print usage")
                 ;
         auto result = options.parse(argc, argv);
@@ -45,6 +49,8 @@ namespace ArgumentParsing {
             std::cout << options.help() << std::endl;
             exit(0);
         }
+
+        printf("Attribute count: %zu\n", result.count("attribute"));
 
         try {
             return Arguments(
@@ -57,7 +63,8 @@ namespace ArgumentParsing {
                     result["maxWindowSize"].as<uint>(),
                     result["minSampleSize"].as<uint>(),
                     result["maxSampleSize"].as<uint>(),
-                    result["featureCount"].as<uint>()
+                    result["featureCount"].as<uint>(),
+                    result["attributes"].as<std::vector<std::string>>()
                     );
         } catch (const cxxopts::exceptions::option_has_no_value& e) {
             printf("\nMissing argument: %s\n", e.what());

@@ -6,6 +6,7 @@
 #include "src/IO/Logger.h"
 #include "src/IO/ArgumentParser.h"
 #include "src/utilities/FeatureUtils.h"
+#include "core/attributes/AttributeBuilder.h"
 
 int main(int argc, char** argv) {
     uint id = Logger::Begin("Parsing Arguments");
@@ -37,7 +38,8 @@ int main(int argc, char** argv) {
     id = Logger::Begin("Generating Feature Set");
     auto features = FeatureFinding::GenerateFeaturesFromSamples(
             trainMap, arguments.minWindowSize, arguments.maxWindowSize,
-            arguments.minSampleSize, arguments.maxSampleSize, arguments.featureCount);
+            arguments.minSampleSize, arguments.maxSampleSize, arguments.featureCount,
+            AttributeBuilder::GenerateAttributes(arguments.attributes));
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Points");

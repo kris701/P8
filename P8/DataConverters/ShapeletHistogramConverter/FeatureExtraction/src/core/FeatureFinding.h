@@ -14,20 +14,12 @@
 #include "WindowGeneration.h"
 #include "IO/Logger.h"
 #include "types/Feature.h"
-#include "types/attributes/Frequency.h"
-#include "types/attributes/MinDist.h"
-#include "types/attributes/RelFrequency.h"
+#include "core/attributes/Attribute.h"
 #include <thread>
 #include <future>
 
 namespace FeatureFinding {
-    const std::vector<Attribute*> attributes {
-            new Frequency(0.04),
-            new Frequency(0.4),
-            new MinDist()
-    }; // Intentionally not freed
-
-    [[nodiscard]] double EvaluateWindow(double priorEntropy, double bestScore, const ClassCount &counts, const Attribute *attribute,
+    [[nodiscard]] double EvaluateWindow(double priorEntropy, double bestScore, const ClassCount &counts, const std::shared_ptr<Attribute> attribute,
                                         const std::vector<LabelledSeries> &series, const Series &window) {
         std::map<double, ClassCount> valueCount; // At the given value, how many of each class
 
@@ -65,7 +57,8 @@ namespace FeatureFinding {
                                    uint startIndex,
                                    uint endIndex,
                                    std::shared_ptr<Feature> &optimalFeature,
-                                   std::mutex &featureMutex) {
+                                   std::mutex &featureMutex,
+                                   const std::vector<std::shared_ptr<Attribute>> &attributes) {
         double optimalGain = 0;
         for (uint i = startIndex; i < endIndex; i++) {
             const auto& window = windows.at(i);
@@ -85,7 +78,8 @@ namespace FeatureFinding {
 
     /// Multi-threaded. Evaluates each window in \p windows, in combination with each attribute
     /// \return Returns the feature with highest information gain. Can be nullptr if no valid feature found.
-    [[nodiscard]] std::shared_ptr<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows) {
+    [[nodiscard]] std::shared_ptr<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows,
+                                                              const std::vector<std::shared_ptr<Attribute>> &attributes) {
         if (series.size() < 2)
             throw std::logic_error("Cannot find features for less than two series.");
         if (windows.empty())
@@ -103,7 +97,7 @@ namespace FeatureFinding {
         for (uint i = 0; i < threadCount; i++) {
             const uint startIndex = i * (windows.size() / threadCount);
             const uint endIndex = (i + 1) * (windows.size() / threadCount);
-            threads[i] = std::thread([&, i] { FindOptimalFeature(series, count, entropy, windows, startIndex, endIndex, optimalFeature, featureMutex); } );
+            threads[i] = std::thread([&, i] { FindOptimalFeature(series, count, entropy, windows, startIndex, endIndex, optimalFeature, featureMutex, attributes); } );
         }
 
         for (uint i = 0; i < threadCount; i++)
@@ -121,7 +115,7 @@ namespace FeatureFinding {
     [[nodiscard]] std::vector<Feature> GenerateFeaturesFromSamples(const std::unordered_map<int, std::vector<Series>> &seriesMap,
                                                                    uint minWindowSize, uint maxWindowSize,
                                                                    uint minSampleSize, uint maxSampleSize,
-                                                                   uint featureCount) {
+                                                                   uint featureCount, std::vector<std::shared_ptr<Attribute>> attributes) {
         std::vector<Feature> features;
 
         for (uint i = 0; i < featureCount; i++) {
@@ -143,7 +137,7 @@ namespace FeatureFinding {
                 continue;
 
             // Generate feature based on samples
-            const auto feature = FindOptimalFeature(samples, WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize));
+            const auto feature = FindOptimalFeature(samples, WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize), attributes);
             if (feature != nullptr)
                 features.push_back(*feature);
         }
