@@ -13,7 +13,7 @@
 #include "InformationGain.h"
 #include "WindowGeneration.h"
 #include "IO/Logger.h"
-#include "../../include/indicators/indicators.hpp"
+#include "utilities/ProgressBarUtils.h"
 #include "types/Feature.h"
 #include "types/attributes/Frequency.h"
 #include "types/attributes/MinDist.h"
@@ -124,25 +124,10 @@ namespace FeatureFinding {
                                                                    uint featureCount, uint sampleSize) {
         std::vector<Feature> features;
 
-
-        using namespace indicators;
-        show_console_cursor(false);
-        ProgressBar bar{
-                option::BarWidth{50},
-                option::Start{"["},
-                option::Fill{"="},
-                option::Lead{">"},
-                option::Remainder{" "},
-                option::End{"]"},
-                option::FontStyles{std::vector<FontStyle>{FontStyle::bold}},
-                option::ShowElapsedTime{true},
-                option::ShowRemainingTime{true},
-                option::MaxProgress{featureCount}
-        };
         printf("\n");
+        ProgressBarUtils bar = ProgressBarUtils(featureCount, "Finding features");
 
         for (uint i = 0; i < featureCount; i++) {
-            bar.print_progress();
             std::vector<LabelledSeries> samples;
 
             // Retrieve n samples from each class
@@ -158,9 +143,9 @@ namespace FeatureFinding {
             const auto feature = FindOptimalFeature(samples, WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize));
             if (feature != nullptr)
                 features.push_back(*feature);
-            bar.tick();
+            bar.SetTo(i);
         }
-        show_console_cursor(true);
+        bar.End();
 
         return features;
     }
