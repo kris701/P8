@@ -40,7 +40,7 @@ namespace ArgumentParsing {
                 ("minSampleSize", "Minimum number of samples for each class in a given feature.", cxxopts::value<uint>() -> default_value("0"))
                 ("maxSampleSize", "Maximum number of samples for each class in a given feature. 0 for maximum possible", cxxopts::value<uint>() -> default_value("5"))
                 ("featureCount", "How many features to generate", cxxopts::value<uint>() -> default_value("128"))
-                ("attributes", "A given attribute", cxxopts::value<std::vector<std::string>>())
+                ("attributes", "A given attribute", cxxopts::value<std::vector<std::string>>() ->default_value("minDist"))
                 ("h,help", "Print usage")
                 ;
         auto result = options.parse(argc, argv);
