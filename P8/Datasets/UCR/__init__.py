@@ -54,7 +54,7 @@ class UCR(data.Dataset):
     def _index_classes(self, items):
         idx = {}
         for i in items:
-            index = i[i.find("data\\")+len("data\\"):i.rfind("\\")]
+            index = i[i.find("data" + os.sep)+len("data" + os.sep) + 1:i.rfind(os.sep) - 1]
             if not index in idx:
                 idx[index] = 1
             else:
@@ -65,7 +65,8 @@ class UCR(data.Dataset):
         item_path = os.path.join(self.root, item)
         f = open(item_path, 'r')
         result = f.read().split('\n')
-        result = result[:-1] #to get rid of the final empty line
+        if result[len(result) - 1] == "":
+            result = result[:-1] #to get rid of the final empty line
         f.close()
         result = list(map(float, result))
         return result

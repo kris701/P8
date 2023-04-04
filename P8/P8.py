@@ -9,7 +9,7 @@ experiments = ["Adiac", "Beef", "BeetleFly", "BirdChicken", "Coffee", "CricketX"
 #experiments = ["SwedishLeaf", "Beef", "CricketX", "ElectricDevices", "Wine"]
 #experiments = ["SwedishLeaf"]
 
-expSuite = ExperimentSuite(experiments, "Ours")
+expSuite = ExperimentSuite(experiments, "Experiments/Configs/Base.ini", "Ours")
 ourResults = expSuite.RunExperiments()
 
 combiner = CSVResultsCombiner();
