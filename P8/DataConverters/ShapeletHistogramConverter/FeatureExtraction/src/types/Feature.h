@@ -1,15 +1,15 @@
 #ifndef FEATUREEXTRACTION_FEATURE_H
 #define FEATUREEXTRACTION_FEATURE_H
 
-#include "attributes/Attribute.h"
+#include "core/attributes//Attribute.h"
 #include "misc/Constants.h"
 
 struct Feature {
     const double gain;
-    const Attribute *attribute;
+    const std::shared_ptr<Attribute> attribute;
     const std::vector<double> shapelet;
 
-    Feature(const std::vector<double> &shapelet, const Attribute *attribute, double gain)
+    Feature(const std::vector<double> &shapelet, const std::shared_ptr<Attribute> attribute, double gain)
             : shapelet(shapelet), attribute(attribute), gain(gain) {}
 };
 
