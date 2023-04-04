@@ -25,7 +25,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cxxopts)
 
 add_library(Sources INTERFACE
-        src/IO/FileHanding.h src/misc/Constants.h src/core/WindowGeneration.h src/utilities/SeriesUtils.h src/utilities/ProgressBarUtils.h src/core/InformationGain.h src/core/FeatureFinding.h src/IO/Logger.h
+        src/IO/FileHanding.h src/misc/Constants.h src/core/WindowGeneration.h src/utilities/SeriesUtils.h src/core/InformationGain.h src/core/FeatureFinding.h src/IO/Logger.h
         src/IO/ArgumentParser.h src/utilities/FeatureUtils.h src/types/attributes/Attribute.h src/types/Feature.h src/types/attributes/Frequency.h src/types/attributes/MinDist.h src/types/attributes/RelFrequency.h)
 
 add_executable(FeatureExtraction main.cpp

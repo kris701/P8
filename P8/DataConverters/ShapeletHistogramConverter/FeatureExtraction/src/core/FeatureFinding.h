@@ -13,7 +13,6 @@
 #include "InformationGain.h"
 #include "WindowGeneration.h"
 #include "IO/Logger.h"
-#include "utilities/ProgressBarUtils.h"
 #include "types/Feature.h"
 #include "types/attributes/Frequency.h"
 #include "types/attributes/MinDist.h"
@@ -124,10 +123,8 @@ namespace FeatureFinding {
                                                                    uint featureCount, uint sampleSize) {
         std::vector<Feature> features;
 
-        printf("\n");
-        ProgressBarUtils bar = ProgressBarUtils(featureCount, "Finding features");
-
         for (uint i = 0; i < featureCount; i++) {
+            Logger::Info("Generating: " + std::to_string(i + 1) + "/" + std::to_string(featureCount));
             std::vector<LabelledSeries> samples;
 
             // Retrieve n samples from each class
@@ -143,9 +140,7 @@ namespace FeatureFinding {
             const auto feature = FindOptimalFeature(samples, WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize));
             if (feature != nullptr)
                 features.push_back(*feature);
-            bar.SetTo(i);
         }
-        bar.End();
 
         return features;
     }
