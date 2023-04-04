@@ -79,7 +79,11 @@ class ExperimentSuite():
                     allVisual = visualizer.VisualizeAllClasses();
                     allVisual.savefig(os.path.join(self.ExperimentResultsDir, timestamp, expName, "allVisual.png"))
 
-                    if self.GenerateClassGraphs is True:
+                    if dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
+                        shapelets = visualizer.VisualiseShapelets();
+                        shapelets.savefig(os.path.join(self.ExperimentResultsDir, timestamp, expName, "allShapelets.png"))
+
+                    if self.GenerateClassGraphs is True and dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
                         for classId in os.listdir(os.path.join(dataLoaderOptions.FormatedFolder, "data")):
                             print("Generating class " + classId + " graph...")
                             classfig = visualizer.VisualizeClass(int(classId));

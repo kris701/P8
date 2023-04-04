@@ -27,9 +27,16 @@ class ShapeletHistogramVisualiser():
             shapeletAxis.plot(shapeletData[key])
             index += 1
             
+        transformed = {}
+        for key in shapeletData:
+            transformed[key] = []
+            index = int(key);
+            for sample in classData[classIndex]:
+                transformed[key].append(sample[index])
+
         sample_axis = fig.add_subplot(gs[:2, :])
-        for sample in classData[classIndex]:
-            sample_axis.plot(sample)
+        sample_axis.boxplot(transformed.values(), labels=transformed.keys())
+
         return fig
 
     def VisualizeAllClasses(self) -> plt.figure:
@@ -39,10 +46,34 @@ class ShapeletHistogramVisualiser():
         fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True)
         colIndex : int = 0;
         rowIndex : int = 0;
-        for key in classData:
-            ax[rowIndex, colIndex].title.set_text("Class id: " + str(key))
-            for sample in classData[key]:
-                ax[rowIndex, colIndex].plot(sample)
+        for classIndex in classData:
+            transformed = {}
+            for key in range(0, len(classData[classIndex][0])):
+                transformed[key] = []
+                index = int(key);
+                for sample in classData[classIndex]:
+                    transformed[key].append(sample[index])
+            
+            ax[rowIndex, colIndex].title.set_text("Class id: " + str(classIndex))
+            ax[rowIndex, colIndex].boxplot(transformed.values(), labels=transformed.keys())
+
+            colIndex += 1;
+            if colIndex >= cols:
+                colIndex = 0;
+                rowIndex += 1;
+        return fig;
+
+    def VisualiseShapelets(self) -> plt.figure:
+        shapeletData = self._GetShapeletData();
+        
+        rows, cols = self._GetPlotSize(len(shapeletData));
+        fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True)
+        colIndex : int = 0;
+        rowIndex : int = 0;
+        for shapeletIndex in shapeletData:           
+            ax[rowIndex, colIndex].title.set_text("Shapelet id: " + str(shapeletIndex))
+            ax[rowIndex, colIndex].plot(shapeletData[shapeletIndex])
+
             colIndex += 1;
             if colIndex >= cols:
                 colIndex = 0;
@@ -85,8 +116,8 @@ class ShapeletHistogramVisualiser():
 
     # https://stackoverflow.com/questions/16907526/how-to-maximize-grid-dimensions-given-the-number-of-elements
     def _GetPlotSize(self, nClasses) -> tuple[int,int]:
-        if nClasses <= 4:
-            return 2,2
+        if nClasses <= 9:
+            return 3,3
         tempSqrt = sqrt(nClasses)
         divisors = []
         currentDiv = 1
