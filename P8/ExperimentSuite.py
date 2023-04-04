@@ -14,12 +14,15 @@ class ExperimentSuite():
     ExperimentConfigDir : str = "Experiments/Configs";
     ExperimentResultsDir : str = "Experiments/Results";
     ExperimentsToRun : list;
+    ExperimentName : str = "Ours"
 
-    def __init__(self, experimentsToRun : list) -> None:
+    def __init__(self, experimentsToRun : list, experimentName : str) -> None:
         self.ExperimentsToRun = experimentsToRun
+        self.ExperimentName = experimentName
 
-    def RunExperiments(self):
+    def RunExperiments(self) -> dict:
         print("Running experiments...")
+        results = {};
         timestamp = time.strftime("%Y%m%d-%H%M%S")
         os.makedirs(os.path.join(self.ExperimentResultsDir, timestamp))
 
@@ -50,6 +53,7 @@ class ExperimentSuite():
 
                 print("Testing Model")
                 bestTestAcc = protonet.Test();
+                results[expName] = bestTestAcc;
                 print("Avg test acc: " + str(bestTestAcc))
 
                 print("Copying dataset...")
@@ -58,6 +62,7 @@ class ExperimentSuite():
                 csvWriter.writerow([expName, dataLoaderOptions.UseConverter, protonetOptions.trainer_name, bestTrainAcc, bestTestAcc])
 
         print("Experiments finished!")
+        return {self.ExperimentName: results};
 
     def _ParseConfigIntoObject(self, configName, sectionName, obj) -> None:
         config = configparser.RawConfigParser()
