@@ -20,6 +20,7 @@ class DataConverterOptions():
     featureCount : int = 128;
     minSampleSize : int = 0;
     maxSampleSize : int = 5;
+    attributes : str = "minDist";
 
     def VerifySettings(self):
         if not os.path.isfile(self.SourceTrainData): raise Exception("Source train dataset not found: '" + self.SourceTrainData + "'")
