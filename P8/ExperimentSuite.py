@@ -31,6 +31,8 @@ class ExperimentSuite():
             csvWriter.writerow(['Experiment Name', 'Feature Extractor', 'Net Trainer', 'Best train accuracy', 'Best test accuracy'])
 
             for expName in self.ExperimentsToRun:
+                print("   === " + expName + " started ===   ")
+
                 configName = os.path.join(self.ExperimentConfigDir, expName + ".ini")
 
                 dataLoaderOptions = DataConverterOptions()
@@ -60,6 +62,8 @@ class ExperimentSuite():
                 shutil.make_archive(os.path.join(self.ExperimentResultsDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
 
                 csvWriter.writerow([expName, dataLoaderOptions.UseConverter, protonetOptions.trainer_name, bestTrainAcc, bestTestAcc])
+
+                print("   === " + expName + " ended ===   ")
 
         print("Experiments finished!")
         return {self.ExperimentName: results};

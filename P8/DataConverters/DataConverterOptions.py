@@ -18,7 +18,8 @@ class DataConverterOptions():
     minWindowSize : int = 2;
     maxWindowSize : int = 4;
     featureCount : int = 128;
-    sampleSize : int = 3;
+    minSampleSize : int = 0;
+    maxSampleSize : int = 5;
 
     def VerifySettings(self):
         if not os.path.isfile(self.SourceTrainData): raise Exception("Source train dataset not found: '" + self.SourceTrainData + "'")

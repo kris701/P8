@@ -120,21 +120,27 @@ namespace FeatureFinding {
     /// \return A list of features. Can be empty if no valid features are found.
     [[nodiscard]] std::vector<Feature> GenerateFeaturesFromSamples(const std::unordered_map<int, std::vector<Series>> &seriesMap,
                                                                    uint minWindowSize, uint maxWindowSize,
-                                                                   uint featureCount, uint sampleSize) {
+                                                                   uint minSampleSize, uint maxSampleSize,
+                                                                   uint featureCount) {
         std::vector<Feature> features;
 
         for (uint i = 0; i < featureCount; i++) {
             Logger::Info("Generating: " + std::to_string(i + 1) + "/" + std::to_string(featureCount));
             std::vector<LabelledSeries> samples;
+            uint diffClassCount = 0; // How many classes are included in the feature
 
             // Retrieve n samples from each class
             for (const auto &seriesSet : seriesMap) {
                 std::vector<Series> tempSamples;
-                const uint tempSampleSize = std::min(sampleSize, (uint) seriesSet.second.size()); // If sampleSize is larger than the number of available data points, set to max possible
-                std::sample(seriesSet.second.begin(), seriesSet.second.end(), std::back_inserter(tempSamples), tempSampleSize, rd);
+                const uint sampleSize = (rand() % ((maxSampleSize == 0) ? seriesSet.second.size() : maxSampleSize)) + minSampleSize;
+                std::sample(seriesSet.second.begin(), seriesSet.second.end(), std::back_inserter(tempSamples), sampleSize, rd);
                 for (const auto &sample : tempSamples)
                     samples.emplace_back(seriesSet.first, sample);
+                if (!tempSamples.empty())
+                    diffClassCount++;
             }
+            if (diffClassCount < 2)
+                continue;
 
             // Generate feature based on samples
             const auto feature = FindOptimalFeature(samples, WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize));
