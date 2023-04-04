@@ -9,6 +9,9 @@ from DataConverters import DataConverterBuilder
 from NetTrainers.NetOptions import NetOptions
 from NetTrainers import NetTrainerBuilder
 from Datasets import DatasetBuilder
+from DataVisualisers.ShapeletHistogramVisualiser import ShapeletHistogramVisualiser
+from DataVisualisers.ResultsVisualiser import ResultsVisualiser
+from ResultsCombiners.CSVResultsCombiner import CSVResultsCombiner
 
 class ExperimentSuite():
     ExperimentConfigDir : str = "Experiments/Configs";
@@ -16,11 +19,15 @@ class ExperimentSuite():
     ExperimentsToRun : list;
     ExperimentName : str = "Ours"
     BaseConfig : str = "Experiments/Configs/Base.ini"
+    GenerateGraphs : bool = False
+    GenerateClassGraphs : bool = False
 
-    def __init__(self, experimentsToRun : list, baseConfig : str, experimentName : str) -> None:
+    def __init__(self, experimentsToRun : list, baseConfig : str, experimentName : str, generateGraphs : bool, generateClassGraphs : bool) -> None:
         self.ExperimentsToRun = experimentsToRun
         self.ExperimentName = experimentName
         self.BaseConfig = baseConfig
+        self.GenerateGraphs = generateGraphs
+        self.GenerateClassGraphs = generateClassGraphs
 
     def RunExperiments(self) -> dict:
         print("Running experiments...")
@@ -66,10 +73,34 @@ class ExperimentSuite():
                 print("Copying dataset...")
                 shutil.make_archive(os.path.join(self.ExperimentResultsDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
 
+                if self.GenerateGraphs is True:
+                    print("Generating graphs...")
+                    visualizer = ShapeletHistogramVisualiser(dataLoaderOptions.FormatedFolder)
+                    allVisual = visualizer.VisualizeAllClasses();
+                    allVisual.savefig(os.path.join(self.ExperimentResultsDir, timestamp, expName, "allVisual.png"))
+
+                    if self.GenerateClassGraphs is True:
+                        for classId in os.listdir(os.path.join(dataLoaderOptions.FormatedFolder, "data")):
+                            print("Generating class " + classId + " graph...")
+                            classfig = visualizer.VisualizeClass(int(classId));
+                            classfig.savefig(os.path.join(self.ExperimentResultsDir, timestamp, expName, "class" + classId + ".png"))
+
                 csvWriter.writerow([expName, dataLoaderOptions.UseConverter, protonetOptions.trainer_name, bestTrainAcc, bestTestAcc])
 
                 print("   === " + expName + " ended ===   ")
                 counter += 1;
+
+        if self.GenerateGraphs is True:
+            print("Generating full experiment graphs...")
+            combiner = CSVResultsCombiner();
+            fullResults = combiner.Combine(
+                ["../ComparisonData/6shot.csv"],
+                [{self.ExperimentName: results}],
+                True
+                );
+            fullVisualiser = ResultsVisualiser();
+            full = fullVisualiser.VisualiseAll(fullResults);
+            full.savefig(os.path.join(self.ExperimentResultsDir, timestamp, "accuracies.png"))
 
         print("Experiments finished!")
         return {self.ExperimentName: results};

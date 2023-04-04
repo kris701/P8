@@ -9,7 +9,7 @@ class ShapeletHistogramVisualiser():
     def __init__(self, datasetPath : str) -> None:
         self.DatasetPath = datasetPath.replace("/",os.sep).replace("\\",os.sep)
 
-    def VisualizeClass(self, classIndex):
+    def VisualizeClass(self, classIndex) -> plt.figure:
         classData = self._GetClassData();
         shapeletData = self._GetShapeletData();
         featureData = self._GetFeatureData();
@@ -30,11 +30,9 @@ class ShapeletHistogramVisualiser():
         sample_axis = fig.add_subplot(gs[:2, :])
         for sample in classData[classIndex]:
             sample_axis.plot(sample)
-        plt.show();
+        return fig
 
-        pass
-
-    def VisualizeAllClasses(self):
+    def VisualizeAllClasses(self) -> plt.figure:
         classData = self._GetClassData();
         
         rows, cols = self._GetPlotSize(len(classData));
@@ -49,7 +47,7 @@ class ShapeletHistogramVisualiser():
             if colIndex >= cols:
                 colIndex = 0;
                 rowIndex += 1;
-        plt.show();
+        return fig;
 
     def _GetClassData(self) -> dict:
         data = {};
@@ -87,6 +85,8 @@ class ShapeletHistogramVisualiser():
 
     # https://stackoverflow.com/questions/16907526/how-to-maximize-grid-dimensions-given-the-number-of-elements
     def _GetPlotSize(self, nClasses) -> tuple[int,int]:
+        if nClasses <= 4:
+            return 2,2
         tempSqrt = sqrt(nClasses)
         divisors = []
         currentDiv = 1
