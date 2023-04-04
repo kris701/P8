@@ -7,9 +7,11 @@ class CSVResultsCombiner():
 
         for item in dictSources:
             for key in item:
-                fullResults[key] = item[key]
+                fullResults[key] = {}
+                for dataset in item[key]:
+                    fullResults[key][dataset.lower()] = item[key][dataset]
                 for key2 in item[key]:
-                    acceptedDatasets.append(key2);
+                    acceptedDatasets.append(key2.lower());
 
         for source in fileSources:
             csvData = pd.read_csv(source).to_dict();
@@ -21,13 +23,13 @@ class CSVResultsCombiner():
                         if setValue not in fullResults:
                             fullResults[setValue] = {}
                         for datapoint in csvData[setValue]:
-                            fullResults[setValue][datasetIDs[datapoint]] = csvData[setValue][datapoint]
+                            fullResults[setValue][datasetIDs[datapoint].lower()] = csvData[setValue][datapoint]
                     else:
                         if setValue not in fullResults:
                             fullResults[setValue] = {}
                         for datapoint in csvData[setValue]:
-                            if datasetIDs[datapoint] in acceptedDatasets:
-                                fullResults[setValue][datasetIDs[datapoint]] = csvData[setValue][datapoint]
+                            if datasetIDs[datapoint].lower() in acceptedDatasets:
+                                fullResults[setValue][datasetIDs[datapoint].lower()] = csvData[setValue][datapoint]
 
 
         return fullResults

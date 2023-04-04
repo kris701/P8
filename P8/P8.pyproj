@@ -130,12 +130,9 @@
     <Content Include="Experiments\Configs\Coffee.ini" />
     <Content Include="Experiments\Configs\CricketX.ini" />
     <Content Include="Experiments\Configs\Beef.ini" />
-    <Content Include="Experiments\Configs\ECH200.ini" />
     <Content Include="Experiments\Configs\ElectricDevices.ini" />
     <Content Include="Experiments\Configs\FaceAll.ini" />
     <Content Include="Experiments\Configs\FaceFour.ini" />
-    <Content Include="Experiments\Configs\FordA.ini" />
-    <Content Include="Experiments\Configs\FordB.ini" />
     <Content Include="Experiments\Configs\MedicalImages.ini" />
     <Content Include="Experiments\Configs\StrawBerry.ini" />
     <Content Include="Experiments\Configs\SyntheticControl.ini" />

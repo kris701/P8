@@ -3,8 +3,8 @@ from DataVisualisers.ShapeletHistogramVisualiser import ShapeletHistogramVisuali
 from DataVisualisers.ResultsVisualiser import ResultsVisualiser
 from ResultsCombiners.CSVResultsCombiner import CSVResultsCombiner
 
-experiments = ["Adiac", "Beef", "BeetleFly", "BirdChicken", "Coffee", "CricketX", "ECH200", "ElectricDevices", "FaceAll",
-               "FaceFour", "FordA", "FordB", "MedicalImages", "StrawBerry", "SwedishLeaf", "SyntheticControl", "TwoPatterns",
+experiments = ["Adiac", "Beef", "BeetleFly", "BirdChicken", "Coffee", "CricketX", "ElectricDevices", "FaceAll",
+               "FaceFour", "MedicalImages", "StrawBerry", "SwedishLeaf", "SyntheticControl", "TwoPatterns",
                "Wine", "Yoga"]
 #experiments = ["SwedishLeaf", "Beef", "CricketX", "ElectricDevices", "Wine"]
 #experiments = ["SwedishLeaf"]
