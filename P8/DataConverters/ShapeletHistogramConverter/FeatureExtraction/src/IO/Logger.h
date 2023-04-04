@@ -12,6 +12,7 @@ class Logger {
 public:
     static uint Begin(const std::string &desc);
     static int64_t End(uint id);
+    static void Info(const std::string &desc);
 
 private:
     struct LogPoint {
@@ -23,6 +24,7 @@ private:
         // End time
         std::chrono::steady_clock::time_point eTime;
         int64_t time = 0;
+        explicit LogPoint(const std::string &desc) : desc(desc), finished(true) {}
         LogPoint(const std::string &desc, std::chrono::steady_clock::time_point iTime) : desc(desc), iTime(iTime) {}
         LogPoint(const std::string &desc, std::chrono::steady_clock::time_point iTime, uint parent) :
             desc(desc), iTime(iTime), parent(parent) {}
@@ -71,6 +73,19 @@ int64_t Logger::End(uint id) {
     std::cout << " (" << std::to_string(logPoint->time) << "ms)" << std::endl << std::flush;
 
     return logPoint->time;
+}
+
+void Logger::Info(const std::string &desc) {
+    currentId++;
+
+    logPoints.emplace_back(desc);
+
+    if (logPoints.size() > 1 && !logPoints.at(logPoints.size() - 2).finished)
+        std::cout << std::endl << std::flush;
+    for (uint i = 0; i < currentIndent; i++)
+        std::cout << '\t';
+
+    std::cout << desc << std::endl;
 }
 
 
