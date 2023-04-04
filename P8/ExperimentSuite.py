@@ -15,10 +15,12 @@ class ExperimentSuite():
     ExperimentResultsDir : str = "Experiments/Results";
     ExperimentsToRun : list;
     ExperimentName : str = "Ours"
+    BaseConfig : str = "Experiments/Configs/Base.ini"
 
-    def __init__(self, experimentsToRun : list, experimentName : str) -> None:
+    def __init__(self, experimentsToRun : list, baseConfig : str, experimentName : str) -> None:
         self.ExperimentsToRun = experimentsToRun
         self.ExperimentName = experimentName
+        self.BaseConfig = baseConfig
 
     def RunExperiments(self) -> dict:
         print("Running experiments...")
@@ -36,6 +38,7 @@ class ExperimentSuite():
                 configName = os.path.join(self.ExperimentConfigDir, expName + ".ini")
 
                 dataLoaderOptions = DataConverterOptions()
+                self._ParseConfigIntoObject(self.BaseConfig, "DATACONVERTER", dataLoaderOptions)
                 self._ParseConfigIntoObject(configName, "DATACONVERTER", dataLoaderOptions)
                 dataLoaderOptions.VerifySettings();
                 dataConverter = DataConverterBuilder.GetDataConverter(dataLoaderOptions.UseConverter)(dataLoaderOptions)
@@ -44,6 +47,7 @@ class ExperimentSuite():
                 dataConverter.ConvertData()
 
                 protonetOptions = NetOptions()
+                self._ParseConfigIntoObject(self.BaseConfig, "NETTRAINER", protonetOptions)
                 self._ParseConfigIntoObject(configName, "NETTRAINER", protonetOptions)
                 protonetOptions.VerifySettings();
                 protonetOptions.experiment_root = os.path.join(self.ExperimentResultsDir, timestamp, expName)

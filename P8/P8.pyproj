@@ -124,6 +124,7 @@
     <Content Include="Data\SwedishLeaf\README.md" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TEST.tsv" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TRAIN.tsv" />
+    <Content Include="Experiments\Configs\Base.ini" />
     <Content Include="Experiments\Configs\Adiac.ini" />
     <Content Include="Experiments\Configs\BeetleFly.ini" />
     <Content Include="Experiments\Configs\BirdChicken.ini" />
