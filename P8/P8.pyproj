@@ -23,6 +23,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ResultsCombiners\CSVResultsCombiner.py" />
     <Compile Include="DataConverters\BaseDataConverter.py" />
     <Compile Include="DataConverters\DataConverterBuilder.py" />
     <Compile Include="DataConverters\DataConverterOptions.py" />
@@ -34,6 +35,7 @@
     <Compile Include="Datasets\UCR\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DataVisualisers\ResultsVisualiser.py" />
     <Compile Include="DataVisualisers\ShapeletHistogramVisualiser.py" />
     <Compile Include="ExperimentSuite.py" />
     <Compile Include="NetTrainers\BaseNetTrainer.py" />
@@ -88,6 +90,7 @@
     <Folder Include="NetTrainers\ProtoNetTrainer\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\Backbones\" />
     <Folder Include="DataVisualisers\" />
+    <Folder Include="ResultsCombiners\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataConverters\readme.md" />

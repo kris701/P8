@@ -1,13 +1,25 @@
 from ExperimentSuite import ExperimentSuite
 from DataVisualisers.ShapeletHistogramVisualiser import ShapeletHistogramVisualiser
+from DataVisualisers.ResultsVisualiser import ResultsVisualiser
+from ResultsCombiners.CSVResultsCombiner import CSVResultsCombiner
 
-#experiments = ["SwedishLeaf", "Beef", "CricketX", "ElectricDevices", "Wine"]
-experiments = ["SwedishLeaf"]
+experiments = ["SwedishLeaf", "Beef", "CricketX", "ElectricDevices", "Wine"]
+#experiments = ["SwedishLeaf"]
 
-expSuite = ExperimentSuite(experiments)
-expSuite.RunExperiments()
+expSuite = ExperimentSuite(experiments, "Ours")
+ourResults = expSuite.RunExperiments()
 
-print("Visualizing swedish leafs")
-visualizer = ShapeletHistogramVisualiser(".\\Formatted\\SwedishLeaf");
-visualizer.VisualizeAllClasses();
-visualizer.VisualizeClass(1);
+combiner = CSVResultsCombiner();
+fullResults = combiner.Combine(
+    ["../ComparisonData/5shot.csv"],
+    [ourResults],
+    True
+    );
+
+fullVisualiser = ResultsVisualiser();
+fullVisualiser.VisualiseAll(fullResults);
+
+#print("Visualizing swedish leafs")
+#visualizer = ShapeletHistogramVisualiser(".\\Formatted\\SwedishLeaf");
+#visualizer.VisualizeAllClasses();
+#visualizer.VisualizeClass(1);
