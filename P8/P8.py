@@ -3,8 +3,8 @@ from DataVisualisers.ShapeletHistogramVisualiser import ShapeletHistogramVisuali
 from DataVisualisers.ResultsVisualiser import ResultsVisualiser
 from ResultsCombiners.CSVResultsCombiner import CSVResultsCombiner
 
-#experiments = ["SwedishLeaf", "Beef", "CricketX", "ElectricDevices", "Wine"]
-experiments = ["SwedishLeaf", "ElectricDevices"]
+experiments = ["SwedishLeaf", "Beef", "CricketX", "ElectricDevices", "Wine"]
+#experiments = ["SwedishLeaf"]
 
 expSuite = ExperimentSuite(experiments, "Ours")
 ourResults = expSuite.RunExperiments()
