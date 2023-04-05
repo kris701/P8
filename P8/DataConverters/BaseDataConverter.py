@@ -7,9 +7,11 @@ from .DataConverterOptions import DataConverterOptions
 
 class BaseDataConverter(object):
     Options : DataConverterOptions = None;
-    
-    def __init__(self, options : DataConverterOptions) -> None:
+    DebugMode : bool = False
+
+    def __init__(self, options : DataConverterOptions, debugMode : bool = False) -> None:
         self.Options = options
+        self.DebugMode = debugMode
 
     def ConvertData(self):
         raise Exception("Not Implemented!")
@@ -24,7 +26,8 @@ class BaseDataConverter(object):
         return file_checksum.replace("\n","") == this_checksum
 
     def PurgeOutputFolder(self):
-        print("Purging old dataset")
+        if self.DebugMode is True:
+            print("Purging old dataset")
         if os.path.isdir(self.Options.FormatedFolder):
             shutil.rmtree(self.Options.FormatedFolder);
 
