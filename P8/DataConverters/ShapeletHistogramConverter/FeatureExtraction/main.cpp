@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include "src/IO/FileHanding.h"
-#include "src/core/FeatureFinding.h"
+#include "core/feature_finding/FeatureFinding.h"
 #include "src/utilities/SeriesUtils.h"
 #include "src/IO/Logger.h"
 #include "src/IO/ArgumentParser.h"

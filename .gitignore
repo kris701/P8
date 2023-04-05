@@ -378,6 +378,7 @@ P8/Data/*
 .idea
 *cmake-build-debug*
 *cmake-build-release*
+*cmake-build-relwithdebinfo*
 
 P8/DataConverters/ShapeletHistogramConverter/checksum/**
 P8/DataConverters/ShapeletHistogramConverter/FeatureExtraction/include/**
