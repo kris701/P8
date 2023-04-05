@@ -113,22 +113,8 @@ class ShapeletHistogramVisualiser():
         csvData = pd.read_csv(featureDataCsv);
         featureData = csvData.to_dict();
         return featureData
-
-    # https://stackoverflow.com/questions/16907526/how-to-maximize-grid-dimensions-given-the-number-of-elements
-    def _GetPlotSize(self, nClasses) -> tuple[int,int]:
-        if nClasses <= 9:
-            return 3,3
-        tempSqrt = sqrt(nClasses)
-        divisors = []
-        currentDiv = 1
-        for currentDiv in range(nClasses):
-            if nClasses % float(currentDiv + 1) == 0:
-             divisors.append(currentDiv+1)
-
-        hIndex = min(range(len(divisors)), key=lambda i: abs(divisors[i]-sqrt(nClasses)))
     
-        if divisors[hIndex]*divisors[hIndex] == nClasses:
-            return divisors[hIndex], divisors[hIndex]
-        else:
-            wIndex = hIndex + 1
-            return divisors[hIndex], divisors[wIndex]
+    def _GetPlotSize(self, nClasses) -> tuple[int,int]:
+        for n in range (2, 99999):
+            if nClasses <= n * n:
+                return n,n
