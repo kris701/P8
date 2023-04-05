@@ -26,9 +26,9 @@ namespace AttributeBuilder {
 
         for (const auto &att : stringAttributes) {
             std::string name;
-            for (uint i = 0; i < att.size(); i++)
-                if (std::isalpha(att[i]))
-                    name += att[i];
+            for (char c : att)
+                if (std::isalpha(c))
+                    name += c;
                 else
                     break;
 

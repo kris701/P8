@@ -23,10 +23,6 @@ namespace InformationGain {
         return CalculateEntropy(std::accumulate(counts.begin(), counts.end(), (uint) 0), counts);
     }
 
-    [[nodiscard]] static inline double CalculateEntropy(const std::vector<LabelledSeries> &series) {
-        return CalculateEntropy(series.size(), SeriesUtils::GetCount(series));
-    }
-
     [[nodiscard]] static std::pair<ClassCount , ClassCount> GetSplit (const std::map<double, ClassCount> &values, double splitPoint) {
         ClassCount lowerCount { 0 };
         ClassCount upperCount { 0 };

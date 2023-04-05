@@ -33,7 +33,7 @@ namespace FeatureFinding {
         for (uint i = startIndex; i < endIndex; i++) {
             const auto& window = windows.at(i);
             for (const auto &attribute: attributes) {
-                const double gain = EvaluateWindow(entropy, optimalGain, counts, attribute, series, window);
+                const double gain = Evaluation::EvaluateWindow(entropy, optimalGain, counts, attribute, series, window);
 
                 if (gain > optimalGain) {
                     while (!featureMutex.try_lock()){}

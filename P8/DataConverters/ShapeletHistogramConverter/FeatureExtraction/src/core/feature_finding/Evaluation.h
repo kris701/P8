@@ -12,13 +12,12 @@
 #include "types/Feature.h"
 #include "core/attributes/Attribute.h"
 
-namespace FeatureFinding {
+namespace FeatureFinding::Evaluation {
     [[nodiscard]] static bool EntropyPrune(double bestScore, double priorEntropy,
                                            std::map<double, ClassCount> &valueCount, ClassCount &diff) {
         if (valueCount.size() < 2) // No split point at single value
             return false;
 
-        // Early entropy pruning
         const double optimalSplitPoint = InformationGain::GetOptimalSplitPoint(valueCount);
         const auto split = InformationGain::GetSplit(valueCount, optimalSplitPoint);
         for (int i = 0; i < MAX_CLASSES; i++) // Adds the rest of the values optimally
