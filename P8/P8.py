@@ -8,7 +8,7 @@ def main():
     #experiments = ["ArrowHead"]
 
     expSuite = ExperimentSuite(experiments, "Experiments/Configs/Base.ini", "Ours", True, False)
-    expSuite.RunExperiments(False)
+    expSuite.RunExperiments(True)
 
 if __name__ == '__main__':
     main()
