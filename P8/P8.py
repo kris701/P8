@@ -5,7 +5,7 @@ from ResultsCombiners.CSVResultsCombiner import CSVResultsCombiner
 
 experiments = ["ArrowHead", "BME", "CBF", "Chinatown", "ECG200", "GunPoint", "GunPointAgeSpan", "GunPointOldVersusYoung", "ItalyPowerDemand", "MoteStrain", "Plane", "SonyAIBORobotSurface1", "SonyAIBORobotSurface2", "SyntheticControl", "ToeSegmentation1", "TwoLeadECG", "UMD", "Wine"]
 
-expSuite = ExperimentSuite(experiments, "Experiments/Configs/Base.ini", "Ours")
+expSuite = ExperimentSuite(experiments, "Experiments/Configs/BaseConfigs/6ShotProtonet.ini", "Ours")
 ourResults = expSuite.RunExperiments()
 
 combiner = CSVResultsCombiner();
