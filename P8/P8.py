@@ -12,7 +12,7 @@ def main():
         "Experiments/Configs/Base.ini", 
         "Ours", 
         True, 
-        True,
+        False,
         ["../ComparisonData/6shot.csv"])
     expSuite.RunExperiments(True)
 
