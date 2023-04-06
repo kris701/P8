@@ -1,5 +1,6 @@
 import os
 import csv
+from symbol import comparison
 import time
 import configparser
 import shutil
@@ -22,13 +23,15 @@ class ExperimentSuite():
     BaseConfig : str = "Experiments/Configs/Base.ini"
     GenerateGraphs : bool = False
     GenerateClassGraphs : bool = False
+    ComparisonData : list = []
 
-    def __init__(self, experimentsToRun : list, baseConfig : str, experimentName : str, generateGraphs : bool, generateClassGraphs : bool) -> None:
+    def __init__(self, experimentsToRun : list, baseConfig : str, experimentName : str, generateGraphs : bool, generateClassGraphs : bool, comparisonData : list) -> None:
         self.ExperimentsToRun = experimentsToRun
         self.ExperimentName = experimentName
         self.BaseConfig = baseConfig
         self.GenerateGraphs = generateGraphs
         self.GenerateClassGraphs = generateClassGraphs
+        self.ComparisonData = comparisonData
 
     def RunExperiments(self, debugMode : bool = False) -> dict:
         print("Running experiments...")
@@ -67,7 +70,7 @@ class ExperimentSuite():
             print("Generating full experiment graphs...")
             combiner = CSVResultsCombiner();
             fullResults = combiner.Combine(
-                ["../ComparisonData/6shot.csv"],
+                self.ComparisonData,
                 [{self.ExperimentName: results}],
                 True
                 );
