@@ -7,8 +7,8 @@ from ..BaseDataConverter import BaseDataConverter
 from ..DataConverterOptions import DataConverterOptions
 
 class DirectDataConverter(BaseDataConverter):
-    def __init__(self, options: DataConverterOptions) -> None:
-        super().__init__(options)
+    def __init__(self, options: DataConverterOptions, debugMode : bool = False) -> None:
+        super().__init__(options, debugMode)
 
     def _load_data(self, fp): #load the data and sort into a list of classes, each class containing a list of dataframes, each of which is a time series
         df = pd.read_csv(fp, delimiter="\t", header=None)
@@ -75,14 +75,17 @@ class DirectDataConverter(BaseDataConverter):
         if not self.HaveConvertedBefore():
             self.PurgeOutputFolder();
 
-            print("Formating dataset. This may take a while...")
+            if self.DebugMode is True:
+                print("Formating dataset. This may take a while...")
             formated = self._formatData(self.Options.SourceTrainData, self.Options.SourceTestData)
             self._write_data(formated, self.Options.FormatedFolder)
             self._create_splits(self.Options.FormatedFolder, int(len(formated) * (1 - self.Options.TestClassesSplit)), self.Options.TrainValSplit)
             self.OutputChecksum();
-            print("Formating complete!")
+            if self.DebugMode is True:
+                print("Formating complete!")
         else:
-            print("Dataset already formated!")
+            if self.DebugMode is True:
+                print("Dataset already formated!")
 
 
 

@@ -21,8 +21,8 @@ class NetTrainer(BaseNetTrainer):
     _isTrained : bool = False;
     BestModel : nn.Module = None;
 
-    def __init__(self, options: NetOptions, dataset: data.Dataset):
-        super().__init__(options, dataset)
+    def __init__(self, options: NetOptions, dataset: data.Dataset, debugMode : bool):
+        super().__init__(options, dataset, debugMode)
         
         self.Dataset = dataset;
 
@@ -162,7 +162,7 @@ class NetTrainer(BaseNetTrainer):
         best_model_path = os.path.join(self.Options.experiment_root, 'best_model.pth')
         last_model_path = os.path.join(self.Options.experiment_root, 'last_model.pth')
 
-        pbar1 = tqdm(range(self.Options.train_epochs), desc='Loading...', position=0, colour="red")
+        pbar1 = tqdm(range(self.Options.train_epochs), desc='Loading...', position=0, colour="red", disable=not self.DebugMode)
         for epoch in pbar1:
             pbar1.set_description('Epoch {}, (Best Acc: {:0.2f})'.format(epoch + 1, best_acc), refresh=True);
 
@@ -172,7 +172,7 @@ class NetTrainer(BaseNetTrainer):
             # Train
             tr_iter = iter(tr_dataloader)
             model.train()
-            pbar2 = tqdm(tr_iter, desc='   Initializing model...', leave=False, position=1, colour="green")
+            pbar2 = tqdm(tr_iter, desc='   Initializing model...', leave=False, position=1, colour="green", disable=not self.DebugMode)
             for batch in pbar2:
                 optim.zero_grad()
                 x, y = batch
@@ -197,7 +197,7 @@ class NetTrainer(BaseNetTrainer):
                 continue
             val_iter = iter(val_dataloader)
             model.eval()
-            pbar2 = tqdm(val_iter, desc='   Initializing model...', leave=False, position=1, colour="blue")
+            pbar2 = tqdm(val_iter, desc='   Initializing model...', leave=False, position=1, colour="blue", disable=not self.DebugMode)
             for batch in pbar2:
                 x, y = batch
                 x, y = x.to(device), y.to(device)
@@ -216,7 +216,8 @@ class NetTrainer(BaseNetTrainer):
 
         torch.save(model.state_dict(), last_model_path)
 
-        print("Outputting best model to '{}'".format(self.Options.experiment_root))
+        if self.DebugMode is True:
+            print("Outputting best model to '{}'".format(self.Options.experiment_root))
         for name in ['train_loss', 'train_acc', 'val_loss', 'val_acc']:
             self._save_list_to_file(os.path.join(self.Options.experiment_root,
                                            name + '.txt'), locals()[name])
@@ -243,7 +244,7 @@ class NetTrainer(BaseNetTrainer):
 
         device = self._getDevice()
         avg_acc = list()
-        pbar1 = tqdm(range(self.Options.test_epochs), desc='Loading...', position=0, colour="red")
+        pbar1 = tqdm(range(self.Options.test_epochs), desc='Loading...', position=0, colour="red", disable=not self.DebugMode)
         for epoch in pbar1:
             pbar1.set_description('Epoch {}'.format(epoch + 1), refresh=True);
             test_iter = iter(test_dataloader)

@@ -3,7 +3,7 @@ import numpy as np
 
 class ResultsVisualiser():
 
-    def VisualiseAll(self, data):
+    def VisualiseAll(self, data) -> plt.figure:
         datasetTotal = []
         for key in data:
             for key2 in data[key]:
@@ -35,5 +35,4 @@ class ResultsVisualiser():
         ax.set_ylim(0, 1)
         ax.set_ylabel('Accuracy')
         ax.legend(loc='right')
-        plt.title("Accuracy Results")
-        plt.show()
+        return fig

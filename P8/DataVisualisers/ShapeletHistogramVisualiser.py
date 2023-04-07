@@ -9,7 +9,7 @@ class ShapeletHistogramVisualiser():
     def __init__(self, datasetPath : str) -> None:
         self.DatasetPath = datasetPath.replace("/",os.sep).replace("\\",os.sep)
 
-    def VisualizeClass(self, classIndex):
+    def VisualizeClass(self, classIndex) -> plt.figure:
         classData = self._GetClassData();
         shapeletData = self._GetShapeletData();
         featureData = self._GetFeatureData();
@@ -27,29 +27,58 @@ class ShapeletHistogramVisualiser():
             shapeletAxis.plot(shapeletData[key])
             index += 1
             
+        transformed = {}
+        for key in shapeletData:
+            transformed[key] = []
+            index = int(key);
+            for sample in classData[classIndex]:
+                transformed[key].append(sample[index])
+
         sample_axis = fig.add_subplot(gs[:2, :])
-        for sample in classData[classIndex]:
-            sample_axis.plot(sample)
-        plt.show();
+        sample_axis.boxplot(transformed.values(), labels=transformed.keys())
 
-        pass
+        return fig
 
-    def VisualizeAllClasses(self):
+    def VisualizeAllClasses(self) -> plt.figure:
         classData = self._GetClassData();
         
         rows, cols = self._GetPlotSize(len(classData));
         fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True)
         colIndex : int = 0;
         rowIndex : int = 0;
-        for key in classData:
-            ax[rowIndex, colIndex].title.set_text("Class id: " + str(key))
-            for sample in classData[key]:
-                ax[rowIndex, colIndex].plot(sample)
+        for classIndex in classData:
+            transformed = {}
+            for key in range(0, len(classData[classIndex][0])):
+                transformed[key] = []
+                index = int(key);
+                for sample in classData[classIndex]:
+                    transformed[key].append(sample[index])
+            
+            ax[rowIndex, colIndex].title.set_text("Class id: " + str(classIndex))
+            ax[rowIndex, colIndex].boxplot(transformed.values(), labels=transformed.keys())
+
             colIndex += 1;
             if colIndex >= cols:
                 colIndex = 0;
                 rowIndex += 1;
-        plt.show();
+        return fig;
+
+    def VisualiseShapelets(self) -> plt.figure:
+        shapeletData = self._GetShapeletData();
+        
+        rows, cols = self._GetPlotSize(len(shapeletData));
+        fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True)
+        colIndex : int = 0;
+        rowIndex : int = 0;
+        for shapeletIndex in shapeletData:           
+            ax[rowIndex, colIndex].title.set_text("Shapelet id: " + str(shapeletIndex))
+            ax[rowIndex, colIndex].plot(shapeletData[shapeletIndex])
+
+            colIndex += 1;
+            if colIndex >= cols:
+                colIndex = 0;
+                rowIndex += 1;
+        return fig;
 
     def _GetClassData(self) -> dict:
         data = {};
@@ -84,20 +113,8 @@ class ShapeletHistogramVisualiser():
         csvData = pd.read_csv(featureDataCsv);
         featureData = csvData.to_dict();
         return featureData
-
-    # https://stackoverflow.com/questions/16907526/how-to-maximize-grid-dimensions-given-the-number-of-elements
-    def _GetPlotSize(self, nClasses) -> tuple[int,int]:
-        tempSqrt = sqrt(nClasses)
-        divisors = []
-        currentDiv = 1
-        for currentDiv in range(nClasses):
-            if nClasses % float(currentDiv + 1) == 0:
-             divisors.append(currentDiv+1)
-
-        hIndex = min(range(len(divisors)), key=lambda i: abs(divisors[i]-sqrt(nClasses)))
     
-        if divisors[hIndex]*divisors[hIndex] == nClasses:
-            return divisors[hIndex], divisors[hIndex]
-        else:
-            wIndex = hIndex + 1
-            return divisors[hIndex], divisors[wIndex]
+    def _GetPlotSize(self, nClasses) -> tuple[int,int]:
+        for n in range (2, 99999):
+            if nClasses <= n * n:
+                return n,n

@@ -86,10 +86,10 @@ namespace FeatureFinding {
                                                                    uint minWindowSize, uint maxWindowSize,
                                                                    uint minSampleSize, uint maxSampleSize,
                                                                    uint featureCount, std::vector<std::shared_ptr<Attribute>> attributes) {
+        uint attempts = 0;
         std::vector<Feature> features;
 
-        for (uint i = 0; i < featureCount; i++) {
-            Logger::Info("Generating: " + std::to_string(i + 1) + "/" + std::to_string(featureCount));
+        while (features.size() < featureCount) {
             std::vector<LabelledSeries> samples;
             uint diffClassCount = 0; // How many classes are included in the feature
 
@@ -103,13 +103,19 @@ namespace FeatureFinding {
                 if (!tempSamples.empty())
                     diffClassCount++;
             }
-            if (diffClassCount < 2)
-                continue;
+            if (diffClassCount < 2) {
+                attempts++;
+                if (attempts > 10)
+                    break;
+                else
+                    continue;
+            }
 
             // Generate feature based on samples
             const auto feature = FindOptimalFeature(samples, WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize), attributes);
             if (feature != nullptr)
                 features.push_back(*feature);
+            Logger::Info("Generated: " + std::to_string(features.size()) + "/" + std::to_string(featureCount));
         }
 
         return features;
