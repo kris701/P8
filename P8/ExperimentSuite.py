@@ -1,6 +1,5 @@
 import os
 import csv
-from symbol import comparison
 import time
 import configparser
 import shutil
