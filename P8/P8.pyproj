@@ -77,6 +77,7 @@
     <Folder Include="DataConverters\ShapeletHistogramConverter\" />
     <Folder Include="Experiments\" />
     <Folder Include="Experiments\Configs\" />
+    <Folder Include="Experiments\Configs\BaseConfigs\" />
     <Folder Include="Experiments\Results\" />
     <Folder Include="Formatted\" />
     <Folder Include="NetTrainers\" />
@@ -124,6 +125,9 @@
     <Content Include="Data\SwedishLeaf\README.md" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TEST.tsv" />
     <Content Include="Data\SwedishLeaf\SwedishLeaf_TRAIN.tsv" />
+    <Content Include="Experiments\Configs\BaseConfigs\8ShotProtonet.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\8ShotKNN.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\6ShotKNN.ini" />
     <Content Include="Experiments\Configs\GunPointAgeSpan.ini" />
     <Content Include="Experiments\Configs\SonyAIBORobotSurface2.ini" />
     <Content Include="Experiments\Configs\UMD.ini" />
@@ -140,7 +144,7 @@
     <Content Include="Experiments\Configs\Chinatown.ini" />
     <Content Include="Experiments\Configs\CBF.ini" />
     <Content Include="Experiments\Configs\BME.ini" />
-    <Content Include="Experiments\Configs\Base.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\6ShotProtonet.ini" />
     <Content Include="Experiments\Configs\ArrowHead.ini" />
     <Content Include="Experiments\Configs\Wine.ini" />
     <Content Include="Experiments\readme.md" />
