@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ComparisonData", "Compariso
 	ProjectSection(SolutionItems) = preProject
 		ComparisonData\5shot.csv = ComparisonData\5shot.csv
 		ComparisonData\6shot.csv = ComparisonData\6shot.csv
+		ComparisonData\8shot.csv = ComparisonData\8shot.csv
 		ComparisonData\readme.md = ComparisonData\readme.md
 	EndProjectSection
 EndProject
