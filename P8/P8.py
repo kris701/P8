@@ -9,7 +9,7 @@ def main():
 
     expSuite = ExperimentSuite(
         experiments, 
-        "Experiments/Configs/Base.ini", 
+        "Experiments/Configs/BaseConfigs/6ShotProtonet.ini", 
         "Ours", 
         True, 
         False,
