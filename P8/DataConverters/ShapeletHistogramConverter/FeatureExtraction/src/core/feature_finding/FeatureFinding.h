@@ -110,6 +110,7 @@ namespace FeatureFinding {
                 else
                     continue;
             }
+            attempts = 0;
 
             // Generate feature based on samples
             const auto feature = FindOptimalFeature(samples, WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize), attributes);
