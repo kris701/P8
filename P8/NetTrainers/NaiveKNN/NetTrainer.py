@@ -16,7 +16,8 @@ class NetTrainer(BaseNetTrainer):
         super().__init__(options, dataset, debugMode)
 
     def Train(self) -> float:
-        print("No training needed for KNN")
+        if self.DebugMode is True:
+            print("No training needed for KNN")
         return -1;
 
     def Test(self) -> float:
