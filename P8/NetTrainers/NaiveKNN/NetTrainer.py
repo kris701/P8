@@ -12,8 +12,8 @@ import json
 class NetTrainer(BaseNetTrainer):
     compile_dir : str = "./NaiveKNN";
 
-    def __init__(self, options: NetOptions, dataset: data.Dataset) -> None:
-        super().__init__(options, dataset)
+    def __init__(self, options: NetOptions, dataset: data.Dataset, debugMode : bool) -> None:
+        super().__init__(options, dataset, debugMode)
 
     def Train(self) -> float:
         print("No training needed for KNN")
@@ -31,10 +31,19 @@ class NetTrainer(BaseNetTrainer):
         if os.name == "nt":
             extension = ".exe"
         executable = os.path.join(thisFile, "NaiveKNN/out/Release/Classifier" + extension)
-        res = subprocess.run([executable, 
-                        "--data", str(os.path.join(workingDir, self.Options.dataset_root.replace("./","").replace("/",os.sep))),
-                        "--neighbors", str(self.Options.KNN_Neighbors)
-                        ]) 
+        res = 101
+        if self.DebugMode is True:
+            res = subprocess.run([executable, 
+                            "--data", str(os.path.join(workingDir, self.Options.dataset_root.replace("./","").replace("/",os.sep))),
+                            "--neighbors", str(self.Options.KNN_Neighbors)
+                            ]) 
+        else:
+            res = subprocess.run([executable, 
+                            "--data", str(os.path.join(workingDir, self.Options.dataset_root.replace("./","").replace("/",os.sep))),
+                            "--neighbors", str(self.Options.KNN_Neighbors)
+                            ],
+                               stdout=subprocess.DEVNULL,
+                               stderr=subprocess.DEVNULL) 
         if (res.returncode > 100):
             raise Exception("Something went wrong with the KNN!");
 
