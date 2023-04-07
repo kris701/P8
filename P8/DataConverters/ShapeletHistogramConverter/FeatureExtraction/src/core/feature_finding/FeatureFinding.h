@@ -90,6 +90,8 @@ namespace FeatureFinding {
         std::vector<Feature> features;
 
         while (features.size() < featureCount) {
+            if (attempts > 1000)
+                break;
             std::vector<LabelledSeries> samples;
             uint diffClassCount = 0; // How many classes are included in the feature
 
@@ -105,18 +107,21 @@ namespace FeatureFinding {
             }
             if (diffClassCount < 2) {
                 attempts++;
-                if (attempts > 10)
-                    break;
-                else
-                    continue;
+                continue;
             }
-            attempts = 0;
 
             // Generate feature based on samples
-            const auto feature = FindOptimalFeature(samples, WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize), attributes);
-            if (feature != nullptr)
+            auto feature = FindOptimalFeature(samples, WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize), attributes);
+            if (feature != nullptr) {
+                if (std::find(features.begin(), features.end(), *feature) != features.end()) {
+                    attempts++;
+                    continue;
+                }
                 features.push_back(*feature);
+            }
             Logger::Info("Generated: " + std::to_string(features.size()) + "/" + std::to_string(featureCount));
+            Logger::Info("Attempts : " + std::to_string(attempts));
+            attempts = 0;
         }
 
         return features;
