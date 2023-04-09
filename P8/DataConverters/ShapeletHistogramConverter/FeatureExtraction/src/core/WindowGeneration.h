@@ -20,8 +20,9 @@ namespace WindowGeneration {
         for (uint i = 0; i < series.size(); i++) {
             if (i + length <= series.size()) {
                 Series window;
+                double offset = series[i];
                 for (uint j = 0; j < length; j++)
-                    window.push_back(series[i + j]);
+                    window.push_back(series[i + j] - offset);
                 windows.push_back(window);
             }
         }
@@ -55,23 +56,18 @@ namespace WindowGeneration {
     }
 
     /// <summary>
-    /// Removes duplicate series from a vector of series
-    /// </summary>
-    /// <param name="windows">A vector of series</param>
-    static void RemoveDuplicateWindows(std::vector<Series> *windows) {
-        std::sort(windows->begin(), windows->end());
-        windows->erase(std::unique(windows->begin(), windows->end()), windows->end());
-    }
-
-    /// <summary>
     /// Generates a vector of series, based on a a vector of LabelledSeries
     /// </summary>
     /// <param name="series">A vector of series</param>
     /// <param name="minLength">An inclusive minimum length of a window</param>
     /// <param name="maxLength">An inclusive maximum length of a window</param>
     /// <returns>A vector of windows</returns>
-    [[nodiscard]] static std::vector<Series> GenerateWindows(const std::vector<LabelledSeries> &series, uint minLength, uint maxLength) {
+    [[nodiscard]] static std::vector<Series> GenerateWindowsOfMinMaxLength(const std::vector<LabelledSeries> &series, uint minLength, uint maxLength) {
         std::vector<Series> windows;
+        if (series.size() == 0)
+            return windows;
+        if (minLength > maxLength)
+            return windows;
 
         for (const auto &s : series) {
             const auto tempWindows = GenerateWindowsOfMinMaxLength(s.series, minLength, maxLength);
@@ -79,9 +75,16 @@ namespace WindowGeneration {
                 windows.push_back(window);
         }
 
-        RemoveDuplicateWindows(&windows);
-
         return windows;
+    }
+
+    /// <summary>
+    /// Removes duplicate series from a vector of series
+    /// </summary>
+    /// <param name="windows">A vector of series</param>
+    [[nodiscard]] static void RemoveDuplicateWindows(std::vector<Series>* windows) {
+        std::sort(windows->begin(), windows->end());
+        windows->erase(std::unique(windows->begin(), windows->end()), windows->end());
     }
 }
 

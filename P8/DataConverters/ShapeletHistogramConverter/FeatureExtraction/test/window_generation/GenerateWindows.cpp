@@ -190,9 +190,9 @@ namespace WindowGenerationTests {
 
 #pragma endregion
 
-#pragma region GenerateWindows
+#pragma region GenerateWindowsOfMinMaxLength (LabelledSeries)
 
-    TEST_CASE("Can_GenerateWindows_GiveCorrectWindowsFromSingle", "[WindowGeneration]") {
+    TEST_CASE("Can_GenerateWindowsOfMinMaxLength_GiveCorrectWindowsFromSingle", "[WindowGeneration]") {
         auto seriesLength = GENERATE(1, 2, 4, 8);
         auto minWindowSize = GENERATE(1, 2, 4, 8);
         auto maxWindowSize = GENERATE(1, 2, 4, 8);
@@ -209,7 +209,7 @@ namespace WindowGenerationTests {
             series.push_back(i);
         labelledSeries.push_back(LabelledSeries(0, series));
 
-        auto windows = GenerateWindows(labelledSeries, minWindowSize, maxWindowSize);
+        auto windows = GenerateWindowsOfMinMaxLength(labelledSeries, minWindowSize, maxWindowSize);
 
         INFO("Series Length: " << seriesLength);
         INFO("Min Window Size: " << minWindowSize);
@@ -217,36 +217,7 @@ namespace WindowGenerationTests {
         REQUIRE(expectedWindowCount == windows.size());
     }
 
-    TEST_CASE("Can_GenerateWindows_GiveCorrectWindowsFromTwoIdentical", "[WindowGeneration]") {
-        auto seriesLength = GENERATE(1, 2, 4, 8);
-        auto minWindowSize = GENERATE(1, 2, 4, 8);
-        auto maxWindowSize = GENERATE(1, 2, 4, 8);
-
-        uint expectedWindowCount = 0;
-        for (uint i = minWindowSize; i <= maxWindowSize; i++)
-            for (uint j = 0; j + i <= seriesLength; j++)
-                expectedWindowCount++;
-
-        std::vector<LabelledSeries> labelledSeries;
-
-        Series series1;
-        Series series2;
-        for (uint i = 0; i < seriesLength; i++) {
-            series1.push_back(i);
-            series2.push_back(i);
-        }
-        labelledSeries.push_back(LabelledSeries(0, series1));
-        labelledSeries.push_back(LabelledSeries(1, series2));
-
-        auto windows = GenerateWindows(labelledSeries, minWindowSize, maxWindowSize);
-
-        INFO("Series Length: " << seriesLength);
-        INFO("Min Window Size: " << minWindowSize);
-        INFO("Max Window Size: " << maxWindowSize);
-        REQUIRE(expectedWindowCount == windows.size());
-    }
-
-    TEST_CASE("Can_GenerateWindows_GiveCorrectWindowsFromTwoUnique", "[WindowGeneration]") {
+    TEST_CASE("Can_GenerateWindowsOfMinMaxLength_GiveCorrectWindowsFromTwoUnique", "[WindowGeneration]") {
         auto seriesLength = GENERATE(1, 2, 4, 8);
         auto minWindowSize = GENERATE(1, 2, 4, 8);
         auto maxWindowSize = GENERATE(1, 2, 4, 8);
@@ -268,7 +239,7 @@ namespace WindowGenerationTests {
         labelledSeries.push_back(LabelledSeries(0, series1));
         labelledSeries.push_back(LabelledSeries(1, series2));
 
-        auto windows = GenerateWindows(labelledSeries, minWindowSize, maxWindowSize);
+        auto windows = GenerateWindowsOfMinMaxLength(labelledSeries, minWindowSize, maxWindowSize);
 
         INFO("Series Length: " << seriesLength);
         INFO("Min Window Size: " << minWindowSize);
