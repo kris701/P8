@@ -13,82 +13,71 @@ from Datasets import DatasetBuilder
 from DataVisualisers.ShapeletHistogramVisualiser import ShapeletHistogramVisualiser
 from DataVisualisers.ResultsVisualiser import ResultsVisualiser
 from ResultsCombiners.CSVResultsCombiner import CSVResultsCombiner
+from ExperimentOptions import ExperimentOptions
 
 class ExperimentSuite():
-    ExperimentConfigDir : str = "Experiments/Configs";
-    ExperimentResultsDir : str = "Experiments/Results";
-    ExperimentsToRun : list;
-    ExperimentName : str = "Ours"
-    BaseConfig : str = "Experiments/Configs/Base.ini"
-    GenerateGraphs : bool = False
-    GenerateClassGraphs : bool = False
-    ComparisonData : list = []
+    Options : ExperimentOptions;
 
-    def __init__(self, experimentsToRun : list, baseConfig : str, experimentName : str, generateGraphs : bool, generateClassGraphs : bool, comparisonData : list) -> None:
-        self.ExperimentsToRun = experimentsToRun
-        self.ExperimentName = experimentName
-        self.BaseConfig = baseConfig
-        self.GenerateGraphs = generateGraphs
-        self.GenerateClassGraphs = generateClassGraphs
-        self.ComparisonData = comparisonData
+    def __init__(self, options : ExperimentOptions) -> None:
+        self.Options = options
 
-    def RunExperiments(self, debugMode : bool = False) -> dict:
+    def RunExperiments(self) -> dict:
         print("Running experiments...")
         results = {};
         timestamp = time.strftime("%Y%m%d-%H%M%S")
-        os.makedirs(os.path.join(self.ExperimentResultsDir, timestamp))
+        os.makedirs(os.path.join(self.Options.ExperimentResultsDir, timestamp))
 
-        print("Running " + str(len(self.ExperimentsToRun)) + " experiments.")
-        if debugMode is False:
+        print("Running " + str(len(self.Options.ExperimentsToRun)) + " experiments.")
+        if self.Options.DebugMode is False:
             print("No debug info will be printed.")
         else:
             print("Full debug info will be printed.")
         print("")
 
-        with open(os.path.join(self.ExperimentResultsDir, timestamp, "run " + timestamp + ".csv"), 'w', newline='') as csvfile:
+        with open(os.path.join(self.Options.ExperimentResultsDir, timestamp, "run " + timestamp + ".csv"), 'w', newline='') as csvfile:
             csvWriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             csvWriter.writerow(['Experiment Name', 'Feature Extractor', 'Net Trainer', 'Best train accuracy', 'Best test accuracy'])
 
-            if debugMode is False:
+            if self.Options.DebugMode is False:
                 data = []
-                for expName in self.ExperimentsToRun:
+                for expName in self.Options.ExperimentsToRun:
                     data.append((expName, timestamp, False));
 
-                poolResults = multiprocessing.Pool(len(self.ExperimentsToRun)).map(self._RunExperiment, data)
+                poolResults = multiprocessing.Pool(len(self.Options.ExperimentsToRun)).map(self._RunExperiment, data)
                 for expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc in poolResults:
                     results[expName] = bestTestAcc;
                     csvWriter.writerow([expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc])
             else:
-                for expName in self.ExperimentsToRun:
+                for expName in self.Options.ExperimentsToRun:
                     expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc = self._RunExperiment((expName, timestamp, True))
 
                     results[expName] = bestTestAcc;
                     csvWriter.writerow([expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc])
 
-        if self.GenerateGraphs is True:
+        if self.Options.GenerateGraphs is True:
             print("Generating full experiment graphs...")
             combiner = CSVResultsCombiner();
             fullResults = combiner.Combine(
-                self.ComparisonData,
-                [{self.ExperimentName: results}],
+                self.Options.ComparisonData,
+                [{self.Options.ExperimentName: results}],
                 True
                 );
             fullVisualiser = ResultsVisualiser();
             full = fullVisualiser.VisualiseAll(fullResults);
-            full.savefig(os.path.join(self.ExperimentResultsDir, timestamp, "accuracies.png"))
+            full.savefig(os.path.join(self.Options.ExperimentResultsDir, timestamp, "accuracies.png"))
 
         print("Experiments finished!")
-        return {self.ExperimentName: results};
+        return {self.Options.ExperimentName: results};
 
     def _RunExperiment(self, data):
         expName, timestamp, debugMode = data
         print("   === " + expName + " started ===   ")
         start_time = time.time()
 
-        configName = os.path.join(self.ExperimentConfigDir, expName + ".ini")
+        configName = os.path.join(self.Options.ExperimentConfigDir, expName + ".ini")
 
         dataLoaderOptions = DataConverterOptions()
-        self._ParseConfigIntoObject(self.BaseConfig, "DATACONVERTER", dataLoaderOptions)
+        self._ParseConfigIntoObject(self.Options.BaseConfig, "DATACONVERTER", dataLoaderOptions)
         self._ParseConfigIntoObject(configName, "DATACONVERTER", dataLoaderOptions)
         dataLoaderOptions.VerifySettings();
         dataConverter = DataConverterBuilder.GetDataConverter(dataLoaderOptions.UseConverter)(dataLoaderOptions, debugMode)
@@ -98,10 +87,10 @@ class ExperimentSuite():
         dataConverter.ConvertData()
 
         protonetOptions = NetOptions()
-        self._ParseConfigIntoObject(self.BaseConfig, "NETTRAINER", protonetOptions)
+        self._ParseConfigIntoObject(self.Options.BaseConfig, "NETTRAINER", protonetOptions)
         self._ParseConfigIntoObject(configName, "NETTRAINER", protonetOptions)
         protonetOptions.VerifySettings();
-        protonetOptions.experiment_root = os.path.join(self.ExperimentResultsDir, timestamp, expName)
+        protonetOptions.experiment_root = os.path.join(self.Options.ExperimentResultsDir, timestamp, expName)
         protonet = NetTrainerBuilder.GetNetTrainer(protonetOptions.trainer_name)(protonetOptions, DatasetBuilder.GetDataset(protonetOptions.dataset_name), debugMode)
 
         if debugMode is True:
@@ -118,25 +107,25 @@ class ExperimentSuite():
 
         if debugMode is True:
             print("Copying dataset...")
-        shutil.make_archive(os.path.join(self.ExperimentResultsDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
+        shutil.make_archive(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
 
-        if self.GenerateGraphs is True:
+        if self.Options.GenerateGraphs is True:
             if debugMode is True:
                 print("Generating graphs...")
             visualizer = ShapeletHistogramVisualiser(dataLoaderOptions.FormatedFolder)
             allVisual = visualizer.VisualizeAllClasses();
-            allVisual.savefig(os.path.join(self.ExperimentResultsDir, timestamp, expName, "allVisual.png"))
+            allVisual.savefig(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "allVisual.png"))
 
             if dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
                 shapelets = visualizer.VisualiseShapelets();
-                shapelets.savefig(os.path.join(self.ExperimentResultsDir, timestamp, expName, "allShapelets.png"))
+                shapelets.savefig(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "allShapelets.png"))
 
-            if self.GenerateClassGraphs is True and dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
+            if self.Options.GenerateShapeletGraphs is True and dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
                 for classId in os.listdir(os.path.join(dataLoaderOptions.FormatedFolder, "data")):
                     if debugMode is True:
                         print("Generating class " + classId + " graph...")
                     classfig = visualizer.VisualizeClass(int(classId));
-                    classfig.savefig(os.path.join(self.ExperimentResultsDir, timestamp, expName, "class" + classId + ".png"))
+                    classfig.savefig(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "class" + classId + ".png"))
 
         end_time = time.time()
         time_lapsed = end_time - start_time
