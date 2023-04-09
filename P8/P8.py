@@ -16,6 +16,7 @@ def main():
     experimentOptions.GenerateClassGraphs = False;
     experimentOptions.ComparisonData = ["../ComparisonData/6shot.csv"];
     experimentOptions.DebugMode = True;
+    experimentOptions.ZipDataset = False;
 
     expSuite = ExperimentSuite(experimentOptions)
     expSuite.RunExperiments()

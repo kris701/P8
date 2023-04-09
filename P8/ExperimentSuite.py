@@ -105,9 +105,10 @@ class ExperimentSuite():
         if debugMode is True:
             print("Avg test acc: " + str(bestTestAcc))
 
-        if debugMode is True:
-            print("Copying dataset...")
-        shutil.make_archive(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
+        if self.Options.ZipDataset:
+            if debugMode is True:
+                print("Copying dataset...")
+            shutil.make_archive(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
 
         if self.Options.GenerateGraphs is True:
             if debugMode is True:

@@ -13,4 +13,4 @@ class ExperimentOptions():
 
     DebugMode : bool = True;
 
-
+    ZipDataset : bool = True;
