@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     auto trainData = trainSplit.first;
 
     uint id2 = Logger::Begin("Augmenting Data");
-    trainData = DataAugmentation::Augment(trainData, false, 1, 0.1);
+    trainData = DataAugmentation::Augment(trainData, false, arguments.smoothingDegree, arguments.noisifyAmount);
     Logger::End(id2);
 
     const auto testData = trainSplit.second;
