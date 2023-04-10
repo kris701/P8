@@ -78,8 +78,8 @@ class ExperimentSuite():
         avrTestAcc : float = 0;
 
         for step in range(0, self.Options.ExperimentRounds):
-            print("[" + expName + "] Round " + str(step) + " of " + str(self.Options.ExperimentRounds))
-            roundResultDir : str = os.path.join(self.Options.ExperimentResultsDir, step);
+            print("[" + expName + "] Round " + str(step + 1) + " of " + str(self.Options.ExperimentRounds))
+            roundResultDir : str = os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, str(step + 1));
 
             dataLoaderOptions = DataConverterOptions()
             self._ParseConfigIntoObject(self.Options.BaseConfig, "DATACONVERTER", dataLoaderOptions)
@@ -99,7 +99,7 @@ class ExperimentSuite():
             self._ParseConfigIntoObject(self.Options.BaseConfig, "NETTRAINER", protonetOptions)
             self._ParseConfigIntoObject(configName, "NETTRAINER", protonetOptions)
             protonetOptions.VerifySettings();
-            protonetOptions.experiment_root = os.path.join(roundResultDir, timestamp, expName)
+            protonetOptions.experiment_root = roundResultDir
             protonet = NetTrainerBuilder.GetNetTrainer(protonetOptions.trainer_name)(protonetOptions, DatasetBuilder.GetDataset(protonetOptions.dataset_name), self.Options.DebugMode)
 
             nShots = dataLoaderOptions.TestClassesSplit;
@@ -116,37 +116,37 @@ class ExperimentSuite():
 
             if self.Options.ZipDataset:
                 if self.Options.DebugMode is True: print("Copying dataset...")
-                shutil.make_archive(os.path.join(roundResultDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
+                shutil.make_archive(os.path.join(roundResultDir, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
 
             if self.Options.CopyConfigs:
                 if self.Options.DebugMode is True: print("Copying configs...")
-                shutil.copyfile(self.Options.BaseConfig, os.path.join(roundResultDir, timestamp, expName, "baseConfig.ini"));
-                shutil.copyfile(configName, os.path.join(roundResultDir, timestamp, expName, "config.ini"));
+                shutil.copyfile(self.Options.BaseConfig, os.path.join(roundResultDir, "baseConfig.ini"));
+                shutil.copyfile(configName, os.path.join(roundResultDir, "config.ini"));
 
             if self.Options.GenerateGraphs is True:
                 visualizer = ShapeletHistogramVisualiser(dataLoaderOptions.FormatedFolder)
                 if self.Options.GenerateExperimentGraph is True:
                     if self.Options.DebugMode is True: print("Generating experiment graphs...")
                     allVisual = visualizer.VisualizeAllClasses();
-                    allVisual.savefig(os.path.join(roundResultDir, timestamp, expName, "allVisual.png"))
+                    allVisual.savefig(os.path.join(roundResultDir, "allVisual.png"))
 
                 if self.Options.GenerateShapeletGraphs:
                     if self.Options.DebugMode is True: print("Generating shapelet graphs...")
                     if dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
                         shapelets = visualizer.VisualiseShapelets();
-                        shapelets.savefig(os.path.join(roundResultDir, timestamp, expName, "allShapelets.png"))
+                        shapelets.savefig(os.path.join(roundResultDir, "allShapelets.png"))
 
                 if self.Options.GenerateClassGraphs is True and dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
                     if self.Options.DebugMode is True: print("Generating class graphs...")
                     for classId in os.listdir(os.path.join(dataLoaderOptions.FormatedFolder, "data")):
                         if self.Options.DebugMode is True: print("Generating class " + classId + " graph...")
                         classfig = visualizer.VisualizeClass(int(classId));
-                        classfig.savefig(os.path.join(roundResultDir, timestamp, expName, "class" + classId + ".png"))
+                        classfig.savefig(os.path.join(roundResultDir, "class" + classId + ".png"))
 
                 if self.Options.GenerateSourceGraphs:
                     if self.Options.DebugMode is True: print("Generating source graphs...")
                     sourceVisual = visualizer.VisualiseSourceData();
-                    sourceVisual.savefig(os.path.join(roundResultDir, timestamp, expName, "source.png"))
+                    sourceVisual.savefig(os.path.join(roundResultDir, "source.png"))
 
         end_time = time.time()
         time_lapsed = end_time - start_time
