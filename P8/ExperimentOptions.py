@@ -17,3 +17,5 @@ class ExperimentOptions():
 
     ZipDataset : bool = True;
     CopyConfigs : bool = True;
+
+    ForceRemakeDataset : bool = False;

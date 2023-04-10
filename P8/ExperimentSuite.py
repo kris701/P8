@@ -87,6 +87,12 @@ class ExperimentSuite():
         dataLoaderOptions.VerifySettings();
         dataConverter = DataConverterBuilder.GetDataConverter(dataLoaderOptions.UseConverter)(dataLoaderOptions, debugMode)
           
+        if self.Options.ForceRemakeDataset:
+            if debugMode is True:
+                print("Force removing old dataset")
+            if os.path.exists(dataLoaderOptions.FormatedFolder):
+                shutil.rmtree(dataLoaderOptions.FormatedFolder);
+
         if debugMode is True:
             print("Formatting Dataset")
         dataConverter.ConvertData()

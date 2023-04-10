@@ -19,6 +19,7 @@ def main():
     experimentOptions.ComparisonData = ["../ComparisonData/6shot.csv"];
     experimentOptions.DebugMode = True;
     experimentOptions.ZipDataset = False;
+    experimentOptions.ForceRemakeDataset = True;
 
     expSuite = ExperimentSuite(experimentOptions)
     expSuite.RunExperiments()
