@@ -5,8 +5,8 @@ from ExperimentOptions import ExperimentOptions
 
 def main():
     multiprocessing.freeze_support()
-    #experiments = ["ArrowHead", "BME", "CBF", "Chinatown", "ECG200", "GunPoint", "GunPointAgeSpan", "GunPointOldVersusYoung", "ItalyPowerDemand", "MoteStrain", "Plane", "SonyAIBORobotSurface1", "SonyAIBORobotSurface2", "SyntheticControl", "ToeSegmentation1", "TwoLeadECG", "UMD", "Wine"]
-    experiments = ["ArrowHead"]
+    experiments = ["ArrowHead", "BME", "CBF", "Chinatown", "ECG200", "GunPoint", "GunPointAgeSpan", "GunPointOldVersusYoung", "ItalyPowerDemand", "MoteStrain", "Plane", "SonyAIBORobotSurface1", "SonyAIBORobotSurface2", "SyntheticControl", "ToeSegmentation1", "TwoLeadECG", "UMD", "Wine"]
+    #experiments = ["ArrowHead"]
 
     experimentOptions = ExperimentOptions();
     experimentOptions.ExperimentsToRun = experiments;
@@ -18,7 +18,7 @@ def main():
     experimentOptions.GenerateSourceGraphs = True;
     experimentOptions.GenerateShapeletGraphs = False;
     experimentOptions.ComparisonData = ["../ComparisonData/6shot.csv"];
-    experimentOptions.DebugMode = False;
+    experimentOptions.DebugMode = True;
     experimentOptions.ZipDataset = False;
     experimentOptions.ForceRemakeDataset = True;
 
