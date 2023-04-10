@@ -120,8 +120,8 @@ class ExperimentSuite():
 
         if debugMode is True:
             print("Copying configs...")
-        shutil.copyfile(self.BaseConfig, os.path.join(self.ExperimentResultsDir, timestamp, expName, "baseConfig.ini"));
-        shutil.copyfile(configName, os.path.join(self.ExperimentResultsDir, timestamp, expName, "config.ini"));
+        shutil.copyfile(self.Options.BaseConfig, os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "baseConfig.ini"));
+        shutil.copyfile(configName, os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "config.ini"));
 
         if self.GenerateGraphs is True:
             if debugMode is True:
