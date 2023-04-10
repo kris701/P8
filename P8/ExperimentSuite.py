@@ -120,6 +120,11 @@ class ExperimentSuite():
             print("Copying dataset...")
         shutil.make_archive(os.path.join(self.ExperimentResultsDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
 
+        if debugMode is True:
+            print("Copying configs...")
+        shutil.copyfile(self.BaseConfig, os.path.join(self.ExperimentResultsDir, timestamp, expName, "baseConfig.ini"));
+        shutil.copyfile(configName, os.path.join(self.ExperimentResultsDir, timestamp, expName, "config.ini"));
+
         if self.GenerateGraphs is True:
             if debugMode is True:
                 print("Generating graphs...")
