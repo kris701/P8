@@ -26,13 +26,13 @@ namespace InformationGain {
     [[nodiscard]] static std::pair<ClassCount , ClassCount> GetSplit (const std::map<double, ClassCount> &values, double splitPoint) {
         ClassCount lowerCount { 0 };
         ClassCount upperCount { 0 };
-        for (const auto &frequency : values)
-            if (frequency.first < splitPoint)
+        for (const auto &value : values)
+            if (value.first < splitPoint)
                 for (int i = 0; i < MAX_CLASSES; i++)
-                    lowerCount[i] += frequency.second[i];
+                    lowerCount[i] += value.second[i];
             else
                 for (int i = 0; i < MAX_CLASSES; i++)
-                    upperCount[i] += frequency.second[i];
+                    upperCount[i] += value.second[i];
         return std::make_pair(lowerCount, upperCount);
     }
 
@@ -51,23 +51,26 @@ namespace InformationGain {
         return lowerEntropy * lowerProb + upperEntropy * upperProb;
     }
 
-    [[nodiscard]] static double GetOptimalSplitPoint(const std::map<double, ClassCount> &matchFrequency) {
-        if (matchFrequency.size() < 2)
+    [[nodiscard]] static double GetOptimalSplitPoint(const std::map<double, ClassCount> &values) {
+        if (values.size() < 2)
             throw std::logic_error("Trying to split a single point");
-        std::optional<double> bestPoint;
-        double bestEntropy;
+        double bestPoint = -1;
+        double bestEntropy = DBL_MAX;
 
-        for (auto iter = matchFrequency.begin(); iter != matchFrequency.end() && std::next(iter, 1) != matchFrequency.end(); iter++) {
+        for (auto iter = values.begin(); iter != values.end() && std::next(iter, 1) != values.end(); iter++) {
             const double splitPoint = iter->first + (std::next(iter, 1)->first - iter->first) / 2;
-            const double splitEntropy = CalculateSplitEntropy(matchFrequency, splitPoint);
+            const double splitEntropy = CalculateSplitEntropy(values, splitPoint);
 
-            if (!bestPoint.has_value() || splitEntropy < bestEntropy) {
+            if (splitEntropy < bestEntropy) {
                 bestPoint = splitPoint;
                 bestEntropy = splitEntropy;
             }
         }
 
-        return bestPoint.value();
+        if (bestPoint == -1)
+            throw std::exception("No valid best point was found!");
+
+        return bestPoint;
     }
 
     [[nodiscard]] static double CalculateInformationGain(const std::map<double, ClassCount> &matchFrequency, double priorEntropy) {
