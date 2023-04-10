@@ -34,25 +34,25 @@ class ExperimentSuite():
             print("Full debug info will be printed.")
         print("")
 
-        with open(os.path.join(self.ExperimentResultsDir, timestamp, "comparable.csv"), 'w', newline='') as comparableCSV:
+        with open(os.path.join(self.Options.ExperimentResultsDir, timestamp, "comparable.csv"), 'w', newline='') as comparableCSV:
             comparableCsvWriter = csv.writer(comparableCSV, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            comparableCsvWriter.writerow(['datasetName', 'NumberOfClasses', self.ExperimentName])
-            with open(os.path.join(self.ExperimentResultsDir, timestamp, "run " + timestamp + ".csv"), 'w', newline='') as csvfile:
+            comparableCsvWriter.writerow(['datasetName', 'NumberOfClasses', self.Options.ExperimentName])
+            with open(os.path.join(self.Options.ExperimentResultsDir, timestamp, "run " + timestamp + ".csv"), 'w', newline='') as csvfile:
                 csvWriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
                 csvWriter.writerow(['Experiment Name', 'Feature Extractor', 'Net Trainer', 'Best train accuracy', 'Best test accuracy'])
 
-                if debugMode is False:
+                if self.Options.DebugMode is False:
                     data = []
-                    for expName in self.ExperimentsToRun:
+                    for expName in self.Options.ExperimentsToRun:
                         data.append((expName, timestamp, False));
 
-                    poolResults = multiprocessing.Pool(len(self.ExperimentsToRun)).map(self._RunExperiment, data)
+                    poolResults = multiprocessing.Pool(len(self.Options.ExperimentsToRun)).map(self._RunExperiment, data)
                     for expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc, nShot, nWay in poolResults:
                         results[expName] = bestTestAcc;
                         csvWriter.writerow([expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc])
                         comparableCsvWriter.writerow([expName, nWay, bestTestAcc]);
                 else:
-                    for expName in self.ExperimentsToRun:
+                    for expName in self.Options.ExperimentsToRun:
                         expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc, nShot, nWay = self._RunExperiment((expName, timestamp, True))
 
                         results[expName] = bestTestAcc;
