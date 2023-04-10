@@ -11,12 +11,15 @@ def main():
     experimentOptions = ExperimentOptions();
     experimentOptions.ExperimentsToRun = experiments;
     experimentOptions.BaseConfig = "Experiments/Configs/BaseConfigs/6ShotProtonet.ini";
-    experimentOptions.GenerateShapeletGraphs = False;
     experimentOptions.GenerateGraphs = True;
     experimentOptions.GenerateClassGraphs = False;
+    experimentOptions.GenerateExperimentGraph = False;
+    experimentOptions.GenerateSourceGraphs = True;
+    experimentOptions.GenerateShapeletGraphs = False;
     experimentOptions.ComparisonData = ["../ComparisonData/6shot.csv"];
-    experimentOptions.DebugMode = False;
+    experimentOptions.DebugMode = True;
     experimentOptions.ZipDataset = False;
+    experimentOptions.ForceRemakeDataset = True;
 
     expSuite = ExperimentSuite(experimentOptions)
     expSuite.RunExperiments()

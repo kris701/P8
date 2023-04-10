@@ -50,8 +50,6 @@ namespace ArgumentParsing {
             exit(0);
         }
 
-        printf("Attribute count: %zu\n", result.count("attributes"));
-
         try {
             return Arguments(
                     result["train"].as<std::string>(),

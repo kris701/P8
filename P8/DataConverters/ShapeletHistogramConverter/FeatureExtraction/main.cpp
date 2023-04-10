@@ -79,5 +79,10 @@ int main(int argc, char** argv) {
                           FeatureUtils::FeatureCSV(features, shapeletFiles));
     Logger::End(id);
 
+    id = Logger::Begin("Writing Source Train Files");
+    const auto sourceTrainPath = arguments.outPath + "source/";
+    FileHanding::WriteToFiles(sourceTrainPath, trainMap);
+    Logger::End(id);
+
     return 0;
 }
