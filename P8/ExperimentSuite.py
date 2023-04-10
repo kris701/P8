@@ -123,7 +123,7 @@ class ExperimentSuite():
         shutil.copyfile(self.Options.BaseConfig, os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "baseConfig.ini"));
         shutil.copyfile(configName, os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "config.ini"));
 
-        if self.GenerateGraphs is True:
+        if self.Options.GenerateGraphs is True:
             if debugMode is True:
                 print("Generating graphs...")
             visualizer = ShapeletHistogramVisualiser(dataLoaderOptions.FormatedFolder)
