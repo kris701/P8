@@ -113,7 +113,10 @@ namespace FeatureFinding {
             attempts = 0;
 
             // Generate feature based on samples
-            const auto feature = FindOptimalFeature(samples, WindowGeneration::GenerateWindows(samples, minWindowSize, maxWindowSize), attributes);
+            auto windows = WindowGeneration::GenerateWindowsOfMinMaxLength(samples, minWindowSize, maxWindowSize);
+            WindowGeneration::RemoveDuplicateWindows(&windows);
+
+            const auto feature = FindOptimalFeature(samples, windows, attributes);
             if (feature != nullptr)
                 features.push_back(*feature);
             Logger::Info("Generated: " + std::to_string(features.size()) + "/" + std::to_string(featureCount));
