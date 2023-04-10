@@ -25,7 +25,7 @@ public:
         std::optional<double> minDist;
         const double maxDist = (uint) window.size();
 
-        for (uint i = 0; i < series.size() - window.size(); ++i) {
+        for (uint i = 0; i <= series.size() - window.size(); ++i) {
             const double dist = MinimumDistance(series, i, window, minDist);
             if (!minDist.has_value() || dist < minDist.value())
                 minDist = dist;

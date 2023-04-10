@@ -50,7 +50,7 @@ namespace ArgumentParsing {
             exit(0);
         }
 
-        printf("Attribute count: %zu\n", result.count("attribute"));
+        printf("Attribute count: %zu\n", result.count("attributes"));
 
         try {
             return Arguments(
