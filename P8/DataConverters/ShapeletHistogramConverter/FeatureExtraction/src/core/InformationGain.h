@@ -9,6 +9,13 @@
 #include "utilities/ClassCountUtils.h"
 
 namespace InformationGain {
+    /// <summary>
+    /// Calculates the entropy between a set of classes.
+    /// <para>Based on Definition 6 in <seealso cref="http://alumni.cs.ucr.edu/~lexiangy/Shapelet/Shapelet.pdf"/></para>
+    /// </summary>
+    /// <param name="total"></param>
+    /// <param name="counts"></param>
+    /// <returns></returns>
     [[nodiscard]] static double CalculateEntropy(uint total, const ClassCount &counts) {
         if (total == 0 || counts.size() == 0)
             throw std::exception("Cannot calculate entropy with zero values!");
@@ -16,11 +23,11 @@ namespace InformationGain {
         double entropy = 0;
         for (int i = 0; i < MAX_CLASSES; i++) {
             if (counts.at(i) > 0) {
-                const double prob = (double)counts.at(i) / total;
-                entropy += prob * (std::log2(prob));
+                const double proportion = (double)counts.at(i) / total;
+                entropy += (-proportion) * (std::log2(proportion));
             }
         }
-        return -entropy;
+        return entropy;
     }
 
     [[nodiscard]] static inline double CalculateEntropy(const ClassCount &counts) {
