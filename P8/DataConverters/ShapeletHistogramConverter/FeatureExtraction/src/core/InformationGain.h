@@ -6,6 +6,7 @@
 #include <numeric>
 #include "misc/Constants.h"
 #include "utilities/SeriesUtils.h"
+#include "utilities/ClassCountUtils.h"
 
 namespace InformationGain {
     [[nodiscard]] static double CalculateEntropy(uint total, const ClassCount &counts) {
@@ -22,31 +23,14 @@ namespace InformationGain {
         return -entropy;
     }
 
-    [[nodiscard]] static uint GetTotalClassCount(const ClassCount& values) {
-        return std::accumulate(values.begin(), values.end(), (uint)0);
-    }
-
     [[nodiscard]] static inline double CalculateEntropy(const ClassCount &counts) {
-        return CalculateEntropy(GetTotalClassCount(counts), counts);
-    }
-
-    [[nodiscard]] static std::pair<ClassCount , ClassCount> GetSplit (const std::map<double, ClassCount> &values, double splitPoint) {
-        ClassCount lowerCount { 0 };
-        ClassCount upperCount { 0 };
-        for (const auto &value : values)
-            if (value.first < splitPoint)
-                for (int i = 0; i < MAX_CLASSES; i++)
-                    lowerCount[i] += value.second[i];
-            else
-                for (int i = 0; i < MAX_CLASSES; i++)
-                    upperCount[i] += value.second[i];
-        return std::make_pair(lowerCount, upperCount);
+        return CalculateEntropy(ClassCountUtils::GetTotalClassCount(counts), counts);
     }
 
     [[nodiscard]] static double CalculateSplitEntropy(const std::map<double, ClassCount> &values, double splitPoint) {
-        const auto split = GetSplit(values, splitPoint);
-        const uint lowerTotal = GetTotalClassCount(split.first);
-        const uint upperTotal = GetTotalClassCount(split.second);
+        const auto split = ClassCountUtils::GetSplit(values, splitPoint);
+        const uint lowerTotal = ClassCountUtils::GetTotalClassCount(split.first);
+        const uint upperTotal = ClassCountUtils::GetTotalClassCount(split.second);
 
         const uint total = lowerTotal + upperTotal;
         const double lowerEntropy = CalculateEntropy(total, split.first);
