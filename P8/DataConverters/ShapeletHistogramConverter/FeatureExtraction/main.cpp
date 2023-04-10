@@ -7,6 +7,7 @@
 #include "src/IO/ArgumentParser.h"
 #include "src/utilities/FeatureUtils.h"
 #include "core/attributes/AttributeBuilder.h"
+#include "core/DataAugmentation.h"
 
 int main(int argc, char** argv) {
     uint id = Logger::Begin("Parsing Arguments");
@@ -30,7 +31,12 @@ int main(int argc, char** argv) {
     const auto valSplit = SeriesUtils::Split(data, arguments.valtrainsplit);
     const auto valData = valSplit.first;
     const auto trainSplit = SeriesUtils::Split(valSplit.second, arguments.split);
-    const auto trainData = trainSplit.first;
+    auto trainData = trainSplit.first;
+
+    uint id2 = Logger::Begin("Augmenting Data");
+    trainData = DataAugmentation::Augment(trainData, false, 1, 0.1);
+    Logger::End(id2);
+
     const auto testData = trainSplit.second;
     const auto trainMap = SeriesUtils::ToMap(trainData);
     const auto testMap = SeriesUtils::ToMap(testData);
