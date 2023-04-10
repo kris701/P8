@@ -45,25 +45,30 @@ class ExperimentSuite():
             print("Full debug info will be printed.")
         print("")
 
-        with open(os.path.join(self.ExperimentResultsDir, timestamp, "run " + timestamp + ".csv"), 'w', newline='') as csvfile:
-            csvWriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            csvWriter.writerow(['Experiment Name', 'Feature Extractor', 'Net Trainer', 'Best train accuracy', 'Best test accuracy'])
+        with open(os.path.join(self.ExperimentResultsDir, timestamp, "comparable.csv"), 'w', newline='') as comparableCSV:
+            comparableCsvWriter = csv.writer(comparableCSV, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            comparableCsvWriter.writerow(['datasetName', 'NumberOfClasses', self.ExperimentName])
+            with open(os.path.join(self.ExperimentResultsDir, timestamp, "run " + timestamp + ".csv"), 'w', newline='') as csvfile:
+                csvWriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                csvWriter.writerow(['Experiment Name', 'Feature Extractor', 'Net Trainer', 'Best train accuracy', 'Best test accuracy'])
 
-            if debugMode is False:
-                data = []
-                for expName in self.ExperimentsToRun:
-                    data.append((expName, timestamp, False));
+                if debugMode is False:
+                    data = []
+                    for expName in self.ExperimentsToRun:
+                        data.append((expName, timestamp, False));
 
-                poolResults = multiprocessing.Pool(len(self.ExperimentsToRun)).map(self._RunExperiment, data)
-                for expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc in poolResults:
-                    results[expName] = bestTestAcc;
-                    csvWriter.writerow([expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc])
-            else:
-                for expName in self.ExperimentsToRun:
-                    expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc = self._RunExperiment((expName, timestamp, True))
+                    poolResults = multiprocessing.Pool(len(self.ExperimentsToRun)).map(self._RunExperiment, data)
+                    for expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc, nShot, nWay in poolResults:
+                        results[expName] = bestTestAcc;
+                        csvWriter.writerow([expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc])
+                        comparableCsvWriter.writerow([expName, nWay, bestTestAcc]);
+                else:
+                    for expName in self.ExperimentsToRun:
+                        expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc, nShot, nWay = self._RunExperiment((expName, timestamp, True))
 
-                    results[expName] = bestTestAcc;
-                    csvWriter.writerow([expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc])
+                        results[expName] = bestTestAcc;
+                        csvWriter.writerow([expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc])
+                        comparableCsvWriter.writerow([expName, nWay, bestTestAcc]);
 
         if self.GenerateGraphs is True:
             print("Generating full experiment graphs...")
@@ -103,6 +108,9 @@ class ExperimentSuite():
         protonetOptions.VerifySettings();
         protonetOptions.experiment_root = os.path.join(self.ExperimentResultsDir, timestamp, expName)
         protonet = NetTrainerBuilder.GetNetTrainer(protonetOptions.trainer_name)(protonetOptions, DatasetBuilder.GetDataset(protonetOptions.dataset_name), debugMode)
+
+        nShots = dataLoaderOptions.TestClassesSplit;
+        nWay = protonetOptions.classes_per_it_tr;
 
         if debugMode is True:
             print("Training Model")
@@ -148,7 +156,7 @@ class ExperimentSuite():
         
         print("   === " + expName + " ended (took " + self._TimeConvert(time_lapsed) + ") ===   ")
 
-        return expName, dataLoaderOptions.UseConverter, protonetOptions.trainer_name, bestTrainAcc, bestTestAcc;
+        return expName, dataLoaderOptions.UseConverter, protonetOptions.trainer_name, bestTrainAcc, bestTestAcc, nShots, nWay;
 
     def _TimeConvert(self,sec) -> str:
         mins = sec // 60
