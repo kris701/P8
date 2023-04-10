@@ -34,25 +34,30 @@ class ExperimentSuite():
             print("Full debug info will be printed.")
         print("")
 
-        with open(os.path.join(self.Options.ExperimentResultsDir, timestamp, "run " + timestamp + ".csv"), 'w', newline='') as csvfile:
-            csvWriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            csvWriter.writerow(['Experiment Name', 'Feature Extractor', 'Net Trainer', 'Best train accuracy', 'Best test accuracy'])
+        with open(os.path.join(self.Options.ExperimentResultsDir, timestamp, "comparable.csv"), 'w', newline='') as comparableCSV:
+            comparableCsvWriter = csv.writer(comparableCSV, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            comparableCsvWriter.writerow(['datasetName', 'NumberOfClasses', self.Options.ExperimentName])
+            with open(os.path.join(self.Options.ExperimentResultsDir, timestamp, "run " + timestamp + ".csv"), 'w', newline='') as csvfile:
+                csvWriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                csvWriter.writerow(['Experiment Name', 'Feature Extractor', 'Net Trainer', 'Best train accuracy', 'Best test accuracy'])
 
-            if self.Options.DebugMode is False:
-                data = []
-                for expName in self.Options.ExperimentsToRun:
-                    data.append((expName, timestamp, False));
+                if self.Options.DebugMode is False:
+                    data = []
+                    for expName in self.Options.ExperimentsToRun:
+                        data.append((expName, timestamp, False));
 
-                poolResults = multiprocessing.Pool(len(self.Options.ExperimentsToRun)).map(self._RunExperiment, data)
-                for expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc in poolResults:
-                    results[expName] = bestTestAcc;
-                    csvWriter.writerow([expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc])
-            else:
-                for expName in self.Options.ExperimentsToRun:
-                    expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc = self._RunExperiment((expName, timestamp, True))
+                    poolResults = multiprocessing.Pool(len(self.Options.ExperimentsToRun)).map(self._RunExperiment, data)
+                    for expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc, nShot, nWay in poolResults:
+                        results[expName] = bestTestAcc;
+                        csvWriter.writerow([expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc])
+                        comparableCsvWriter.writerow([expName, nWay, bestTestAcc]);
+                else:
+                    for expName in self.Options.ExperimentsToRun:
+                        expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc, nShot, nWay = self._RunExperiment((expName, timestamp, True))
 
-                    results[expName] = bestTestAcc;
-                    csvWriter.writerow([expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc])
+                        results[expName] = bestTestAcc;
+                        csvWriter.writerow([expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc])
+                        comparableCsvWriter.writerow([expName, nWay, bestTestAcc]);
 
         if self.Options.GenerateGraphs is True:
             print("Generating full experiment graphs...")
@@ -93,6 +98,9 @@ class ExperimentSuite():
         protonetOptions.experiment_root = os.path.join(self.Options.ExperimentResultsDir, timestamp, expName)
         protonet = NetTrainerBuilder.GetNetTrainer(protonetOptions.trainer_name)(protonetOptions, DatasetBuilder.GetDataset(protonetOptions.dataset_name), debugMode)
 
+        nShots = dataLoaderOptions.TestClassesSplit;
+        nWay = protonetOptions.classes_per_it_tr;
+
         if debugMode is True:
             print("Training Model")
         bestTrainAcc = protonet.Train();
@@ -109,6 +117,11 @@ class ExperimentSuite():
             if debugMode is True:
                 print("Copying dataset...")
             shutil.make_archive(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
+
+        if debugMode is True:
+            print("Copying configs...")
+        shutil.copyfile(self.Options.BaseConfig, os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "baseConfig.ini"));
+        shutil.copyfile(configName, os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "config.ini"));
 
         if self.Options.GenerateGraphs is True:
             if debugMode is True:
@@ -133,7 +146,7 @@ class ExperimentSuite():
         
         print("   === " + expName + " ended (took " + self._TimeConvert(time_lapsed) + ") ===   ")
 
-        return expName, dataLoaderOptions.UseConverter, protonetOptions.trainer_name, bestTrainAcc, bestTestAcc;
+        return expName, dataLoaderOptions.UseConverter, protonetOptions.trainer_name, bestTrainAcc, bestTestAcc, nShots, nWay;
 
     def _TimeConvert(self,sec) -> str:
         mins = sec // 60
