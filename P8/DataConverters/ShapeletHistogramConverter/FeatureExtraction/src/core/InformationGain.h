@@ -4,23 +4,30 @@
 #include <cmath>
 #include <map>
 #include <numeric>
-#include <optional>
 #include "misc/Constants.h"
 #include "utilities/SeriesUtils.h"
 
 namespace InformationGain {
     [[nodiscard]] static double CalculateEntropy(uint total, const ClassCount &counts) {
+        if (total == 0 || counts.size() == 0)
+            throw std::exception("Cannot calculate entropy with zero values!");
+
         double entropy = 0;
         for (int i = 0; i < MAX_CLASSES; i++) {
-            const double prob = (double) counts.at(i) / total;
-            if (prob > 0)
+            if (counts.at(i) > 0) {
+                const double prob = (double)counts.at(i) / total;
                 entropy += prob * (std::log2(prob));
+            }
         }
         return -entropy;
     }
 
+    [[nodiscard]] static uint GetTotalClassCount(const ClassCount& values) {
+        return std::accumulate(values.begin(), values.end(), (uint)0);
+    }
+
     [[nodiscard]] static inline double CalculateEntropy(const ClassCount &counts) {
-        return CalculateEntropy(std::accumulate(counts.begin(), counts.end(), (uint) 0), counts);
+        return CalculateEntropy(GetTotalClassCount(counts), counts);
     }
 
     [[nodiscard]] static std::pair<ClassCount , ClassCount> GetSplit (const std::map<double, ClassCount> &values, double splitPoint) {
@@ -38,8 +45,8 @@ namespace InformationGain {
 
     [[nodiscard]] static double CalculateSplitEntropy(const std::map<double, ClassCount> &values, double splitPoint) {
         const auto split = GetSplit(values, splitPoint);
-        const uint lowerTotal = std::accumulate(split.first.begin(), split.first.end(), (uint) 0);
-        const uint upperTotal = std::accumulate(split.second.begin(), split.second.end(), (uint) 0);
+        const uint lowerTotal = GetTotalClassCount(split.first);
+        const uint upperTotal = GetTotalClassCount(split.second);
 
         const uint total = lowerTotal + upperTotal;
         const double lowerEntropy = CalculateEntropy(total, split.first);
@@ -57,8 +64,10 @@ namespace InformationGain {
         double bestPoint = -1;
         double bestEntropy = DBL_MAX;
 
-        for (auto iter = values.begin(); iter != values.end() && std::next(iter, 1) != values.end(); iter++) {
-            const double splitPoint = iter->first + (std::next(iter, 1)->first - iter->first) / 2;
+        for (auto iter = values.begin(); std::next(iter, 1) != values.end(); iter++) {
+            const double thisValue = iter->first;
+            const double nextValue = std::next(iter, 1)->first;
+            const double splitPoint = thisValue + (nextValue - thisValue) / 2;
             const double splitEntropy = CalculateSplitEntropy(values, splitPoint);
 
             if (splitEntropy < bestEntropy) {
@@ -73,12 +82,14 @@ namespace InformationGain {
         return bestPoint;
     }
 
-    [[nodiscard]] static double CalculateInformationGain(const std::map<double, ClassCount> &matchFrequency, double priorEntropy) {
+    [[nodiscard]] static double CalculateInformationGain(const std::map<double, ClassCount> &values, double priorEntropy) {
         double bestGain = 0;
 
-        for (auto iter = matchFrequency.begin(); iter != matchFrequency.end() && std::next(iter, 1) != matchFrequency.end(); iter++) {
-            const double splitPoint = iter->first + (std::next(iter, 1)->first - iter->first) / 2;
-            const double splitEntropy = CalculateSplitEntropy(matchFrequency, splitPoint);
+        for (auto iter = values.begin(); std::next(iter, 1) != values.end(); iter++) {
+            const double thisValue = iter->first;
+            const double nextValue = std::next(iter, 1)->first;
+            const double splitPoint = thisValue + (nextValue - thisValue) / 2;
+            const double splitEntropy = CalculateSplitEntropy(values, splitPoint);
             const double infoGain = priorEntropy - splitEntropy;
 
             if (infoGain > bestGain)
