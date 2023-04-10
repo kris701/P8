@@ -80,6 +80,30 @@ class ShapeletHistogramVisualiser():
                 rowIndex += 1;
         return fig;
 
+    def VisualiseSourceData(self) -> plt.figure:
+        sourceData = self._GetSourceData();
+
+        rows, cols = self._GetPlotSize(len(sourceData));
+        fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True)
+        colIndex : int = 0;
+        rowIndex : int = 0;
+        for classIndex in sourceData:
+            transformed = {}
+            for key in range(0, len(sourceData[classIndex][0])):
+                transformed[key] = []
+                index = int(key);
+                for sample in sourceData[classIndex]:
+                    transformed[key].append(sample[index])
+            
+            ax[rowIndex, colIndex].title.set_text("Class id: " + str(classIndex))
+            ax[rowIndex, colIndex].plot(transformed.values())
+
+            colIndex += 1;
+            if colIndex >= cols:
+                colIndex = 0;
+                rowIndex += 1;
+        return fig;
+
     def _GetClassData(self) -> dict:
         data = {};
         dataDir = os.path.join(self.DatasetPath, "data");
@@ -106,6 +130,21 @@ class ShapeletHistogramVisualiser():
                     fileData.append(value)
             shapeletData[int(shapeletName)] = fileData
         return shapeletData
+
+    def _GetSourceData(self) -> dict:
+        data = {};
+        dataDir = os.path.join(self.DatasetPath, "source");
+        for className in os.listdir(dataDir):
+            classData = []
+            for fileName in os.listdir(os.path.join(dataDir, className)):
+                fileData = []
+                with open(os.path.join(dataDir, className, fileName), "r") as file:
+                    for line in file:
+                        value = float(line.replace("\n",""))
+                        fileData.append(value)
+                classData.append(fileData)
+            data[int(className)] = classData
+        return data;
 
     def _GetFeatureData(self) -> dict:
         featureData = {};

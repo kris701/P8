@@ -6,11 +6,14 @@ class ExperimentOptions():
     BaseConfig : str = "Experiments/Configs/Base.ini"
 
     GenerateGraphs : bool = False
+    GenerateExperimentGraph : bool = False
     GenerateClassGraphs : bool = False
     GenerateShapeletGraphs : bool = False
+    GenerateSourceGraphs : bool = False
 
     ComparisonData : list = []
 
     DebugMode : bool = True;
 
     ZipDataset : bool = True;
+    CopyConfigs : bool = True;

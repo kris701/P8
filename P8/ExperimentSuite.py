@@ -118,28 +118,41 @@ class ExperimentSuite():
                 print("Copying dataset...")
             shutil.make_archive(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName + "-dataset"), 'zip', dataLoaderOptions.FormatedFolder)
 
-        if debugMode is True:
-            print("Copying configs...")
-        shutil.copyfile(self.Options.BaseConfig, os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "baseConfig.ini"));
-        shutil.copyfile(configName, os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "config.ini"));
+        if self.Options.CopyConfigs:
+            if debugMode is True:
+                print("Copying configs...")
+            shutil.copyfile(self.Options.BaseConfig, os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "baseConfig.ini"));
+            shutil.copyfile(configName, os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "config.ini"));
 
         if self.Options.GenerateGraphs is True:
-            if debugMode is True:
-                print("Generating graphs...")
             visualizer = ShapeletHistogramVisualiser(dataLoaderOptions.FormatedFolder)
-            allVisual = visualizer.VisualizeAllClasses();
-            allVisual.savefig(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "allVisual.png"))
+            if self.Options.GenerateExperimentGraph is True:
+                if debugMode is True:
+                    print("Generating experiment graphs...")
+                allVisual = visualizer.VisualizeAllClasses();
+                allVisual.savefig(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "allVisual.png"))
 
-            if dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
-                shapelets = visualizer.VisualiseShapelets();
-                shapelets.savefig(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "allShapelets.png"))
+            if self.Options.GenerateShapeletGraphs:
+                if debugMode is True:
+                    print("Generating shapelet graphs...")
+                if dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
+                    shapelets = visualizer.VisualiseShapelets();
+                    shapelets.savefig(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "allShapelets.png"))
 
-            if self.Options.GenerateShapeletGraphs is True and dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
+            if self.Options.GenerateClassGraphs is True and dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
+                if debugMode is True:
+                    print("Generating class graphs...")
                 for classId in os.listdir(os.path.join(dataLoaderOptions.FormatedFolder, "data")):
                     if debugMode is True:
                         print("Generating class " + classId + " graph...")
                     classfig = visualizer.VisualizeClass(int(classId));
                     classfig.savefig(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "class" + classId + ".png"))
+
+            if self.Options.GenerateSourceGraphs:
+                if debugMode is True:
+                    print("Generating source graphs...")
+                sourceVisual = visualizer.VisualiseSourceData();
+                sourceVisual.savefig(os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, "source.png"))
 
         end_time = time.time()
         time_lapsed = end_time - start_time
