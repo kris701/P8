@@ -13,9 +13,10 @@ def main():
     experimentOptions.ExperimentRounds = 3;
     experimentOptions.BaseConfig = "Experiments/Configs/BaseConfigs/6ShotProtonet.ini";
     experimentOptions.GenerateGraphs = True;
+    experimentOptions.GenerateAccuracyGraphs = True;
     experimentOptions.GenerateClassGraphs = False;
-    experimentOptions.GenerateExperimentGraph = True;
-    experimentOptions.GenerateSourceGraphs = True;
+    experimentOptions.GenerateExperimentGraph = False;
+    experimentOptions.GenerateSourceGraphs = False;
     experimentOptions.GenerateShapeletGraphs = False;
     experimentOptions.ComparisonData = ["../ComparisonData/6shot.csv"];
     experimentOptions.DebugMode = True;

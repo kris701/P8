@@ -7,6 +7,7 @@ class ExperimentOptions():
     BaseConfig : str = "Experiments/Configs/Base.ini"
 
     GenerateGraphs : bool = False
+    GenerateAccuracyGraphs : bool = False
     GenerateExperimentGraph : bool = False
     GenerateClassGraphs : bool = False
     GenerateShapeletGraphs : bool = False

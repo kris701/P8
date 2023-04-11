@@ -53,7 +53,7 @@ class ExperimentSuite():
                     results[expName] = avrTestAcc;
                     comparableCsvWriter.writerow([expName, nWay, avrTestAcc]);
 
-        if self.Options.GenerateGraphs is True:
+        if self.Options.GenerateGraphs is True and self.Options.GenerateAccuracyGraphs is True:
             print("Generating full experiment graphs...")
             combiner = CSVResultsCombiner();
             fullResults = combiner.Combine(
