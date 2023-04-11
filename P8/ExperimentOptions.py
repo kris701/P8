@@ -2,6 +2,7 @@ class ExperimentOptions():
     ExperimentConfigDir : str = "Experiments/Configs";
     ExperimentResultsDir : str = "Experiments/Results";
     ExperimentsToRun : list;
+    ExperimentRounds : int = 1;
     ExperimentName : str = "Ours"
     BaseConfig : str = "Experiments/Configs/Base.ini"
 

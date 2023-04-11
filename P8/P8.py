@@ -10,6 +10,7 @@ def main():
 
     experimentOptions = ExperimentOptions();
     experimentOptions.ExperimentsToRun = experiments;
+    experimentOptions.ExperimentRounds = 3;
     experimentOptions.BaseConfig = "Experiments/Configs/BaseConfigs/6ShotProtonet.ini";
     experimentOptions.GenerateGraphs = True;
     experimentOptions.GenerateClassGraphs = False;
