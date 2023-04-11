@@ -43,8 +43,11 @@ class ShapeletHistogramConverter(BaseDataConverter):
                             "--minWindowSize", str(self.Options.minWindowSize),
                             "--maxWindowSize", str(self.Options.maxWindowSize),
                             "--featureCount", str(self.Options.featureCount),
-                            "--attributes", str(self.Options.attributes)
-                            ]) 
+                            "--attributes", str(self.Options.attributes),
+                            "--deleteOriginal", str(self.Options.deleteOriginal),
+                            "--smoothingDegree", str(self.Options.smoothingDegree),
+                            "--noisifyAmount", str(self.Options.noisifyAmount)
+                            ])
             else:
                 subprocess.run([executable, 
                             "--train", str(os.path.join(workingDir, self.Options.SourceTrainData.replace("./","").replace("/",os.sep))),
@@ -55,7 +58,10 @@ class ShapeletHistogramConverter(BaseDataConverter):
                             "--minWindowSize", str(self.Options.minWindowSize),
                             "--maxWindowSize", str(self.Options.maxWindowSize),
                             "--featureCount", str(self.Options.featureCount),
-                            "--attributes", str(self.Options.attributes)
+                            "--attributes", str(self.Options.attributes),
+                            "--deleteOriginal", str(self.Options.deleteOriginal),
+                            "--smoothingDegree", str(self.Options.smoothingDegree),
+                            "--noisifyAmount", str(self.Options.noisifyAmount)
                             ],
                                stdout=subprocess.DEVNULL,
                                stderr=subprocess.DEVNULL) 
