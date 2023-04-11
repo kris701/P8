@@ -59,7 +59,7 @@ class ExperimentSuite():
                         csvWriter.writerow([expName, useConverter, trainer_name, bestTrainAcc, bestTestAcc])
                         comparableCsvWriter.writerow([expName, nWay, bestTestAcc]);
 
-        if self.Options.GenerateGraphs is True:
+        if self.Options.GenerateGraphs is True and self.Options.GenerateAccuracyGraphs is True:
             print("Generating full experiment graphs...")
             combiner = CSVResultsCombiner();
             fullResults = combiner.Combine(
