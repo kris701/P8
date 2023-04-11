@@ -15,7 +15,7 @@ namespace InformationGain {
     /// @param values The values to calculate entropy for
     /// @return A double, representing the entropy value
     [[nodiscard]] static double CalculateEntropy(uint total, const ClassCount &values) {
-        if (total == 0 || values.size() == 0)
+        if (total == 0 || values.empty())
             throw std::logic_error("Cannot calculate entropy with zero values!");
 
         double entropy = 0;
@@ -61,9 +61,9 @@ namespace InformationGain {
         double bestEntropy = DOUBLE_MAX;
 
         for (auto iter = values.begin(); std::next(iter, 1) != values.end(); iter++) {
-            const double thisValue = iter->first;
+            const double value = iter->first;
             const double nextValue = std::next(iter, 1)->first;
-            const double splitPoint = thisValue + (nextValue - thisValue) / 2;
+            const double splitPoint = value + (nextValue - value) / 2;
             const double splitEntropy = CalculateSplitEntropy(values, splitPoint);
 
             if (splitEntropy < bestEntropy) {
@@ -83,15 +83,15 @@ namespace InformationGain {
     /// @param priorEntropy An optional offset, so not to give back gains thats worse than previous ones
     /// @return A double representing the information gain
     [[nodiscard]] static double CalculateInformationGain(const std::map<double, ClassCount> &values, double priorEntropy) {
-        if (values.size() == 0)
+        if (values.empty())
             return 0;
 
         double bestGain = 0;
 
         for (auto iter = values.begin(); std::next(iter, 1) != values.end(); iter++) {
-            const double thisValue = iter->first;
+            const double value = iter->first;
             const double nextValue = std::next(iter, 1)->first;
-            const double splitPoint = thisValue + (nextValue - thisValue) / 2;
+            const double splitPoint = value + (nextValue - value) / 2;
             const double splitEntropy = CalculateSplitEntropy(values, splitPoint);
             const double infoGain = priorEntropy - splitEntropy;
 
