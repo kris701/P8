@@ -91,6 +91,9 @@ namespace InformationGain {
     /// <param name="priorEntropy">An optional offset, so not to give back gains thats worse than previous ones</param>
     /// <returns>A double representing the information gain</returns>
     [[nodiscard]] static double CalculateInformationGain(const std::map<double, ClassCount> &values, double priorEntropy) {
+        if (values.size() == 0)
+            return 0;
+
         double bestGain = 0;
 
         for (auto iter = values.begin(); std::next(iter, 1) != values.end(); iter++) {
