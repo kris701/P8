@@ -7,6 +7,7 @@
 #include <vector>
 #include "misc/Constants.h"
 #include "utilities/SeriesUtils.h"
+#include "utilities/ClassCountUtils.h"
 #include "core/InformationGain.h"
 #include "core/WindowGeneration.h"
 #include "types/Feature.h"
@@ -19,7 +20,7 @@ namespace FeatureFinding::Evaluation {
             return false;
 
         const double optimalSplitPoint = InformationGain::GetOptimalSplitPoint(valueCount);
-        const auto split = InformationGain::GetSplit(valueCount, optimalSplitPoint);
+        const auto split = ClassCountUtils::GetSplit(valueCount, optimalSplitPoint);
         for (int i = 0; i < MAX_CLASSES; i++) // Adds the rest of the values optimally
             valueCount[split.first[i] > split.second[i]][i] += diff[i];
 

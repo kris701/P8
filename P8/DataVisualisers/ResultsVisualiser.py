@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class ResultsVisualiser():
+    GraphSize = (15,10);
 
     def VisualiseAll(self, data) -> plt.figure:
         datasetTotal = []
@@ -21,7 +22,7 @@ class ResultsVisualiser():
 
         width = 0.1  # the width of the bars
         x = np.arange(len(datasetTotal))
-        fig, ax = plt.subplots(layout='constrained')
+        fig, ax = plt.subplots(layout='constrained', figsize=self.GraphSize)
         index = 0
         for datapoint in showData:
             offset = -((len(showData) * width) / 2) + (index * width)
