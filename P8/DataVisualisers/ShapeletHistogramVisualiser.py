@@ -5,6 +5,7 @@ from math import sqrt
 
 class ShapeletHistogramVisualiser():
     DatasetPath : str = "";
+    GraphSize = (10,10);
 
     def __init__(self, datasetPath : str) -> None:
         self.DatasetPath = datasetPath.replace("/",os.sep).replace("\\",os.sep)
@@ -14,7 +15,7 @@ class ShapeletHistogramVisualiser():
         shapeletData = self._GetShapeletData();
         featureData = self._GetFeatureData();
 
-        fig = plt.figure(constrained_layout=True)
+        fig = plt.figure(constrained_layout=True, figsize=self.GraphSize)
         gs = fig.add_gridspec(3, len(shapeletData))
 
         fig.suptitle("Class id: " + str(classIndex))
@@ -43,7 +44,7 @@ class ShapeletHistogramVisualiser():
         classData = self._GetClassData();
         
         rows, cols = self._GetPlotSize(len(classData));
-        fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True)
+        fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True, figsize=self.GraphSize)
         colIndex : int = 0;
         rowIndex : int = 0;
         for classIndex in classData:
@@ -67,7 +68,7 @@ class ShapeletHistogramVisualiser():
         shapeletData = self._GetShapeletData();
         
         rows, cols = self._GetPlotSize(len(shapeletData));
-        fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True)
+        fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True, figsize=self.GraphSize)
         colIndex : int = 0;
         rowIndex : int = 0;
         for shapeletIndex in shapeletData:           
@@ -84,7 +85,7 @@ class ShapeletHistogramVisualiser():
         sourceData = self._GetSourceData();
 
         rows, cols = self._GetPlotSize(len(sourceData));
-        fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True)
+        fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True, figsize=self.GraphSize)
         colIndex : int = 0;
         rowIndex : int = 0;
         for classIndex in sourceData:
