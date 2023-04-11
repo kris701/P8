@@ -21,6 +21,9 @@ class DataConverterOptions():
     minSampleSize : int = 0;
     maxSampleSize : int = 5;
     attributes : str = "minDist";
+    deleteOriginal : bool = False
+    smoothingDegree : int = 0
+    noisifyAmount : float = 0
 
     def VerifySettings(self):
         if not os.path.isfile(self.SourceTrainData): raise Exception("Source train dataset not found: '" + self.SourceTrainData + "'")

@@ -18,13 +18,18 @@ namespace ArgumentParsing {
         const uint maxSampleSize;
         const uint featureCount;
         const std::vector<std::string> attributes;
+        const bool deleteOriginal;
+        const uint smoothingDegree;
+        const double noisifyAmount;
         Arguments(const std::string &trainPath, const std::string &testPath, const std::string outPath, double split, double valTrainSplit,
                   uint minWindowSize, uint maxWindowSize, uint minSampleSize, uint maxSampleSize, uint featureCount,
-                  std::vector<std::string> attributes) :
+                  std::vector<std::string> attributes,
+                  bool delteOriginal, uint smoothingDegree, double noisifyAmount) :
                   trainPath(trainPath), testPath(testPath), outPath(outPath), split(split), valtrainsplit(valTrainSplit),
                   minWindowSize(minWindowSize), maxWindowSize(maxWindowSize),
                   minSampleSize(minSampleSize), maxSampleSize(maxSampleSize), featureCount(featureCount),
-                  attributes(attributes){}
+                  attributes(attributes),
+                  deleteOriginal(delteOriginal), smoothingDegree(smoothingDegree), noisifyAmount(noisifyAmount){}
     };
 
     Arguments ParseArguments(int argc, char **argv) {
@@ -41,6 +46,10 @@ namespace ArgumentParsing {
                 ("maxSampleSize", "Maximum number of samples for each class in a given feature. 0 for maximum possible", cxxopts::value<uint>() -> default_value("5"))
                 ("featureCount", "How many features to generate", cxxopts::value<uint>() -> default_value("128"))
                 ("attributes", "A given attribute", cxxopts::value<std::vector<std::string>>() ->default_value("minDist"))
+                ("deleteOriginal", "Deletes original training data. Should only be true, if it is either smoothed or noised",
+                        cxxopts::value<bool>()->default_value("false"))
+                ("smoothingDegree", "Neighbours count in smoothing. 0 for no smooth augmentation.",cxxopts::value<uint>()->default_value("0"))
+                ("noisifyAmount", "How much each point in time series should be noised. 0 for no noise augmentation.",cxxopts::value<double>()->default_value("0"))
                 ("h,help", "Print usage")
                 ;
         auto result = options.parse(argc, argv);
@@ -49,8 +58,6 @@ namespace ArgumentParsing {
             std::cout << options.help() << std::endl;
             exit(0);
         }
-
-        printf("Attribute count: %zu\n", result.count("attributes"));
 
         try {
             return Arguments(
@@ -64,7 +71,10 @@ namespace ArgumentParsing {
                     result["minSampleSize"].as<uint>(),
                     result["maxSampleSize"].as<uint>(),
                     result["featureCount"].as<uint>(),
-                    result["attributes"].as<std::vector<std::string>>()
+                    result["attributes"].as<std::vector<std::string>>(),
+                    result["deleteOriginal"].as<bool>(),
+                    result["smoothingDegree"].as<uint>(),
+                    result["noisifyAmount"].as<double>()
                     );
         } catch (const cxxopts::exceptions::option_has_no_value& e) {
             printf("\nMissing argument: %s\n", e.what());
