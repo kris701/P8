@@ -4,6 +4,7 @@
 #include <cmath>
 #include <map>
 #include <numeric>
+#include <exception>
 #include "misc/Constants.h"
 #include "utilities/SeriesUtils.h"
 #include "utilities/ClassCountUtils.h"
@@ -64,7 +65,7 @@ namespace InformationGain {
         if (values.size() < 2)
             throw std::exception("Trying to split a single point");
         double bestPoint = -1;
-        double bestEntropy = DBL_MAX;
+        double bestEntropy = DOUBLE_MAX;
 
         for (auto iter = values.begin(); std::next(iter, 1) != values.end(); iter++) {
             const double thisValue = iter->first;

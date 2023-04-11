@@ -6,6 +6,8 @@
 #include <array>
 #include <random>
 
+#define DOUBLE_MAX 99999999
+
 std::random_device rd;
 std::mt19937 g(rd());
 
