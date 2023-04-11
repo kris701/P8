@@ -121,8 +121,8 @@ namespace FeatureFinding {
                 }
                 features.push_back(*feature);
             }
-            Logger::Info("Generated: " + std::to_string(features.size()) + "/" + std::to_string(featureCount));
-            Logger::Info("Attempts : " + std::to_string(attempts));
+            if (featureCount < 10 || features.size() % (featureCount / 10) == 0 || features.size() == featureCount)
+                Logger::Info("Generated: " + std::to_string(features.size()) + "/" + std::to_string(featureCount) + " | " + "Attempts : " + std::to_string(attempts));
             attempts = 0;
         }
 
