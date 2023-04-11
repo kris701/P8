@@ -19,7 +19,7 @@ namespace InformationGain {
     /// <returns>A double, representing the entropy value</returns>
     [[nodiscard]] static double CalculateEntropy(uint total, const ClassCount &values) {
         if (total == 0 || values.size() == 0)
-            throw std::exception("Cannot calculate entropy with zero values!");
+            throw std::logic_error("Cannot calculate entropy with zero values!");
 
         double entropy = 0;
         for (int i = 0; i < MAX_CLASSES; i++) {
@@ -63,7 +63,7 @@ namespace InformationGain {
     /// <returns>A double, representing the optimal splitting point in the given map</returns>
     [[nodiscard]] static double GetOptimalSplitPoint(const std::map<double, ClassCount> &values) {
         if (values.size() < 2)
-            throw std::exception("Trying to split a single point");
+            throw std::logic_error("Trying to split a single point");
         double bestPoint = -1;
         double bestEntropy = DOUBLE_MAX;
 
@@ -80,7 +80,7 @@ namespace InformationGain {
         }
 
         if (bestPoint == -1)
-            throw std::exception("No valid best point was found!");
+            throw std::logic_error("No valid best point was found!");
 
         return bestPoint;
     }
