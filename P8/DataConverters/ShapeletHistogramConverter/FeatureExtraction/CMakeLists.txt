@@ -26,7 +26,7 @@ FetchContent_MakeAvailable(cxxopts)
 
 add_library(Sources INTERFACE
         src/IO/FileHanding.h src/misc/Constants.h src/core/WindowGeneration.h src/utilities/SeriesUtils.h src/core/InformationGain.h src/core/feature_finding/FeatureFinding.h src/IO/Logger.h
-        src/IO/ArgumentParser.h src/utilities/FeatureUtils.h src/core/attributes/Attribute.h src/types/Feature.h src/core/attributes/Frequency.h src/core/attributes/MinDist.h src/core/attributes/AttributeBuilder.h src/core/feature_finding/Evaluation.h
+        src/IO/ArgumentParser.h src/utilities/FeatureUtils.h src/utilities/ClassCountUtils.h src/core/attributes/Attribute.h src/types/Feature.h src/core/attributes/Frequency.h src/core/attributes/MinDist.h src/core/attributes/AttributeBuilder.h src/core/feature_finding/Evaluation.h
         src/core/attributes/MaxDist.h src/core/attributes/OccPos.h src/core/DataAugmentation.h)
 
 add_executable(FeatureExtraction main.cpp include/cxxopts/cxxopts.hpp)
