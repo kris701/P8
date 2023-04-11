@@ -4,21 +4,17 @@
 #include "misc/Constants.h"
 
 namespace ClassCountUtils {
-    /// <summary>
-    /// Gets the total amount of samples
-    /// </summary>
-    /// <param name="values">ClassCount of samples</param>
-    /// <returns>The total amount of samples</returns>
+    /// @brief Gets the total amount of samples
+    /// @param values ClassCount of samples
+    /// @return The total amount of samples
     [[nodiscard]] static uint GetTotalClassCount(const ClassCount& values) {
         return std::accumulate(values.begin(), values.end(), (uint)0);
     }
 
-    /// <summary>
-    /// Takes in a map of ClassCount's and splits it into two based on if the key is lower than the given splitPoint value
-    /// </summary>
-    /// <param name="values">A map of ClassCount's</param>
-    /// <param name="splitPoint">What value the ClassCount's should be split by</param>
-    /// <returns>A pair of class counts</returns>
+    /// @brief Takes in a map of ClassCount's and splits it into two based on if the key is lower than the given splitPoint value
+    /// @param values A map of ClassCount's
+    /// @param splitPoint What value the ClassCount's should be split by
+    /// @return A pair of class counts
     [[nodiscard]] static std::pair<ClassCount, ClassCount> GetSplit(const std::map<double, ClassCount>& values, double splitPoint) {
         ClassCount lowerCount{ 0 };
         ClassCount upperCount{ 0 };
