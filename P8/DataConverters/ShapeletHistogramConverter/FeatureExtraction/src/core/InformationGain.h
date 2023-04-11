@@ -13,17 +13,17 @@ namespace InformationGain {
     /// Calculates the entropy between a set of classes.
     /// <para>Based on Definition 6 in <seealso cref="http://alumni.cs.ucr.edu/~lexiangy/Shapelet/Shapelet.pdf"/></para>
     /// </summary>
-    /// <param name="total"></param>
-    /// <param name="counts"></param>
-    /// <returns></returns>
-    [[nodiscard]] static double CalculateEntropy(uint total, const ClassCount &counts) {
-        if (total == 0 || counts.size() == 0)
+    /// <param name="total">The total amount of value instances to compare against</param>
+    /// <param name="values">The values to calculate entropy for</param>
+    /// <returns>A double, representing the entropy value</returns>
+    [[nodiscard]] static double CalculateEntropy(uint total, const ClassCount &values) {
+        if (total == 0 || values.size() == 0)
             throw std::exception("Cannot calculate entropy with zero values!");
 
         double entropy = 0;
         for (int i = 0; i < MAX_CLASSES; i++) {
-            if (counts.at(i) > 0) {
-                const double proportion = (double)counts.at(i) / total;
+            if (values.at(i) > 0) {
+                const double proportion = (double)values.at(i) / total;
                 entropy += (-proportion) * (std::log2(proportion));
             }
         }
@@ -34,21 +34,32 @@ namespace InformationGain {
         return CalculateEntropy(ClassCountUtils::GetTotalClassCount(counts), counts);
     }
 
+    /// <summary>
+    /// Gets the sum of entropy values within a split of values
+    /// </summary>
+    /// <param name="values">The values to calculate entropy for</param>
+    /// <param name="splitPoint">The split point to split the values parameter on</param>
+    /// <returns>A double, representing the entropy value</returns>
     [[nodiscard]] static double CalculateSplitEntropy(const std::map<double, ClassCount> &values, double splitPoint) {
         const auto split = ClassCountUtils::GetSplit(values, splitPoint);
         const uint lowerTotal = ClassCountUtils::GetTotalClassCount(split.first);
         const uint upperTotal = ClassCountUtils::GetTotalClassCount(split.second);
 
         const uint total = lowerTotal + upperTotal;
+        const double lowerProb = (double)lowerTotal / total;
+        const double upperProb = (double)upperTotal / total;
+
         const double lowerEntropy = CalculateEntropy(total, split.first);
         const double upperEntropy = CalculateEntropy(total, split.second);
-
-        const double lowerProb = (double) lowerTotal / total;
-        const double upperProb = (double) upperTotal / total;
 
         return lowerEntropy * lowerProb + upperEntropy * upperProb;
     }
 
+    /// <summary>
+    /// Finds the most optimal split point, based on entropy calculations
+    /// </summary>
+    /// <param name="values">The values to find the split point for</param>
+    /// <returns>A double, representing the optimal splitting point in the given map</returns>
     [[nodiscard]] static double GetOptimalSplitPoint(const std::map<double, ClassCount> &values) {
         if (values.size() < 2)
             throw std::exception("Trying to split a single point");
@@ -73,6 +84,12 @@ namespace InformationGain {
         return bestPoint;
     }
 
+    /// <summary>
+    /// Calculates the information gain for a map of ClassCount values.
+    /// </summary>
+    /// <param name="values">The values to calcuate the information gain on</param>
+    /// <param name="priorEntropy">An optional offset, so not to give back gains thats worse than previous ones</param>
+    /// <returns>A double representing the information gain</returns>
     [[nodiscard]] static double CalculateInformationGain(const std::map<double, ClassCount> &values, double priorEntropy) {
         double bestGain = 0;
 
