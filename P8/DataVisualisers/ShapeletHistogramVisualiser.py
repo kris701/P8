@@ -15,7 +15,7 @@ class ShapeletHistogramVisualiser():
         shapeletData = self._GetShapeletData();
         featureData = self._GetFeatureData();
 
-        fig = plt.figure(constrained_layout=True, figsize=self.GraphSize)
+        fig = plt.figure(figsize=self.GraphSize)
         gs = fig.add_gridspec(3, len(shapeletData))
 
         fig.suptitle("Class id: " + str(classIndex))

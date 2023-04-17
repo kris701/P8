@@ -4,6 +4,11 @@ import time
 import configparser
 import shutil
 import multiprocessing
+import gc
+import matplotlib
+import matplotlib.pyplot as plt
+
+matplotlib.use('Agg')
 
 from DataConverters.DataConverterOptions import DataConverterOptions
 from DataConverters import DataConverterBuilder
@@ -80,6 +85,7 @@ class ExperimentSuite():
             fullVisualiser = ResultsVisualiser();
             full = fullVisualiser.VisualiseAll(fullResults);
             full.savefig(os.path.join(self.Options.ExperimentResultsDir, "accuracies.png"))
+            plt.close(full)
 
         print("Experiments finished!")
         return {self.Options.ExperimentName: results};
@@ -161,12 +167,14 @@ class ExperimentSuite():
                 if self.Options.DebugMode is True: print("Generating experiment graphs...")
                 allVisual = visualizer.VisualizeAllClasses();
                 allVisual.savefig(os.path.join(roundResultDir, "allVisual.png"))
+                plt.close(allVisual)
 
             if self.Options.GenerateShapeletGraphs:
                 if self.Options.DebugMode is True: print("Generating shapelet graphs...")
                 if dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
                     shapelets = visualizer.VisualiseShapelets();
                     shapelets.savefig(os.path.join(roundResultDir, "allShapelets.png"))
+                    plt.close(shapelets)
 
             if self.Options.GenerateClassGraphs is True and dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
                 if self.Options.DebugMode is True: print("Generating class graphs...")
@@ -174,11 +182,15 @@ class ExperimentSuite():
                     if self.Options.DebugMode is True: print("Generating class " + classId + " graph...")
                     classfig = visualizer.VisualizeClass(int(classId));
                     classfig.savefig(os.path.join(roundResultDir, "class" + classId + ".png"))
+                    plt.close(classfig)
 
             if self.Options.GenerateSourceGraphs:
                 if self.Options.DebugMode is True: print("Generating source graphs...")
                 sourceVisual = visualizer.VisualiseSourceData();
                 sourceVisual.savefig(os.path.join(roundResultDir, "source.png"))
+                plt.close(sourceVisual)
+
+        gc.collect();
 
         return (bestTestAcc, nShots, nWay)
 
