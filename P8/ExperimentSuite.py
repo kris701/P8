@@ -23,13 +23,16 @@ class ExperimentSuite():
         print("There is a total of " + str(len(queue)) + " items in the queue")
         counter : int = 1;
         for item in queue:
-            timestamp = time.strftime("%Y%m%d-%H%M%S")
-            itemName = item.rsplit("/", 1)[1].replace(".ini","")
             print("Queue item " + str(counter) + " out of " + str(len(queue)) + " started!")
-            option : ExperimentOptions = ExperimentOptions();
-            self._ParseConfigIntoObject(item, "SUITEOPTIONS", option)
-            option.ExperimentResultsDir = os.path.join(option.ExperimentResultsDir, itemName + " - " + timestamp);
-            self.RunExperiments(option);
+            try:
+                timestamp = time.strftime("%Y%m%d-%H%M%S")
+                itemName = item.rsplit("/", 1)[1].replace(".ini","")
+                option : ExperimentOptions = ExperimentOptions();
+                self._ParseConfigIntoObject(item, "SUITEOPTIONS", option)
+                option.ExperimentResultsDir = os.path.join(option.ExperimentResultsDir, itemName + " - " + timestamp);
+                self.RunExperiments(option);
+            except:
+                print("An error occured in the execution of (" + item + ")")
             print("Queue item " + str(counter) + " ended!")
             counter += 1;
         print("Experiment Suite Queue finised!")
