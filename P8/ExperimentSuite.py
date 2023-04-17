@@ -18,10 +18,20 @@ from ExperimentOptions import ExperimentOptions
 class ExperimentSuite():
     Options : ExperimentOptions;
 
-    def __init__(self, options : ExperimentOptions) -> None:
-        self.Options = options
+    def RunExperimentQueue(self, queue : list):
+        print("Experiment Suite Queue started...")
+        counter : int = 1;
+        for item in queue:
+            print("Queue item " + str(counter) + " started!")
+            option : ExperimentOptions = ExperimentOptions();
+            self._ParseConfigIntoObject(item, "SUITEOPTIONS", option)
+            self.RunExperiments(option);
+            print("Queue item " + str(counter) + " ended!")
+            counter += 1;
+        print("Experiment Suite Queue finised!")
 
-    def RunExperiments(self) -> dict:
+    def RunExperiments(self, options : ExperimentOptions) -> dict:
+        self.Options = options
         print("Running experiments...")
         results = {};
         timestamp = time.strftime("%Y%m%d-%H%M%S")
@@ -188,6 +198,9 @@ class ExperimentSuite():
                     obj.__dict__[index] = config[sectionName].getint(index)
                 elif typeName == "float":
                     obj.__dict__[index] = config[sectionName].getfloat(index)
+                elif typeName == "list":
+                    items = config[sectionName][index].split(",")
+                    obj.__dict__[index] = items;
                 else:
                     raise Exception("Invalid config type!")
             else:

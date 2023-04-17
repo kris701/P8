@@ -79,6 +79,7 @@
     <Folder Include="Experiments\" />
     <Folder Include="Experiments\Configs\" />
     <Folder Include="Experiments\Configs\BaseConfigs\" />
+    <Folder Include="Experiments\SuiteConfigs\" />
     <Folder Include="Experiments\Results\" />
     <Folder Include="Formatted\" />
     <Folder Include="NetTrainers\" />
@@ -149,6 +150,7 @@
     <Content Include="Experiments\Configs\ArrowHead.ini" />
     <Content Include="Experiments\Configs\Wine.ini" />
     <Content Include="Experiments\readme.md" />
+    <Content Include="Experiments\SuiteConfigs\6ShotProtonet.ini" />
     <Content Include="Formatted\readme.md" />
     <Content Include="NetTrainers\NaiveKNN\NaiveKNN\CMakeLists.txt" />
     <Content Include="NetTrainers\NaiveKNN\NaiveKNN\include\cxxopts\cxxopts.hpp" />
