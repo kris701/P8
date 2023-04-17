@@ -20,11 +20,15 @@ class ExperimentSuite():
 
     def RunExperimentQueue(self, queue : list):
         print("Experiment Suite Queue started...")
+        print("There is a total of " + str(len(queue)) + " items in the queue")
         counter : int = 1;
         for item in queue:
-            print("Queue item " + str(counter) + " started!")
+            timestamp = time.strftime("%Y%m%d-%H%M%S")
+            itemName = item.rsplit("/", 1)[1].replace(".ini","")
+            print("Queue item " + str(counter) + " out of " + str(len(queue)) + " started!")
             option : ExperimentOptions = ExperimentOptions();
             self._ParseConfigIntoObject(item, "SUITEOPTIONS", option)
+            option.ExperimentResultsDir = os.path.join(option.ExperimentResultsDir, itemName + " - " + timestamp);
             self.RunExperiments(option);
             print("Queue item " + str(counter) + " ended!")
             counter += 1;
@@ -34,8 +38,7 @@ class ExperimentSuite():
         self.Options = options
         print("Running experiments...")
         results = {};
-        timestamp = time.strftime("%Y%m%d-%H%M%S")
-        os.makedirs(os.path.join(self.Options.ExperimentResultsDir, timestamp))
+        os.makedirs(os.path.join(self.Options.ExperimentResultsDir))
 
         print("Running " + str(len(self.Options.ExperimentsToRun)) + " experiments.")
         if self.Options.DebugMode is False:
@@ -44,14 +47,14 @@ class ExperimentSuite():
             print("Full debug info will be printed.")
         print("")
 
-        with open(os.path.join(self.Options.ExperimentResultsDir, timestamp, "comparable.csv"), 'w', newline='') as comparableCSV:
+        with open(os.path.join(self.Options.ExperimentResultsDir, "comparable.csv"), 'w', newline='') as comparableCSV:
             comparableCsvWriter = csv.writer(comparableCSV, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             comparableCsvWriter.writerow(['datasetName', 'NumberOfClasses', self.Options.ExperimentName])
 
             if self.Options.DebugMode is False:
                 data = []
                 for expName in self.Options.ExperimentsToRun:
-                    data.append((expName, timestamp));
+                    data.append(expName);
 
                 poolResults = multiprocessing.Pool(len(self.Options.ExperimentsToRun)).map(self._RunExperiment, data)
                 for expName, avrTestAcc, nShot, nWay in poolResults:
@@ -59,7 +62,7 @@ class ExperimentSuite():
                     comparableCsvWriter.writerow([expName, nWay, avrTestAcc]);
             else:
                 for expName in self.Options.ExperimentsToRun:
-                    expName, avrTestAcc, nShot, nWay = self._RunExperiment((expName, timestamp))
+                    expName, avrTestAcc, nShot, nWay = self._RunExperiment(expName)
                     results[expName] = avrTestAcc;
                     comparableCsvWriter.writerow([expName, nWay, avrTestAcc]);
 
@@ -73,13 +76,13 @@ class ExperimentSuite():
                 );
             fullVisualiser = ResultsVisualiser();
             full = fullVisualiser.VisualiseAll(fullResults);
-            full.savefig(os.path.join(self.Options.ExperimentResultsDir, timestamp, "accuracies.png"))
+            full.savefig(os.path.join(self.Options.ExperimentResultsDir, "accuracies.png"))
 
         print("Experiments finished!")
         return {self.Options.ExperimentName: results};
 
     def _RunExperiment(self, data):
-        expName, timestamp = data
+        expName = data
         print("   === " + expName + " started ===   ")
         start_time = time.time()
 
@@ -90,7 +93,7 @@ class ExperimentSuite():
         nWay : int = 0;
 
         for step in range(0, self.Options.ExperimentRounds):
-            bestTestAcc, shots, ways = self._RunRound(expName, step, timestamp, configName);
+            bestTestAcc, shots, ways = self._RunRound(expName, step, configName);
             avrTestAcc += bestTestAcc;
             nShots = shots;
             nWay = ways
@@ -104,9 +107,9 @@ class ExperimentSuite():
 
         return expName, avrTestAcc, nShots, nWay;
 
-    def _RunRound(self, expName, step, timestamp, configName) -> tuple[float,int,int]:
+    def _RunRound(self, expName, step, configName) -> tuple[float,int,int]:
         print("[" + expName + "] Round " + str(step + 1) + " of " + str(self.Options.ExperimentRounds))
-        roundResultDir : str = os.path.join(self.Options.ExperimentResultsDir, timestamp, expName, str(step + 1));
+        roundResultDir : str = os.path.join(self.Options.ExperimentResultsDir, expName, str(step + 1));
 
         dataLoaderOptions = DataConverterOptions()
         self._ParseConfigIntoObject(self.Options.BaseConfig, "DATACONVERTER", dataLoaderOptions)
