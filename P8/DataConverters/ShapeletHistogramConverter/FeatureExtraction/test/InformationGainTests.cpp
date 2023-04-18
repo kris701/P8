@@ -1,5 +1,3 @@
-#pragma once
-
 #include "core/InformationGain.h"
 #include <catch2/catch_test_macros.hpp>
 #include "catch2/generators/catch_generators.hpp"
@@ -9,7 +7,7 @@ namespace InformationGainTests {
 
 #pragma region CalculateEntropy
 
-    TEST_CASE("Can_CalculateEntropy_GiveCorrectEntropy_EqualValues_1", "[InformationGain]") {
+    TEST_CASE("InformationGain.CalculateEntropy.Can_GiveCorrectEntropy_EqualValues_1", "[InformationGain]") {
         auto classCount = GENERATE(1, 2, 4, 8, 16, 32);
         auto instanceCount = GENERATE(1, 2, 4, 8, 16, 32);
         int total = 0;
@@ -30,3 +28,4 @@ namespace InformationGainTests {
 
 #pragma endregion
 }
+

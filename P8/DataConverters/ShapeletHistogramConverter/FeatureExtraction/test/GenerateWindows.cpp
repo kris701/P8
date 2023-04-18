@@ -1,5 +1,3 @@
-#pragma once
-
 #include "core/WindowGeneration.h"
 #include <catch2/catch_test_macros.hpp>
 #include "catch2/generators/catch_generators.hpp"
@@ -9,7 +7,7 @@ namespace WindowGenerationTests {
 
 #pragma region GenerateWindowsOfLength
 
-    TEST_CASE("Can_GenerateWindowsOfLength_GiveCorrectWindows", "[WindowGeneration]") {
+    TEST_CASE("WindowGeneration.GenerateWindowsOfLength.Can_GiveCorrectWindows", "[WindowGeneration]") {
         auto seriesLength = GENERATE(1, 2, 4, 8, 16, 32);
         auto windowSize = GENERATE(1, 2, 4, 8, 16, 32);
 
@@ -28,7 +26,7 @@ namespace WindowGenerationTests {
         REQUIRE(expectedWindowCount == windows.size());
     }
 
-    TEST_CASE("Can_GenerateWindowsOfLength_GiveNoneIfSeriesEmpty", "[WindowGeneration]") {
+    TEST_CASE("WindowGeneration.GenerateWindowsOfLength.Can_GiveNoneIfSeriesEmpty", "[WindowGeneration]") {
         auto windowSize = GENERATE(1, 2, 4, 8, 16, 32);
 
         Series series;
@@ -39,7 +37,7 @@ namespace WindowGenerationTests {
         REQUIRE(0 == windows.size());
     }
 
-    TEST_CASE("Can_GenerateWindowsOfLength_GiveNoneIfLengthZero", "[WindowGeneration]") {
+    TEST_CASE("WindowGeneration.GenerateWindowsOfLength.Can_GiveNoneIfLengthZero", "[WindowGeneration]") {
         auto seriesLength = GENERATE(0, 1, 2, 4, 8, 16, 32);
 
         Series series;
@@ -56,7 +54,7 @@ namespace WindowGenerationTests {
 
 #pragma region GenerateWindowsOfMinMaxLength
 
-    TEST_CASE("Can_GenerateWindowsOfMinMaxLength_GiveCorrectWindows", "[WindowGeneration]") {
+    TEST_CASE("WindowGeneration.GenerateWindowsOfMinMaxLength.Can_GiveCorrectWindows", "[WindowGeneration]") {
         auto seriesLength = GENERATE(1, 2, 4, 8);
         auto minWindowSize = GENERATE(1, 2, 4, 8);
         auto maxWindowSize = GENERATE(1, 2, 4, 8);
@@ -78,7 +76,7 @@ namespace WindowGenerationTests {
         REQUIRE(expectedWindowCount == windows.size());
     }
 
-    TEST_CASE("Can_GenerateWindowsOfMinMaxLength_SetsMaxWindowSizeToSeriesLengthIfGivenIsZero", "[WindowGeneration]") {
+    TEST_CASE("WindowGeneration.GenerateWindowsOfMinMaxLength.Can_SetsMaxWindowSizeToSeriesLengthIfGivenIsZero", "[WindowGeneration]") {
         auto seriesLength = GENERATE(1, 2, 4, 8);
         auto minWindowSize = GENERATE(1, 2, 4, 8);
 
@@ -100,7 +98,7 @@ namespace WindowGenerationTests {
     }
 
 
-    TEST_CASE("Can_GenerateWindowsOfMinMaxLength_SetsMaxWindowSizeToSeriesLengthIfGivenIsLarger", "[WindowGeneration]") {
+    TEST_CASE("WindowGeneration.GenerateWindowsOfMinMaxLength.Can_SetsMaxWindowSizeToSeriesLengthIfGivenIsLarger", "[WindowGeneration]") {
         auto seriesLength = GENERATE(1, 2, 4, 8);
         auto minWindowSize = GENERATE(1, 2, 4, 8);
         auto maxWindowSize = GENERATE(10, 20, 40, 80);
@@ -122,7 +120,7 @@ namespace WindowGenerationTests {
         REQUIRE(expectedWindowCount == windows.size());
     }
 
-    TEST_CASE("Can_GenerateWindowsOfMinMaxLength_GiveNoneIfSeriesEmpty", "[WindowGeneration]") {
+    TEST_CASE("WindowGeneration.GenerateWindowsOfMinMaxLength.Can_GiveNoneIfSeriesEmpty", "[WindowGeneration]") {
         auto minWindowSize = GENERATE(1, 2, 4, 8);
         auto maxWindowSize = GENERATE(1, 2, 4, 8);
 
@@ -135,7 +133,7 @@ namespace WindowGenerationTests {
         REQUIRE(0 == windows.size());
     }
 
-    TEST_CASE("Can_GenerateWindowsOfMinMaxLength_GiveNoneIfMinLargerThanMax", "[WindowGeneration]") {
+    TEST_CASE("WindowGeneration.GenerateWindowsOfMinMaxLength.Can_GiveNoneIfMinLargerThanMax", "[WindowGeneration]") {
         auto seriesLength = GENERATE(1, 2, 4, 8);
         auto minWindowSize = GENERATE(5, 6, 7, 8);
         auto maxWindowSize = GENERATE(1, 2, 3, 4);
@@ -156,7 +154,7 @@ namespace WindowGenerationTests {
 
 #pragma region RemoveDuplicateWindows
 
-    TEST_CASE("Can_RemoveDuplicateWindows_Correctly", "[WindowGeneration]") {
+    TEST_CASE("WindowGeneration.RemoveDuplicateWindows.Can_Correctly", "[WindowGeneration]") {
         auto seriesLength = GENERATE(1, 2, 4, 8);
         auto duplicates = GENERATE(1, 2, 4, 8);
 
@@ -173,7 +171,7 @@ namespace WindowGenerationTests {
         REQUIRE(1 == windows.size());
     }
 
-    TEST_CASE("Cant_RemoveDuplicateWindows_IfNoDuplicates", "[WindowGeneration]") {
+    TEST_CASE("WindowGeneration.RemoveDuplicateWindows.Cant_IfNoDuplicates", "[WindowGeneration]") {
         auto seriesLength = GENERATE(1, 2, 4, 8);
         auto duplicates = GENERATE(1, 2, 4, 8);
 
@@ -194,7 +192,7 @@ namespace WindowGenerationTests {
 
 #pragma region GenerateWindowsOfMinMaxLength (LabelledSeries)
 
-    TEST_CASE("Can_GenerateWindowsOfMinMaxLength_GiveCorrectWindowsFromSingle", "[WindowGeneration]") {
+    TEST_CASE("WindowGeneration.GenerateWindowsOfMinMaxLength (Labelled Series).Can_GiveCorrectWindowsFromSingle", "[WindowGeneration]") {
         auto seriesLength = GENERATE(1, 2, 4, 8);
         auto minWindowSize = GENERATE(1, 2, 4, 8);
         auto maxWindowSize = GENERATE(1, 2, 4, 8);
@@ -219,7 +217,7 @@ namespace WindowGenerationTests {
         REQUIRE(expectedWindowCount == windows.size());
     }
 
-    TEST_CASE("Can_GenerateWindowsOfMinMaxLength_GiveCorrectWindowsFromTwoUnique", "[WindowGeneration]") {
+    TEST_CASE("WindowGeneration.GenerateWindowsOfMinMaxLength (Labelled Series).Can_GiveCorrectWindowsFromTwoUnique", "[WindowGeneration]") {
         auto seriesLength = GENERATE(1, 2, 4, 8);
         auto minWindowSize = GENERATE(1, 2, 4, 8);
         auto maxWindowSize = GENERATE(1, 2, 4, 8);

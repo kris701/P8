@@ -22,6 +22,4 @@ add_executable(FeatureExtraction main.cpp include/cxxopts/cxxopts.hpp)
 target_include_directories(FeatureExtraction PRIVATE include src)
 
 include(CTest)
-
-enable_testing()
 add_subdirectory(test)

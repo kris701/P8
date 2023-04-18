@@ -1,32 +1,30 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.13)
 
+# Setup Catch2 (download if needed)
 Include(FetchContent)
-
 FetchContent_Declare(
         Catch2
+        GIT_SHALLOW    TRUE
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG        v3.0.2 # or a later release
+        GIT_TAG        v3.0.1 # or a later release
 )
-FetchContent_GetProperties(Catch2)
-if(NOT Catch2_POPULATED)
-    FetchContent_Populate(Catch2)
-    list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
-    #add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR})
-endif() 
+FetchContent_MakeAvailable(Catch2)
+list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/contrib)
 
-set (WILDCARD_SOURCE *.cpp)
-
-file(GLOB_RECURSE TEST_SOURCES ${WILDCARD_SOURCE})
-
-add_executable(${TARGET_TEST} ${TEST_SOURCES})
-
+# Make sure package is installed
 find_package(Catch2 REQUIRED)
 
-# Link to the desired libraries
-target_link_libraries(${TARGET_TEST}
-    PRIVATE
-    Catch2::Catch2
-)
+# Find all .cpp files in the test folder
+set (WILDCARD_SOURCE *.cpp)
+file(GLOB_RECURSE TEST_SOURCES RELATIVE ${CMAKE_SOURCE_DIR}/test ${WILDCARD_SOURCE})
 
+# Setup executable
+add_executable(all_tests ${TEST_SOURCES})
+target_include_directories(all_tests PRIVATE ../include ../src)
+target_link_libraries(all_tests PRIVATE Catch2::Catch2WithMain)
+
+# Initialise test libraries
+include(CTest)
+enable_testing()
 include(Catch)
-catch_discover_tests(${TARGET_TEST})
+catch_discover_tests(all_tests)
