@@ -92,5 +92,22 @@ namespace InformationGainTests {
     }
 
 #pragma endregion
+
+#pragma region CalculateSplitEntropy
+    TEST_CASE("InformationGain.CalculateSplitEntropy.Can_GetSplitEntropy_1", "[InformationGain]") {
+        int total = 30;
+        ClassCount values{ 10, 5, 15 };
+
+        double expectedEntropy = 1.450875;
+
+        auto resultingEntropy = CalculateEntropy(total, values);
+
+        // Round expected values, since decimal points is not exactly the same between manual and method result
+        REQUIRE(std::round(expectedEntropy * 10) == std::round(resultingEntropy * 10));
+    }
+
+#pragma endregion
+
+
 }
 
