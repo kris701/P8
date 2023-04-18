@@ -2,6 +2,7 @@
 #define FEATUREEXTRACTION_SERIESUTILS_H
 
 #include <unordered_set>
+#include <unordered_map>
 #include "misc/Constants.h"
 
 namespace SeriesUtils {

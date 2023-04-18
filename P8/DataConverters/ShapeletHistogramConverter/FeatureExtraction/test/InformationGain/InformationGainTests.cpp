@@ -1,29 +1,29 @@
-#include "core/WindowGeneration.h"
+#include "core/InformationGain.h"
 #include <catch2/catch_test_macros.hpp>
 #include "catch2/generators/catch_generators.hpp"
 
 namespace InformationGainTests {
     using namespace InformationGain;
 
-#pragma region GenerateWindowsOfLength
+#pragma region CalculateEntropy
 
-    TEST_CASE("Can_GenerateWindowsOfLength_GiveCorrectWindows", "[WindowGeneration]") {
-        auto seriesLength = GENERATE(1, 2, 4, 8, 16, 32);
-        auto windowSize = GENERATE(1, 2, 4, 8, 16, 32);
+    TEST_CASE("Can_CalculateEntropy_GiveCorrectEntropy_EqualValues_1", "[InformationGain]") {
+        auto classCount = GENERATE(1, 2, 4, 8, 16, 32);
+        auto instanceCount = GENERATE(1, 2, 4, 8, 16, 32);
+        int total = 0;
+        ClassCount values;
+        for (int i = 0; i < classCount; i++) {
+            values[i] = instanceCount;
+            total += instanceCount;
+        }
 
-        uint expectedWindowCount = 0;
-        for (uint i = 0; i + windowSize <= seriesLength; i++)
-            expectedWindowCount++;
+        double expectedEntropy = 0;
 
-        Series series;
-        for (uint i = 0; i < seriesLength; i++)
-            series.push_back((double)1 / i);
+        auto resultingEntropy = CalculateEntropy(total, values);
 
-        auto windows = GenerateWindowsOfLength(series, windowSize);
-
-        INFO("Series Length: " << seriesLength);
-        INFO("Window Size: " << windowSize);
-        REQUIRE(expectedWindowCount == windows.size());
+        INFO("Class Count: " << classCount);
+        INFO("Instance Count: " << instanceCount);
+        REQUIRE(expectedEntropy == resultingEntropy);
     }
 
 #pragma endregion
