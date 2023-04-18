@@ -1,0 +1,4 @@
+add_executable(Test_InformationGain ${CMAKE_CURRENT_LIST_DIR}/InformationGainTests.cpp)
+target_link_libraries(Test_InformationGain PRIVATE Sources Catch2::Catch2WithMain)
+target_include_directories(Test_InformationGain PRIVATE src)
+catch_discover_tests(Test_InformationGain)
