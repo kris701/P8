@@ -15,7 +15,7 @@ namespace InformationGain {
     /// @param values The values to calculate entropy for
     /// @return A double, representing the entropy value
     [[nodiscard]] static double CalculateEntropy(uint total, const ClassCount &values) {
-        if (total == 0 || values.empty())
+        if (total == 0)
             throw std::logic_error("Cannot calculate entropy with zero values!");
 
         double entropy = 0;
