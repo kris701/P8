@@ -1,4 +1,0 @@
-add_executable(Test_WindowGeneration ${CMAKE_CURRENT_LIST_DIR}/GenerateWindows.cpp)
-target_link_libraries(Test_WindowGeneration PRIVATE Sources Catch2::Catch2WithMain)
-target_include_directories(Test_WindowGeneration PRIVATE src)
-catch_discover_tests(Test_WindowGeneration)
