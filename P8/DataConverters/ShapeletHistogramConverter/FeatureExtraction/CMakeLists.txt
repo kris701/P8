@@ -29,7 +29,7 @@ add_library(Sources INTERFACE
         src/IO/ArgumentParser.h src/utilities/FeatureUtils.h src/utilities/ClassCountUtils.h src/core/attributes/Attribute.h src/types/Feature.h src/core/attributes/Frequency.h src/core/attributes/MinDist.h src/core/attributes/AttributeBuilder.h src/core/feature_finding/Evaluation.h
         src/core/attributes/MaxDist.h src/core/attributes/OccPos.h src/core/DataAugmentation.h)
 
-add_executable(FeatureExtraction main.cpp include/cxxopts/cxxopts.hpp)
+add_executable(FeatureExtraction main.cpp include/cxxopts/cxxopts.hpp src/core/DataChoosing.h)
 target_include_directories(FeatureExtraction PRIVATE include src)
 
 include(CTest)
