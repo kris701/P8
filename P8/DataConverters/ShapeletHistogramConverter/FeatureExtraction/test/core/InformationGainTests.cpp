@@ -95,15 +95,40 @@ namespace InformationGainTests {
 
 #pragma region CalculateSplitEntropy
     TEST_CASE("InformationGain.CalculateSplitEntropy.Can_GetSplitEntropy_1", "[InformationGain]") {
-        int total = 30;
-        ClassCount values{ 10, 5, 15 };
+        // With total = 5 we get:
+        //    Class count of {1} gives entropy: 0.4643
+        //    Class count of {2} gives entropy: 0.5287
+        //    Class count of {3} gives entropy: 0.4421
+        //    Class count of {4} gives entropy: 0.2575
 
-        double expectedEntropy = 1.450875;
+        double total = 5;
+        std::map<double, ClassCount> values = {
+            {0, {1}},
+            {0.25, {1}},
+            {0.50, {1}},
+            {0.75, {1}},
+            {1, {1}},
+        };
 
-        auto resultingEntropy = CalculateEntropy(total, values);
+        double resultingSplitEntropy1 = CalculateSplitEntropy(values, 0.125);
+        //                       Entropy  Probability           Entropy  Probability
+        double expectEntropy1 = (0.4643 * ((double)1 / total) + 0.2575 * ((double)4 / total));
+        REQUIRE(std::round(resultingSplitEntropy1 * 100) == std::round(expectEntropy1 * 100));
 
-        // Round expected values, since decimal points is not exactly the same between manual and method result
-        REQUIRE(std::round(expectedEntropy * 10) == std::round(resultingEntropy * 10));
+        double resultingSplitEntropy2 = CalculateSplitEntropy(values, 0.375);
+        //                       Entropy  Probability           Entropy  Probability
+        double expectEntropy2 = (0.5287 * ((double)2 / total) + 0.4421 * ((double)3 / total));
+        REQUIRE(std::round(resultingSplitEntropy2 * 100) == std::round(expectEntropy2 * 100));
+
+        double resultingSplitEntropy3 = CalculateSplitEntropy(values, 0.625);
+        //                       Entropy  Probability           Entropy  Probability
+        double expectEntropy3 = (0.4421 * ((double)3 / total) + 0.5287 * ((double)2 / total));
+        REQUIRE(std::round(resultingSplitEntropy3 * 100) == std::round(expectEntropy3 * 100));
+
+        double resultingSplitEntropy4 = CalculateSplitEntropy(values, 0.875);
+        //                       Entropy  Probability           Entropy  Probability
+        double expectEntropy4 = (0.2575 * ((double)4 / total) + 0.4643 * ((double)1 / total));
+        REQUIRE(std::round(resultingSplitEntropy4 * 100) == std::round(expectEntropy4 * 100));
     }
 
 #pragma endregion
