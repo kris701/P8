@@ -28,14 +28,16 @@ int main(int argc, char** argv) {
     Logger::End(id);
 
     id = Logger::Begin("Splitting Data");
-    const auto trainSplit = SeriesUtils::Split(data, arguments.split);
-    auto trainData = trainSplit.first;
+    const auto allData = SeriesUtils::Split(data, arguments.split);
+    auto trainData = allData.first;
+    const auto testData = allData.second;
+    Logger::End(id);
 
-    uint id2 = Logger::Begin("Augmenting Data");
+    id = Logger::Begin("Augmenting Data");
     trainData = DataAugmentation::Augment(trainData, false, arguments.smoothingDegree, arguments.noisifyAmount);
-    Logger::End(id2);
+    Logger::End(id);
 
-    const auto testData = trainSplit.second;
+    id = Logger::Begin("Converting data to map");
     const auto trainMap = SeriesUtils::ToMap(trainData);
     const auto testMap = SeriesUtils::ToMap(testData);
     Logger::End(id);
