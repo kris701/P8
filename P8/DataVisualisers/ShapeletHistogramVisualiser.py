@@ -1,7 +1,6 @@
 import os
 import matplotlib.pyplot as plt
 import pandas as pd
-from math import sqrt
 
 class ShapeletHistogramVisualiser():
     DatasetPath : str = "";
@@ -18,7 +17,7 @@ class ShapeletHistogramVisualiser():
         fig = plt.figure(figsize=self.GraphSize)
         gs = fig.add_gridspec(3, len(shapeletData))
 
-        fig.suptitle("Class id: " + str(classIndex))
+        fig.suptitle("Class id: " + str(classIndex) + "(Train: " + str(visualizeTrain) + ", Test: " + str(visualizeTest) + ")")
 
         index : int = 0
         for key in shapeletData:
@@ -45,6 +44,7 @@ class ShapeletHistogramVisualiser():
         
         rows, cols = self._GetPlotSize(len(classData));
         fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True, figsize=self.GraphSize)
+        fig.suptitle("All Classes (Train: " + str(visualizeTrain) + ", Test: " + str(visualizeTest) + ")")
         colIndex : int = 0;
         rowIndex : int = 0;
         for classIndex in classData:
@@ -55,7 +55,7 @@ class ShapeletHistogramVisualiser():
                 for sample in classData[classIndex]:
                     transformed[key].append(sample[index])
             
-            ax[rowIndex, colIndex].title.set_text("Class id: " + str(classIndex))
+            ax[rowIndex, colIndex].title.set_text("Id: " + str(classIndex))
             ax[rowIndex, colIndex].boxplot(transformed.values(), labels=transformed.keys())
 
             colIndex += 1;
@@ -69,10 +69,11 @@ class ShapeletHistogramVisualiser():
         
         rows, cols = self._GetPlotSize(len(shapeletData));
         fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True, figsize=self.GraphSize)
+        fig.suptitle("Shapelets")
         colIndex : int = 0;
         rowIndex : int = 0;
         for shapeletIndex in shapeletData:           
-            ax[rowIndex, colIndex].title.set_text("Shapelet id: " + str(shapeletIndex))
+            ax[rowIndex, colIndex].title.set_text("Id: " + str(shapeletIndex))
             ax[rowIndex, colIndex].plot(shapeletData[shapeletIndex])
 
             colIndex += 1;
@@ -86,6 +87,7 @@ class ShapeletHistogramVisualiser():
 
         rows, cols = self._GetPlotSize(len(sourceData));
         fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True, figsize=self.GraphSize)
+        fig.suptitle("Source shots")
         colIndex : int = 0;
         rowIndex : int = 0;
         for classIndex in sourceData:
@@ -96,7 +98,7 @@ class ShapeletHistogramVisualiser():
                 for sample in sourceData[classIndex]:
                     transformed[key].append(sample[index])
             
-            ax[rowIndex, colIndex].title.set_text("Class id: " + str(classIndex))
+            ax[rowIndex, colIndex].title.set_text("Id: " + str(classIndex))
             ax[rowIndex, colIndex].plot(transformed.values())
 
             colIndex += 1;
