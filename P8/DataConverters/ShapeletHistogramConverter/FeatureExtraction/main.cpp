@@ -28,9 +28,7 @@ int main(int argc, char** argv) {
     Logger::End(id);
 
     id = Logger::Begin("Splitting Data");
-    const auto valSplit = SeriesUtils::Split(data, arguments.valtrainsplit);
-    const auto valData = valSplit.first;
-    const auto trainSplit = SeriesUtils::Split(valSplit.second, arguments.split);
+    const auto trainSplit = SeriesUtils::Split(data, arguments.split);
     auto trainData = trainSplit.first;
 
     uint id2 = Logger::Begin("Augmenting Data");
@@ -52,27 +50,23 @@ int main(int argc, char** argv) {
     id = Logger::Begin("Generating Feature Points");
     const auto trainFeatures = FeatureUtils::GenerateFeatureSeries(trainData, features);
     const auto testFeatures = FeatureUtils::GenerateFeatureSeries(testData, features);
-    const auto valFeatures = FeatureUtils::GenerateFeatureSeries(valData, features);
     Logger::End(id);
 
     id = Logger::Begin("Writing Feature Series to Files");
     const auto featureSeriesPath = arguments.outPath + "data/";
     std::vector<std::string> trainFiles = FileHanding::WriteToFiles(featureSeriesPath, trainFeatures);
     std::vector<std::string> testFiles = FileHanding::WriteToFiles(featureSeriesPath, testFeatures);
-    std::vector<std::string> valFiles = FileHanding::WriteToFiles(featureSeriesPath, valFeatures);
     Logger::End(id);
 
     id = Logger::Begin("Shuffles File Order");
     std::shuffle(std::begin(trainFiles), std::end(trainFiles), g);
     std::shuffle(std::begin(testFiles), std::end(testFiles), g);
-    std::shuffle(std::begin(valFiles), std::end(valFiles), g);
     Logger::End(id);
 
     id = Logger::Begin("Writing Split Files");
     const auto splitPath = arguments.outPath + "split/";
     FileHanding::WriteFile(splitPath + "train.txt", FileHanding::RemoveSubPath(arguments.outPath, trainFiles));
     FileHanding::WriteFile(splitPath + "test.txt", FileHanding::RemoveSubPath(arguments.outPath, testFiles));
-    FileHanding::WriteFile(splitPath + "val.txt", FileHanding::RemoveSubPath(arguments.outPath, valFiles));
     Logger::End(id);
 
     id = Logger::Begin("Writing Feature Files");
