@@ -170,7 +170,13 @@ class ExperimentSuite():
             visualizer = ShapeletHistogramVisualiser(dataLoaderOptions.FormatedFolder)
             if self.Options.GenerateExperimentGraph is True:
                 if self.Options.DebugMode is True: print("Generating experiment graphs...")
-                allVisual = visualizer.VisualizeAllClasses();
+                allVisual_train = visualizer.VisualizeAllClasses(True,False);
+                allVisual_train.savefig(os.path.join(roundResultDir, "train_allVisual.png"))
+                plt.close(allVisual_train)
+                allVisual_test = visualizer.VisualizeAllClasses(False,True);
+                allVisual_test.savefig(os.path.join(roundResultDir, "test_allVisual.png"))
+                plt.close(allVisual_test)
+                allVisual = visualizer.VisualizeAllClasses(True,True);
                 allVisual.savefig(os.path.join(roundResultDir, "allVisual.png"))
                 plt.close(allVisual)
 
@@ -185,6 +191,12 @@ class ExperimentSuite():
                 if self.Options.DebugMode is True: print("Generating class graphs...")
                 for classId in os.listdir(os.path.join(dataLoaderOptions.FormatedFolder, "data")):
                     if self.Options.DebugMode is True: print("Generating class " + classId + " graph...")
+                    classfig_train = visualizer.VisualizeClass(int(classId), True, False);
+                    classfig_train.savefig(os.path.join(roundResultDir, "train_class" + classId + ".png"))
+                    plt.close(classfig_train)
+                    classfig_test = visualizer.VisualizeClass(int(classId), False, True);
+                    classfig_test.savefig(os.path.join(roundResultDir, "test_class" + classId + ".png"))
+                    plt.close(classfig_test)
                     classfig = visualizer.VisualizeClass(int(classId));
                     classfig.savefig(os.path.join(roundResultDir, "class" + classId + ".png"))
                     plt.close(classfig)
