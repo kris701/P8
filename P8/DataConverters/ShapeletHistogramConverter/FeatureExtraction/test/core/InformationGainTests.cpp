@@ -94,6 +94,7 @@ namespace InformationGainTests {
 #pragma endregion
 
 #pragma region CalculateSplitEntropy
+
     TEST_CASE("InformationGain.CalculateSplitEntropy.Can_GetSplitEntropy_1", "[InformationGain]") {
         // With total = 5 we get:
         //    Class count of {1} gives entropy: 0.4643
@@ -129,6 +130,101 @@ namespace InformationGainTests {
         //                       Entropy  Probability           Entropy  Probability
         double expectEntropy4 = (0.2575 * ((double)4 / total) + 0.4643 * ((double)1 / total));
         REQUIRE(std::round(resultingSplitEntropy4 * 100) == std::round(expectEntropy4 * 100));
+    }
+
+#pragma endregion
+
+#pragma region GetOptimalSplitPoint
+
+    TEST_CASE("InformationGain.GetOptimalSplitPoint.Can_GetOptimalSplitPoint_1", "[InformationGain]") {
+        // With total = 5 we get:
+        //    Class count of {1} gives entropy: 0.4643
+        //    Class count of {2} gives entropy: 0.5287
+        //    Class count of {3} gives entropy: 0.4421
+        //    Class count of {4} gives entropy: 0.2575
+
+        double total = 5;
+        std::map<double, ClassCount> values = {
+            {0, {1}},
+            {0.25, {1}},
+            {0.50, {1}},
+            {0.75, {1}},
+            {1, {1}},
+        };
+
+        // The first split, between 0 and 0.25 (i.e. 0.125) is the best point, since the entropy is the lowest here.
+        // Do note, that technically the split point between 0.75 and 1 is equally as good.
+        double expectedBestPoint = (0 + 0.25) / 2;
+        double bestPoint = GetOptimalSplitPoint(values);
+
+        REQUIRE(std::round(bestPoint * 100) == std::round(expectedBestPoint * 100));
+    }
+
+    TEST_CASE("InformationGain.GetOptimalSplitPoint.Can_GetOptimalSplitPoint_2", "[InformationGain]") {
+        // With total = 5 we get:
+        //    Class count of {1} gives entropy: 0.4643
+        //    Class count of {2} gives entropy: 0.5287
+        //    Class count of {3} gives entropy: 0.4421
+        //    Class count of {4} gives entropy: 0.2575
+
+        double total = 5;
+        std::map<double, ClassCount> values = {
+            {0, {10}},
+            {0.25, {1}},
+            {0.50, {1}},
+            {0.75, {1}},
+            {1, {1}},
+        };
+
+        // This time (compared to the previous test) the best split point is now the last point (they where equally as good before)
+        double expectedBestPoint = (0.75 + 1) / 2;
+        double bestPoint = GetOptimalSplitPoint(values);
+
+        REQUIRE(std::round(bestPoint * 100) == std::round(expectedBestPoint * 100));
+    }
+
+    TEST_CASE("InformationGain.GetOptimalSplitPoint.Cant_SplitSinglePoint", "[InformationGain]") {
+        std::map<double, ClassCount> values = {
+            {0, {1}}
+        };
+        REQUIRE_THROWS(GetOptimalSplitPoint(values));
+    }
+
+#pragma endregion
+
+#pragma region CalculateInformationGain
+
+    TEST_CASE("InformationGain.CalculateInformationGain.Can_CalculateInformationGain_SameWithZeroPriorEntropy_1", "[InformationGain]") {
+        double total = 5;
+        std::map<double, ClassCount> values = {
+            {0, {1}},
+            {0.25, {1}},
+            {0.50, {1}},
+            {0.75, {1}},
+            {1, {1}},
+        };
+
+        double bestGain = CalculateInformationGain(values, 0);
+
+        REQUIRE(bestGain == 0);
+    }
+
+    TEST_CASE("InformationGain.CalculateInformationGain.Can_CalculateInformationGain", "[InformationGain]") {
+        auto priorEntropy = GENERATE(1, 2, 4, 8);
+        double total = 5;
+        std::map<double, ClassCount> values = {
+            {0, {10}},
+            {0.25, {1}},
+            {0.50, {1}},
+            {0.75, {1}},
+            {1, {1}},
+        };
+
+        double expectedBestGain = priorEntropy - ((0 + 0.25) / 2);
+        double bestGain = CalculateInformationGain(values, priorEntropy);
+
+        INFO("Prior Entropy: " << priorEntropy);
+        REQUIRE(std::round(bestGain * 10) == std::round(expectedBestGain * 10));
     }
 
 #pragma endregion
