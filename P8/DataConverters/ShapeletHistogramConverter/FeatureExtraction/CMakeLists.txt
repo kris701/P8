@@ -18,6 +18,7 @@ FetchContent_MakeAvailable(cxxopts)
 add_subdirectory(src)
 
 # Setup tests with catch2
+include(CTest)
 add_subdirectory(test)
 
 # Make final executable
