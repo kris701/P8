@@ -131,8 +131,9 @@ class ExperimentSuite():
             if os.path.exists(dataLoaderOptions.FormatedFolder):
                 shutil.rmtree(dataLoaderOptions.FormatedFolder);
 
-        if self.Options.DebugMode is True: print("Formatting Dataset")
-        dataConverter.ConvertData()
+        if self.Options.FormatDataset:
+            if self.Options.DebugMode is True: print("Formatting Dataset")
+            dataConverter.ConvertData()
 
         protonetOptions = NetOptions()
         self._ParseConfigIntoObject(self.Options.BaseConfig, "NETTRAINER", protonetOptions)
@@ -144,13 +145,17 @@ class ExperimentSuite():
         nShots = dataLoaderOptions.TestClassesSplit;
         nWay = protonetOptions.classes_per_it_tr;
 
-        if self.Options.DebugMode is True: print("Training Model")
-        bestTrainAcc = protonet.Train();
-        if self.Options.DebugMode is True: print("Best train acc: " + str(bestTrainAcc))
+        bestTrainAcc = 0;
+        if self.Options.RunTrain:
+            if self.Options.DebugMode is True: print("Training Model")
+            bestTrainAcc = protonet.Train();
+            if self.Options.DebugMode is True: print("Best train acc: " + str(bestTrainAcc))
 
-        if self.Options.DebugMode is True: print("Testing Model")
-        bestTestAcc = protonet.Test();
-        if self.Options.DebugMode is True: print("Avg test acc: " + str(bestTestAcc))
+        bestTestAcc = 0;
+        if self.Options.RunTest:
+            if self.Options.DebugMode is True: print("Testing Model")
+            bestTestAcc = protonet.Test();
+            if self.Options.DebugMode is True: print("Avg test acc: " + str(bestTestAcc))
 
         if self.Options.ZipDataset:
             if self.Options.DebugMode is True: print("Copying dataset...")

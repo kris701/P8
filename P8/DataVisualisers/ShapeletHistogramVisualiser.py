@@ -10,8 +10,8 @@ class ShapeletHistogramVisualiser():
     def __init__(self, datasetPath : str) -> None:
         self.DatasetPath = datasetPath.replace("/",os.sep).replace("\\",os.sep)
 
-    def VisualizeClass(self, classIndex) -> plt.figure:
-        classData = self._GetClassData();
+    def VisualizeClass(self, classIndex, visualizeTrain : bool = True, visualizeTest : bool = True) -> plt.figure:
+        classData = self._GetClassData(visualizeTrain, visualizeTest);
         shapeletData = self._GetShapeletData();
         featureData = self._GetFeatureData();
 
@@ -40,8 +40,8 @@ class ShapeletHistogramVisualiser():
 
         return fig
 
-    def VisualizeAllClasses(self) -> plt.figure:
-        classData = self._GetClassData();
+    def VisualizeAllClasses(self, visualizeTrain : bool = True, visualizeTest : bool = True) -> plt.figure:
+        classData = self._GetClassData(visualizeTrain, visualizeTest);
         
         rows, cols = self._GetPlotSize(len(classData));
         fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True, figsize=self.GraphSize)
@@ -105,20 +105,32 @@ class ShapeletHistogramVisualiser():
                 rowIndex += 1;
         return fig;
 
-    def _GetClassData(self) -> dict:
+    def _GetClassData(self, getTrain : bool = True, getTest : bool = True) -> dict:
         data = {};
-        dataDir = os.path.join(self.DatasetPath, "data");
-        for className in os.listdir(dataDir):
-            classData = []
-            for fileName in os.listdir(os.path.join(dataDir, className)):
-                fileData = []
-                with open(os.path.join(dataDir, className, fileName), "r") as file:
-                    for line in file:
-                        value = float(line.replace("\n",""))
-                        fileData.append(value)
-                classData.append(fileData)
-            data[int(className)] = classData
+
+        if getTrain:
+            self._LoadDataIntoDict(data, "train.txt");
+
+        if getTest:
+            self._LoadDataIntoDict(data, "test.txt");
+
         return data;
+
+    def _LoadDataIntoDict(self, data : dict, splitFile : str) -> None:
+        splitFilesPath = os.path.join(self.DatasetPath, "split", splitFile);
+        with open(splitFilesPath, "r") as splitFiles:
+            for file in splitFiles:
+                file = file.replace("\n","")
+                classID = int(file.split("/")[1])
+                file = os.path.join(self.DatasetPath, file)
+                fileData = []
+                with open(file, "r") as dataFile:
+                    for datapoint in dataFile:
+                        value = float(datapoint.replace("\n",""))
+                        fileData.append(value)
+                if classID not in data:
+                    data[classID] = []
+                data[classID].append(fileData)
 
     def _GetShapeletData(self) -> dict:
         shapeletData = {};
