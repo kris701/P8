@@ -1,7 +1,6 @@
 import os
 import csv
 import time
-import configparser
 import shutil
 import multiprocessing
 import gc
@@ -21,6 +20,8 @@ from DataVisualisers.ShapeletHistogramVisualiser import ShapeletHistogramVisuali
 from DataVisualisers.ResultsVisualiser import ResultsVisualiser
 from ResultsCombiners.CSVResultsCombiner import CSVResultsCombiner
 from ExperimentOptions import ExperimentOptions
+from Helpers import TimeHelpers
+from Helpers import ReflexionHelper
 
 class ExperimentSuite():
     Options : ExperimentOptions;
@@ -34,46 +35,53 @@ class ExperimentSuite():
             try:
                 timestamp = time.strftime("%Y%m%d-%H%M%S")
                 itemName = item.rsplit("/", 1)[1].replace(".ini","")
-                option : ExperimentOptions = ExperimentOptions();
-                self._ParseConfigIntoObject(item, "SUITEOPTIONS", option)
-                option.ExperimentResultsDir = os.path.join(option.ExperimentResultsDir, itemName + " - " + timestamp);
-                self.RunExperiments(option);
-            except:
-                print("An error occured in the execution of (" + item + ")")
+                options : ExperimentOptions = ExperimentOptions();
+                ReflexionHelper.ParseConfigIntoObject(item, "SUITEOPTIONS", options)
+                options.ExperimentResultsDir = os.path.join(options.ExperimentResultsDir, itemName + " - " + timestamp);
+                os.makedirs(os.path.join(options.ExperimentResultsDir))
+                self.RunExperiments(options);
+            except Exception as e:
+                self._LogPrint("An error occured in the execution of (" + item + ")", "error.txt")
+                self._LogPrint("The error message was:", "error.txt")
+                self._LogPrint("", "error.txt")
+                self._LogPrint(str(e), "error.txt")
             print("Queue item " + str(counter) + " ended!")
             counter += 1;
         print("Experiment Suite Queue finised!")
 
     def RunExperiments(self, options : ExperimentOptions) -> dict:
         self.Options = options
-        print("Running experiments...")
+        self._LogPrint("Running experiments...")
         results = {};
-        os.makedirs(os.path.join(self.Options.ExperimentResultsDir))
 
-        print("Running " + str(len(self.Options.ExperimentsToRun)) + " experiments.")
+        self._LogPrint("Running " + str(len(self.Options.ExperimentsToRun)) + " experiments.")
         if self.Options.DebugMode:
-            print("Full debug info will be printed.")
+            self._LogPrint("Full debug info will be printed.")
         else:
-            print("No debug info will be printed.")
-        print("")
+            self._LogPrint("No debug info will be printed.")
+        self._LogPrint("")
 
         with open(os.path.join(self.Options.ExperimentResultsDir, "comparable.csv"), 'w', newline='') as comparableCSV:
             comparableCsvWriter = csv.writer(comparableCSV, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             comparableCsvWriter.writerow(['datasetName', 'NumberOfClasses', self.Options.ExperimentName])
 
-            if self.Options.DebugMode is False:
-                poolResults = multiprocessing.Pool(len(self.Options.ExperimentsToRun)).map(self._RunExperiment, expName)
-                for expName, avrTestAcc, nShot, nWay in poolResults:
-                    results[expName] = avrTestAcc;
-                    comparableCsvWriter.writerow([expName, nWay, avrTestAcc]);
-            else:
+            if self.Options.DebugMode is True:
                 for expName in self.Options.ExperimentsToRun:
                     expName, avrTestAcc, nShot, nWay = self._RunExperiment(expName)
                     results[expName] = avrTestAcc;
                     comparableCsvWriter.writerow([expName, nWay, avrTestAcc]);
+            else:
+                data = []
+                for expName in self.Options.ExperimentsToRun:
+                    data.append(expName);
+
+                poolResults = multiprocessing.Pool(len(self.Options.ExperimentsToRun)).map(self._RunExperiment, data)
+                for expName, avrTestAcc, nShot, nWay in poolResults:
+                    results[expName] = avrTestAcc;
+                    comparableCsvWriter.writerow([expName, nWay, avrTestAcc]);
 
         if self.Options.GenerateGraphs is True and self.Options.GenerateAccuracyGraphs is True:
-            print("Generating full experiment graphs...")
+            self._LogPrint("Generating full experiment graphs...")
             combiner = CSVResultsCombiner();
             fullResults = combiner.Combine(
                 self.Options.ComparisonData,
@@ -85,11 +93,11 @@ class ExperimentSuite():
             full.savefig(os.path.join(self.Options.ExperimentResultsDir, "accuracies.png"))
             plt.close(full)
 
-        print("Experiments finished!")
+        self._LogPrint("Experiments finished!")
         return {self.Options.ExperimentName: results};
 
     def _RunExperiment(self, expName : str):
-        print("   === " + expName + " started ===   ")
+        self._LogPrint("   === " + expName + " started ===   ")
         start_time = time.time()
 
         configName = os.path.join(self.Options.ExperimentConfigDir, expName + ".ini")
@@ -107,7 +115,7 @@ class ExperimentSuite():
         end_time = time.time()
         time_lapsed = end_time - start_time
         
-        print("   === " + expName + " ended (took " + self._TimeConvert(time_lapsed) + ") ===   ")
+        self._LogPrint("   === " + expName + " ended (took " + TimeHelpers.ConvertSecToTimeFormat(time_lapsed) + ") ===   ")
 
         avrTestAcc = avrTestAcc / self.Options.ExperimentRounds;
 
@@ -115,8 +123,8 @@ class ExperimentSuite():
 
     def _SetupDataConverter(self, configName : str) -> tuple[DataConverterOptions,BaseDataConverter]:
         dataLoaderOptions = DataConverterOptions()
-        self._ParseConfigIntoObject(self.Options.BaseConfig, "DATACONVERTER", dataLoaderOptions)
-        self._ParseConfigIntoObject(configName, "DATACONVERTER", dataLoaderOptions)
+        ReflexionHelper.ParseConfigIntoObject(self.Options.BaseConfig, "DATACONVERTER", dataLoaderOptions)
+        ReflexionHelper.ParseConfigIntoObject(configName, "DATACONVERTER", dataLoaderOptions)
         dataLoaderOptions.VerifySettings();
         dataConverter = DataConverterBuilder.GetDataConverter(dataLoaderOptions.UseConverter)(dataLoaderOptions, self.Options.DebugMode)
 
@@ -124,8 +132,8 @@ class ExperimentSuite():
 
     def _SetupNetTrainer(self, configName : str, roundResultDir : str) -> tuple[NetOptions,BaseNetTrainer]:
         protonetOptions = NetOptions()
-        self._ParseConfigIntoObject(self.Options.BaseConfig, "NETTRAINER", protonetOptions)
-        self._ParseConfigIntoObject(configName, "NETTRAINER", protonetOptions)
+        ReflexionHelper.ParseConfigIntoObject(self.Options.BaseConfig, "NETTRAINER", protonetOptions)
+        ReflexionHelper.ParseConfigIntoObject(configName, "NETTRAINER", protonetOptions)
         protonetOptions.VerifySettings();
         protonetOptions.experiment_root = roundResultDir
         protonet = NetTrainerBuilder.GetNetTrainer(protonetOptions.trainer_name)(protonetOptions, DatasetBuilder.GetDataset(protonetOptions.dataset_name), self.Options.DebugMode)
@@ -133,7 +141,7 @@ class ExperimentSuite():
         return protonetOptions, protonet
 
     def _RunRound(self, expName : str, step : int, configName : str) -> tuple[float,int,int]:
-        print("[" + expName + "] Round " + str(step + 1) + " of " + str(self.Options.ExperimentRounds))
+        self._LogPrint("[" + expName + "] Round " + str(step + 1) + " of " + str(self.Options.ExperimentRounds))
         roundResultDir : str = os.path.join(self.Options.ExperimentResultsDir, expName, str(step + 1));
 
         dataLoaderOptions, dataConverter = self._SetupDataConverter(configName);
@@ -225,36 +233,19 @@ class ExperimentSuite():
             sourceVisual.savefig(os.path.join(roundResultDir, "source.png"))
             plt.close(sourceVisual)
 
-    def _TimeConvert(self,sec) -> str:
-        mins = sec // 60
-        sec = sec % 60
-        hours = mins // 60
-        mins = mins % 60
-        return "{0}:{1}:{2}".format(int(hours),int(mins),sec)
-
-    def _ParseConfigIntoObject(self, configName, sectionName, obj) -> None:
-        config = configparser.RawConfigParser()
-        config.optionxform = lambda option: option
-        config.read(configName)
-        for index in config[sectionName]:
-            if index in obj.__annotations__:
-                typeName = obj.__annotations__[index].__name__;
-                if typeName == "str":
-                    obj.__dict__[index] = config[sectionName][index]
-                elif typeName == "bool":
-                    obj.__dict__[index] = config[sectionName].getboolean(index)
-                elif typeName == "int":
-                    obj.__dict__[index] = config[sectionName].getint(index)
-                elif typeName == "float":
-                    obj.__dict__[index] = config[sectionName].getfloat(index)
-                elif typeName == "list":
-                    items = config[sectionName][index].split(",")
-                    obj.__dict__[index] = items;
-                else:
-                    raise Exception("Invalid config type!")
-            else:
-                raise Warning("Warning, key '" + index + "' not in this object!")
-
-    def _DPrint(self, text : str) -> None:
+    def _DPrint(self, text : str, logName : str = "log.txt") -> None:
         if self.Options.DebugMode:
             print(text);
+        logFile = os.path.join(self.Options.ExperimentResultsDir, logName)
+        if not os.path.exists(logFile):
+            open(logFile, "x")
+        with open(logFile, 'a') as file:
+            file.write(text + "\n")
+
+    def _LogPrint(self, text : str, logName : str = "log.txt") -> None:
+        print(text);
+        logFile = os.path.join(self.Options.ExperimentResultsDir, logName)
+        if not os.path.exists(logFile):
+            open(logFile, "x")
+        with open(logFile, 'a') as file:
+            file.write(text + "\n")
