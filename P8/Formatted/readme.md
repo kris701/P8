@@ -4,6 +4,7 @@ The structure is as follows, there will be a folder for each dataset conversion,
 * `data`
 * `features` (Only for `ShapeletHistogramConverter`)
 * `split`
+* `source` (Only for `ShapeletHistogramConverter`)
 
 ## Data 
 Contains the "raw" TS data.
@@ -14,3 +15,6 @@ Contains information on what shapelets the histogram is made out of, as well as 
 
 ## Split
 Contains text files that describe what is the `train` set, `val` set and `test` set.
+
+## Source (Only for `ShapeletHistogramConverter`)
+Contains the shots that the histograms was generated from (i.e. the direct datapoints)
