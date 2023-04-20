@@ -45,7 +45,8 @@ class ShapeletHistogramConverter(BaseDataConverter):
                             "--attributes", str(self.Options.attributes),
                             "--deleteOriginal", str(self.Options.deleteOriginal),
                             "--smoothingDegree", str(self.Options.smoothingDegree),
-                            "--noisifyAmount", str(self.Options.noisifyAmount)
+                            "--noisifyAmount", str(self.Options.noisifyAmount),
+                            "--purge", str(self.Options.purgeOddData).lower()
                             ])
             else:
                 subprocess.run([executable, 
@@ -59,7 +60,8 @@ class ShapeletHistogramConverter(BaseDataConverter):
                             "--attributes", str(self.Options.attributes),
                             "--deleteOriginal", str(self.Options.deleteOriginal),
                             "--smoothingDegree", str(self.Options.smoothingDegree),
-                            "--noisifyAmount", str(self.Options.noisifyAmount)
+                            "--noisifyAmount", str(self.Options.noisifyAmount),
+                            "--purge", str(self.Options.purgeOddData).lower()
                             ],
                                stdout=subprocess.DEVNULL,
                                stderr=subprocess.DEVNULL) 
