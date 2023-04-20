@@ -184,6 +184,7 @@
     <Content Include="Experiments\Configs\Wine.ini" />
     <Content Include="Experiments\readme.md" />
     <Content Include="Experiments\SuiteConfigs\5ShotProtonetFast.ini" />
+    <Content Include="Experiments\SuiteConfigs\6ShotKNNFull.ini" />
     <Content Include="Experiments\SuiteConfigs\6ShotProtonetFast.ini" />
     <Content Include="Experiments\SuiteConfigs\5ShotProtonetFull.ini" />
     <Content Include="Experiments\SuiteConfigs\8ShotProtonetFull.ini" />

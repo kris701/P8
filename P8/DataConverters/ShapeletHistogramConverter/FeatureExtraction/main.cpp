@@ -7,7 +7,9 @@
 #include "src/IO/ArgumentParser.h"
 #include "src/utilities/FeatureUtils.h"
 #include "core/attributes/AttributeBuilder.h"
-#include "core/DataAugmentation.h"
+#include "src/preprocessing/DataAugmentation.h"
+#include "src/preprocessing/DataPurge.h"
+#include "src/preprocessing/DataSplit.h"
 
 int main(int argc, char** argv) {
     uint id = Logger::Begin("Parsing Arguments");
@@ -18,28 +20,47 @@ int main(int argc, char** argv) {
     auto data = FileHanding::ReadCSV({ arguments.trainPath, arguments.testPath }, "\t");
     Logger::End(id);
 
-    id = Logger::Begin("Normalizing Data");
+    id = Logger::Begin("preprocessing Data");
+    auto id2 = Logger::Begin("Normalizing");
     SeriesUtils::MinMaxNormalize(data);
     SeriesUtils::ForcePositiveRange(data);
-    Logger::End(id);
+    Logger::End(id2);
 
-    id = Logger::Begin("Shuffling Data");
-    std::shuffle(data.begin(), data.end(), g);
-    Logger::End(id);
+    std::vector<LabelledSeries> candidates = data;
+    std::vector<LabelledSeries> rejects;
 
-    id = Logger::Begin("Splitting Data");
-    const auto allData = SeriesUtils::Split(data, arguments.split);
-    auto trainData = allData.first;
-    const auto testData = allData.second;
-    Logger::End(id);
+    if (arguments.purge) {
+        id2 = Logger::Begin("Purging");
+        const auto purgeResult = DataPurge::Purge(data);
+        candidates = purgeResult.acceptable;
+        rejects = purgeResult.rejects;
+        Logger::End(id2);
+        id2 = Logger::Begin("Writing Purged to Files");
+        const auto purgePath = arguments.outPath + "purged/";
+        FileHanding::WriteToFiles(purgePath + "candidates/", SeriesUtils::ToMap(candidates));
+        FileHanding::WriteToFiles(purgePath + "rejects/", SeriesUtils::ToMap(rejects));
+        Logger::End(id2);
+    }
 
-    id = Logger::Begin("Augmenting Data");
-    trainData = DataAugmentation::Augment(trainData, false, arguments.smoothingDegree, arguments.noisifyAmount);
-    Logger::End(id);
+    id2 = Logger::Begin("Splitting");
+    const auto map = SeriesUtils::ToMap(candidates);
+    const auto splitData = DataSplit::Split(map, arguments.split);
+    auto testData = splitData.test;
+    testData.insert(testData.end(), rejects.begin(), rejects.end());
+    Logger::End(id2);
 
-    id = Logger::Begin("Converting data to map");
+    id2 = Logger::Begin("Writing Source Train Files");
+    const auto sourceTrainPath = arguments.outPath + "source/";
+    FileHanding::WriteToFiles(sourceTrainPath + "original/", SeriesUtils::ToMap(splitData.train));
+    FileHanding::WriteToFiles(sourceTrainPath + "augmentation/",SeriesUtils::ToMap(DataAugmentation::Augment(splitData.train,arguments.deleteOriginal,arguments.smoothingDegree,arguments.noisifyAmount)));
+    Logger::End(id2);
+
+    id2 = Logger::Begin("Augmenting Data");
+    const auto trainData =
+            DataAugmentation::Augment(splitData.train, false, arguments.smoothingDegree, arguments.noisifyAmount);
     const auto trainMap = SeriesUtils::ToMap(trainData);
     const auto testMap = SeriesUtils::ToMap(testData);
+    Logger::End(id2);
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Set");
@@ -79,11 +100,6 @@ int main(int argc, char** argv) {
     FileHanding::WriteCSV(featurePath + "features.csv",
                           FeatureUtils::FeatureHeader(),
                           FeatureUtils::FeatureCSV(features, shapeletFiles));
-    Logger::End(id);
-
-    id = Logger::Begin("Writing Source Train Files");
-    const auto sourceTrainPath = arguments.outPath + "source/";
-    FileHanding::WriteToFiles(sourceTrainPath, trainMap);
     Logger::End(id);
 
     return 0;

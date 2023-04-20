@@ -218,7 +218,7 @@ class ExperimentSuite():
         if self.Options.GenerateShapeletGraphs:
             self._DPrint("Generating shapelet graphs...")
             if dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
-                shapelets = visualizer.VisualiseShapelets();
+                shapelets = visualizer.VisualiseIndividualDatapoints(os.path.join(dataLoaderOptions.FormatedFolder, "features", "shapelets"), "Shapelets");
                 shapelets.savefig(os.path.join(roundResultDir, "allShapelets.png"))
                 plt.close(shapelets)
 
@@ -244,11 +244,45 @@ class ExperimentSuite():
             classAccGraph.savefig(os.path.join(roundResultDir, "classAccuracy.png"))
             plt.close(classAccGraph)
 
-        if self.Options.GenerateSourceGraphs:
-            self._DPrint("Generating source graphs...")
-            sourceVisual = visualizer.VisualiseSourceData();
-            sourceVisual.savefig(os.path.join(roundResultDir, "source.png"))
-            plt.close(sourceVisual)
+        if self.Options.GenerateOriginalSourceGraph:
+            self._DPrint("Generating original source graphs...")
+            originalSourcePath = os.path.join(dataLoaderOptions.FormatedFolder, "source", "original")
+            if not os.path.exists(originalSourcePath):
+                self._DPrint("Source original path not found! Cannot generate graph")
+            else:
+                originalSourceVisual = visualizer.VisualizeCombinedDatapoints(originalSourcePath, "Source Data (Original)");
+                originalSourceVisual.savefig(os.path.join(roundResultDir, "originalSource.png"))
+                plt.close(originalSourceVisual)
+
+        if self.Options.GenerateAugmentedSourceGraph:
+            self._DPrint("Generating augmented source graphs...")
+            augmentedSourcePath = os.path.join(dataLoaderOptions.FormatedFolder, "source", "augmentation")
+            if not os.path.exists(augmentedSourcePath):
+                self._DPrint("Source augmentation path not found! Cannot generate graph")
+            else:
+                augmentedSourceVisual = visualizer.VisualizeCombinedDatapoints(augmentedSourcePath, "Source Data (Augmented)");
+                augmentedSourceVisual.savefig(os.path.join(roundResultDir, "augmentedSource.png"))
+                plt.close(augmentedSourceVisual)
+
+        if self.Options.GenerateCandidatesGraph:
+            self._DPrint("Generating candidate purge graphs...")
+            purgeCandidatesPath = os.path.join(dataLoaderOptions.FormatedFolder, "purged", "candidates")
+            if not os.path.exists(purgeCandidatesPath):
+                self._DPrint("Purged candidates path not found! Cannot generate graph")
+            else:
+                purgeCandidateVisual = visualizer.VisualizeCombinedDatapoints(purgeCandidatesPath, "Purge Candidate Data");
+                purgeCandidateVisual.savefig(os.path.join(roundResultDir, "purgeCandidates.png"))
+                plt.close(purgeCandidateVisual)
+
+        if self.Options.GenerateRejectsGraph:
+            self._DPrint("Generating reject purge graphs...")
+            purgeRejectsPath = os.path.join(dataLoaderOptions.FormatedFolder, "purged", "rejects")
+            if not os.path.exists(purgeRejectsPath):
+                self._DPrint("Purged rejects path not found! Cannot generate graph")
+            else:
+                purgeRejectsVisual = visualizer.VisualizeCombinedDatapoints(purgeRejectsPath, "Purge Reject Data");
+                purgeRejectsVisual.savefig(os.path.join(roundResultDir, "purgeRejects.png"))
+                plt.close(purgeRejectsVisual)
 
     def _DPrint(self, text : str, logName : str = "log.txt") -> None:
         if self.Options.DebugMode:

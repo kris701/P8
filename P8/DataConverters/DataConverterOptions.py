@@ -9,8 +9,8 @@ class DataConverterOptions():
     # Output formated data to
     FormatedFolder : str = "Formatted/BaseOutput";
 
-    # What percentage of the data classes should be put into the test data
-    TestClassesSplit : float = 0.2;
+    # Number of shots
+    TestClassesSplit : int = 5;
 
     # Settings for the ShapeletHistogramConverter
     minWindowSize : int = 2;
@@ -22,6 +22,7 @@ class DataConverterOptions():
     deleteOriginal : bool = False
     smoothingDegree : int = 0
     noisifyAmount : float = 0
+    purgeOddData : bool = False
 
     def VerifySettings(self):
         if not os.path.isfile(self.SourceTrainData): raise Exception("Source train dataset not found: '" + self.SourceTrainData + "'")
