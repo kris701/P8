@@ -149,7 +149,7 @@ class ExperimentSuite():
         if self.Options.DebugMode is True: print("Best train acc: " + str(bestTrainAcc))
 
         if self.Options.DebugMode is True: print("Testing Model")
-        bestTestAcc = protonet.Test();
+        bestTestAcc, classAcc = protonet.Test();
         if self.Options.DebugMode is True: print("Avg test acc: " + str(bestTestAcc))
 
         if self.Options.ZipDataset:
@@ -176,13 +176,19 @@ class ExperimentSuite():
                     shapelets.savefig(os.path.join(roundResultDir, "allShapelets.png"))
                     plt.close(shapelets)
 
-            if self.Options.GenerateClassGraphs is True and dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
+            if self.Options.GenerateClassGraphs is True:
                 if self.Options.DebugMode is True: print("Generating class graphs...")
                 for classId in os.listdir(os.path.join(dataLoaderOptions.FormatedFolder, "data")):
                     if self.Options.DebugMode is True: print("Generating class " + classId + " graph...")
                     classfig = visualizer.VisualizeClass(int(classId));
                     classfig.savefig(os.path.join(roundResultDir, "class" + classId + ".png"))
                     plt.close(classfig)
+
+            if self.Options.GenerateClassAccuracyGraph is True:
+                if self.Options.DebugMode is True: print("Generating class accuracy graph...")
+                classAccGraph = visualizer.VisualizeDictionary(classAcc, "Accuracy Pr Class");
+                classAccGraph.savefig(os.path.join(roundResultDir, "classAccuracy.png"))
+                plt.close(classAccGraph)
 
             if self.Options.GenerateSourceGraphs:
                 if self.Options.DebugMode is True: print("Generating source graphs...")

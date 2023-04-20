@@ -10,6 +10,12 @@ class ShapeletHistogramVisualiser():
     def __init__(self, datasetPath : str) -> None:
         self.DatasetPath = datasetPath.replace("/",os.sep).replace("\\",os.sep)
 
+    def VisualizeDictionary(self, dictValues : dict, title : str) -> plt.figure:
+        fig = plt.figure(figsize=self.GraphSize)
+        fig.suptitle(title);
+        fig.plot(dictValues)
+        return fig;
+
     def VisualizeClass(self, classIndex) -> plt.figure:
         classData = self._GetClassData();
         shapeletData = self._GetShapeletData();
