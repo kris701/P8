@@ -1,4 +1,4 @@
-from .prototypical_loss import prototypical_loss as loss_fn
+from from .prototypical_loss import prototypical_loss as loss_fn
 from ..BaseNetTrainer import BaseNetTrainer
 from ..NetOptions import NetOptions
 from .DataloaderVerifier import DataLoaderVerifier
@@ -178,7 +178,7 @@ class NetTrainer(BaseNetTrainer):
                 x, y = batch
                 x, y = x.to(device), y.to(device)
                 model_output = model(x)
-                loss, acc = loss_fn(model_output, target=y, n_support=self.Options.num_support_tr)
+                loss, acc, _, _ = loss_fn(model_output, target=y, n_support=self.Options.num_support_tr)
                 loss.backward()
                 optim.step()
                 train_loss.append(loss.item())
@@ -224,7 +224,7 @@ class NetTrainer(BaseNetTrainer):
 
         return best_state, best_acc, train_loss, train_acc, val_loss, val_acc
 
-    def Test(self) -> float:
+    def Test(self) -> tuple[float,dict]:
         '''
         Tests the best model with a set of new data.
         '''
@@ -235,7 +235,7 @@ class NetTrainer(BaseNetTrainer):
                 test_dataloader=self.TestDataloader,
                 model=self.BestModel)
 
-    def _test(self, test_dataloader : data.DataLoader, model : nn.Module) -> float:
+    def _test(self, test_dataloader : data.DataLoader, model : nn.Module) -> tuple[float,dict]:
         '''
         Tests a model with a set of new data.
         '''
@@ -244,6 +244,8 @@ class NetTrainer(BaseNetTrainer):
 
         device = self._getDevice()
         avg_acc = list()
+        class_total = {}
+        class_acc = {}
         pbar1 = tqdm(range(self.Options.test_epochs), desc='Loading...', position=0, colour="red", disable=not self.DebugMode)
         for epoch in pbar1:
             pbar1.set_description('Epoch {}'.format(epoch + 1), refresh=True);
@@ -252,9 +254,22 @@ class NetTrainer(BaseNetTrainer):
                 x, y = batch
                 x, y = x.to(device), y.to(device)
                 model_output = model(x)
-                _, acc = loss_fn(model_output, target=y,
+                _, acc, expected, actual = loss_fn(model_output, target=y,
                                  n_support=self.Options.num_support_test)
+
+                for i in range(0,len(expected)):
+                    if expected[i] not in class_acc:
+                        class_acc[expected[i]] = 0
+                        class_total[expected[i]] = 0
+
+                    class_total[expected[i]] += 1
+                    if expected[i] == actual[i]:
+                        class_acc[expected[i]] += 1
+
                 avg_acc.append(acc.item())
         avg_acc = np.mean(avg_acc)
+
+        for classId in class_acc:
+            class_acc[classId] = class_acc[classId] / class_total[classId]
 
         return avg_acc
