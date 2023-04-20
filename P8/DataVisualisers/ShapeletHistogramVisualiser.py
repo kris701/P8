@@ -9,6 +9,18 @@ class ShapeletHistogramVisualiser():
     def __init__(self, datasetPath : str) -> None:
         self.DatasetPath = datasetPath.replace("/",os.sep).replace("\\",os.sep)
 
+    def VisualizeDictionary(self, dictValues : dict, title : str) -> plt.figure:
+        fig = plt.figure(figsize=self.GraphSize)
+        fig.suptitle(title);
+        xLabels = []
+        for key in dictValues.keys():
+            xLabels.append("Class " + str(key))
+        plt.bar(xLabels, dictValues.values())
+        plt.xlabel("Class ID")
+        plt.ylabel("Accuracy")
+        return fig;
+
+
     def VisualizeClass(self, classIndex, visualizeTrain : bool = True, visualizeTest : bool = True) -> plt.figure:
         classData = self._GetClassData(visualizeTrain, visualizeTest);
         shapeletData = self._GetShapeletData();
