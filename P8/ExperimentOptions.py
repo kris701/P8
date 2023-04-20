@@ -26,3 +26,5 @@ class ExperimentOptions():
     CopyConfigs : bool = True;
 
     ForceRemakeDataset : bool = False;
+
+    MaxProcessesToSpawn : int = 10;

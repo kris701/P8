@@ -75,7 +75,7 @@ class ExperimentSuite():
                 for expName in self.Options.ExperimentsToRun:
                     data.append(expName);
 
-                poolResults = multiprocessing.Pool(len(self.Options.ExperimentsToRun)).map(self._RunExperiment, data)
+                poolResults = multiprocessing.Pool(self.Options.MaxProcessesToSpawn).map(self._RunExperiment, data)
                 for expName, avrTestAcc, nShot, nWay in poolResults:
                     results[expName] = avrTestAcc;
                     comparableCsvWriter.writerow([expName, nWay, avrTestAcc]);
