@@ -5,7 +5,7 @@ from ExperimentSuite import ExperimentSuite
 def main():
     multiprocessing.freeze_support()
 
-    queueItems = ["Experiments/SuiteConfigs/6ShotProtonetFull.ini"]
+    queueItems = ["Experiments/SuiteConfigs/5ShotProtonetFullFast.ini"]
 
     expSuite = ExperimentSuite()
     expSuite.RunExperimentQueue(queueItems);
