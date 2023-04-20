@@ -50,8 +50,7 @@ namespace ArgumentParsing {
                         cxxopts::value<bool>()->default_value("false"))
                 ("smoothingDegree", "Neighbours count in smoothing. 0 for no smooth augmentation.",cxxopts::value<uint>()->default_value("0"))
                 ("noisifyAmount", "How much each point in time series should be noised. 0 for no noise augmentation.",cxxopts::value<double>()->default_value("0"))
-                ("purge", "Purges outliers",
-                 cxxopts::value<bool>()->default_value("false"))
+                ("purge", "Purges outliers")
                 ("h,help", "Print usage")
                 ;
         auto result = options.parse(argc, argv);
@@ -76,7 +75,7 @@ namespace ArgumentParsing {
                     result["deleteOriginal"].as<bool>(),
                     result["smoothingDegree"].as<uint>(),
                     result["noisifyAmount"].as<double>(),
-                    result["purge"].as<bool>()
+                    result.count("purge")
                     );
         } catch (const cxxopts::exceptions::option_has_no_value& e) {
             printf("\nMissing argument: %s\n", e.what());

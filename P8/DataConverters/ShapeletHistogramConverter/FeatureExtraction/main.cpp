@@ -49,6 +49,12 @@ int main(int argc, char** argv) {
     testData.insert(testData.end(), remainder.begin(), remainder.end());
     Logger::End(id2);
 
+    id2 = Logger::Begin("Writing Source Train Files");
+    const auto sourceTrainPath = arguments.outPath + "source/";
+    FileHanding::WriteToFiles(sourceTrainPath + "original/", SeriesUtils::ToMap(splitData.train));
+    FileHanding::WriteToFiles(sourceTrainPath + "augmentation/",SeriesUtils::ToMap(DataAugmentation::Augment(splitData.train,true,arguments.smoothingDegree,arguments.noisifyAmount)));
+    Logger::End(id2);
+
     id2 = Logger::Begin("Augmenting Data");
     const auto trainData =
             DataAugmentation::Augment(splitData.train, false, arguments.smoothingDegree, arguments.noisifyAmount);
@@ -94,11 +100,6 @@ int main(int argc, char** argv) {
     FileHanding::WriteCSV(featurePath + "features.csv",
                           FeatureUtils::FeatureHeader(),
                           FeatureUtils::FeatureCSV(features, shapeletFiles));
-    Logger::End(id);
-
-    id = Logger::Begin("Writing Source Train Files");
-    const auto sourceTrainPath = arguments.outPath + "source/";
-    FileHanding::WriteToFiles(sourceTrainPath, trainMap);
     Logger::End(id);
 
     return 0;
