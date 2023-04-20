@@ -24,5 +24,6 @@ class BaseNetTrainer():
     def Train(self) -> float:
         raise Exception("Not Implemented!")
 
-    def Test(self) -> float:
+    # The total accuracy, and the pr. class accuracy (if available)
+    def Test(self) -> tuple[float,dict]:
         raise Exception("Not Implemented!")
