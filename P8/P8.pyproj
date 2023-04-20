@@ -120,6 +120,7 @@
     <Content Include="Datasets\readme.md" />
     <Content Include="DataVisualisers\readme.md" />
     <Content Include="Data\readme.md" />
+    <Content Include="Experiments\Configs\BaseConfigs\6ShotProtonetFast.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\8ShotProtonet.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\8ShotKNN.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\6ShotKNN.ini" />
