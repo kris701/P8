@@ -1,21 +1,11 @@
-cmake_minimum_required(VERSION 3.22.1)
+cmake_minimum_required(VERSION 3.13)
 project(FeatureExtraction)
 
 set(CMAKE_CXX_STANDARD 20)
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Release)
+
+# Fetch the cxxopts library
 Include(FetchContent)
-
-FetchContent_Declare(
-        Catch2
-        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG        v3.0.1 # or a later release
-)
-FetchContent_GetProperties(Catch2)
-if(NOT Catch2_POPULATED)
-    FetchContent_Populate(Catch2)
-    add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR})
-endif() 
-
 FetchContent_Declare(
     cxxopts 
     URL https://raw.githubusercontent.com/jarro2783/cxxopts/v3.1.1/include/cxxopts.hpp
@@ -24,14 +14,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cxxopts)
 
-add_library(Sources INTERFACE
-        src/IO/FileHanding.h src/misc/Constants.h src/core/WindowGeneration.h src/utilities/SeriesUtils.h src/core/InformationGain.h src/core/feature_finding/FeatureFinding.h src/IO/Logger.h
-        src/IO/ArgumentParser.h src/utilities/FeatureUtils.h src/utilities/ClassCountUtils.h src/core/attributes/Attribute.h src/types/Feature.h src/core/attributes/Frequency.h src/core/attributes/MinDist.h src/core/attributes/AttributeBuilder.h src/core/feature_finding/Evaluation.h
-        src/core/attributes/MaxDist.h src/core/attributes/OccPos.h src/core/DataAugmentation.h)
+# Setup src library
+add_subdirectory(src)
 
+# Setup tests with catch2
+include(CTest)
+add_subdirectory(test)
+
+# Make final executable
 add_executable(FeatureExtraction main.cpp include/cxxopts/cxxopts.hpp)
 target_include_directories(FeatureExtraction PRIVATE include src)
-
-include(CTest)
-include(Catch)
-include(test/CMakeLists.txt)
