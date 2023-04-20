@@ -22,8 +22,8 @@ class BaseNetTrainer():
             os.makedirs(self.Options.experiment_root)
 
     def Train(self) -> float:
-        raise Exception("Not Implemented!")
+        raise NotImplementedError("Not Implemented!")
 
     # The total accuracy, and the pr. class accuracy (if available)
     def Test(self) -> tuple[float,dict]:
-        raise Exception("Not Implemented!")
+        raise NotImplementedError("Not Implemented!")
