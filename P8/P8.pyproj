@@ -70,9 +70,6 @@
     <Folder Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\test\window_generation\" />
     <Folder Include="Datasets\UCR\" />
     <Folder Include="Data\" />
-    <Folder Include="Data\Beef\" />
-    <Folder Include="Data\CricketX\" />
-    <Folder Include="Data\SwedishLeaf\" />
     <Folder Include="DataConverters\" />
     <Folder Include="Datasets\" />
     <Folder Include="DataConverters\ShapeletHistogramConverter\" />
@@ -118,16 +115,7 @@
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\test\window_generation\GenerateWindows.cpp" />
     <Content Include="Datasets\readme.md" />
     <Content Include="DataVisualisers\readme.md" />
-    <Content Include="Data\Beef\Beef_TEST.tsv" />
-    <Content Include="Data\Beef\Beef_TRAIN.tsv" />
-    <Content Include="Data\Beef\README.md" />
-    <Content Include="Data\CricketX\CricketX_TEST.tsv" />
-    <Content Include="Data\CricketX\CricketX_TRAIN.tsv" />
-    <Content Include="Data\CricketX\README.md" />
     <Content Include="Data\readme.md" />
-    <Content Include="Data\SwedishLeaf\README.md" />
-    <Content Include="Data\SwedishLeaf\SwedishLeaf_TEST.tsv" />
-    <Content Include="Data\SwedishLeaf\SwedishLeaf_TRAIN.tsv" />
     <Content Include="Experiments\Configs\BaseConfigs\8ShotProtonet.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\8ShotKNN.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\6ShotKNN.ini" />

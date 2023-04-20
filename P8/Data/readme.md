@@ -8,4 +8,4 @@ E.g. with the dataset `SwedishLeaf` the strucure should look like:
       -> SwedishLeaf_TEST.tsv
       -> SwedishLeaf_TRAIN.tsv
 ```
-All folders added in here ignored by git!
+All folders added in here ignored by git, so dont worry about anything you put in here.
