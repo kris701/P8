@@ -20,7 +20,7 @@ class NetTrainer(BaseNetTrainer):
             print("No training needed for KNN")
         return -1;
 
-    def Test(self) -> float:
+    def Test(self) -> tuple[float,dict]:
         workingDir = pathlib.Path().resolve();
         thisFile = pathlib.Path(__file__).parent.resolve();
 
@@ -48,7 +48,7 @@ class NetTrainer(BaseNetTrainer):
         if (res.returncode > 100):
             raise Exception("Something went wrong with the KNN!");
 
-        return res.returncode / 100;
+        return res.returncode / 100, {};
 
     def _CompileFeatureExtractor(self, compileDir):
         if os.name == "nt":
