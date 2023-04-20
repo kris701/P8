@@ -153,7 +153,17 @@
     <Content Include="Experiments\Configs\FaceFour.ini" />
     <Content Include="Experiments\Configs\FaceAll.ini" />
     <Content Include="Experiments\Configs\GunPointAgeSpan.ini" />
+    <Content Include="Experiments\Configs\Strawberry.ini" />
+    <Content Include="Experiments\Configs\ProximalPhalanxTW.ini" />
+    <Content Include="Experiments\Configs\ProximalPhalanxOutlineCorrect.ini" />
+    <Content Include="Experiments\Configs\ProximalPhalanxOutlineAgeGroup.ini" />
     <Content Include="Experiments\Configs\SonyAIBORobotSurface2.ini" />
+    <Content Include="Experiments\Configs\Yoga.ini" />
+    <Content Include="Experiments\Configs\Wafer.ini" />
+    <Content Include="Experiments\Configs\UWaveGestureLibraryZ.ini" />
+    <Content Include="Experiments\Configs\UWaveGestureLibraryY.ini" />
+    <Content Include="Experiments\Configs\UWaveGestureLibraryX.ini" />
+    <Content Include="Experiments\Configs\TwoPatterns.ini" />
     <Content Include="Experiments\Configs\UMD.ini" />
     <Content Include="Experiments\Configs\TwoLeadECG.ini" />
     <Content Include="Experiments\Configs\ToeSegmentation1.ini" />
