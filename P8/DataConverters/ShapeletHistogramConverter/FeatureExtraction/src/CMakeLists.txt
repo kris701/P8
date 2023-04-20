@@ -1,6 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
-
-set (WILDCARD_SOURCE_H *.h)
-file(GLOB_RECURSE FEATUREEXTRACTION_SRC_FILES RELATIVE ${CMAKE_SOURCE_DIR}/src ${WILDCARD_SOURCE_H})
-
-add_library(Sources INTERFACE ${FEATUREEXTRACTION_SRC_FILES})
+add_library(Sources INTERFACE
+        IO/FileHanding.h misc/Constants.h core/WindowGeneration.h utilities/SeriesUtils.h core/InformationGain.h core/feature_finding/FeatureFinding.h IO/Logger.h
+        IO/ArgumentParser.h utilities/FeatureUtils.h utilities/ClassCountUtils.h core/attributes/Attribute.h types/Feature.h core/attributes/Frequency.h core/attributes/MinDist.h core/attributes/AttributeBuilder.h core/feature_finding/Evaluation.h
+        core/attributes/MaxDist.h core/attributes/OccPos.h core/DataAugmentation.h)

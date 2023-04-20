@@ -14,12 +14,8 @@ list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/contrib)
 # Make sure package is installed
 find_package(Catch2 REQUIRED)
 
-# Find all .cpp files in the test folder
-set (WILDCARD_SOURCE_CPP *.cpp)
-file(GLOB_RECURSE FEATUREEXTRACTION_TEST_SRC_FILES RELATIVE ${CMAKE_SOURCE_DIR}/test ${WILDCARD_SOURCE_CPP})
-
 # Setup executable
-add_executable(all_tests ${FEATUREEXTRACTION_TEST_SRC_FILES})
+add_executable(all_tests core/GenerateWindows.cpp core/InformationGainTests.cpp)
 target_include_directories(all_tests PRIVATE ../include ../src)
 target_link_libraries(all_tests PRIVATE Catch2::Catch2WithMain)
 
