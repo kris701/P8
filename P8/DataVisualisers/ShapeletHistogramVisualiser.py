@@ -22,7 +22,7 @@ class ShapeletHistogramVisualiser():
 
     def VisualizeClass(self, classIndex, visualizeTrain : bool = True, visualizeTest : bool = True) -> plt.figure:
         classData = self._GetClassData(visualizeTrain, visualizeTest);
-        shapeletData = self._GetShapeletData();
+        shapeletData = self._LoadSingleDataDir(os.path.join(self.DatasetPath, "features", "shapelets"))
         featureData = self._GetFeatureData();
 
         fig = plt.figure(figsize=self.GraphSize)
@@ -75,17 +75,17 @@ class ShapeletHistogramVisualiser():
                 rowIndex += 1;
         return fig;
 
-    def VisualiseShapelets(self) -> plt.figure:
-        shapeletData = self._GetShapeletData();
+    def VisualiseIndividualDatapoints(self, path : str, title : str) -> plt.figure:
+        data = self._LoadSingleDataDir(path);
         
-        rows, cols = self._GetPlotSize(len(shapeletData));
+        rows, cols = self._GetPlotSize(len(data));
         fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True, figsize=self.GraphSize)
-        fig.suptitle("Shapelets")
+        fig.suptitle(title)
         colIndex : int = 0;
         rowIndex : int = 0;
-        for shapeletIndex in shapeletData:           
-            ax[rowIndex, colIndex].title.set_text("Id: " + str(shapeletIndex))
-            ax[rowIndex, colIndex].plot(shapeletData[shapeletIndex])
+        for index in data:           
+            ax[rowIndex, colIndex].title.set_text("Id: " + str(index))
+            ax[rowIndex, colIndex].plot(data[index])
 
             colIndex += 1;
             if colIndex >= cols:
@@ -93,23 +93,23 @@ class ShapeletHistogramVisualiser():
                 rowIndex += 1;
         return fig;
 
-    def VisualiseSourceData(self) -> plt.figure:
-        sourceData = self._GetSourceData();
+    def VisualizeCombinedDatapoints(self, path : str, title : str) -> plt.figure:
+        data = self._LoadDataDir(path);
 
-        rows, cols = self._GetPlotSize(len(sourceData));
+        rows, cols = self._GetPlotSize(len(data));
         fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True, figsize=self.GraphSize)
-        fig.suptitle("Source shots")
+        fig.suptitle(title)
         colIndex : int = 0;
         rowIndex : int = 0;
-        for classIndex in sourceData:
+        for index in data:
             transformed = {}
-            for key in range(0, len(sourceData[classIndex][0])):
+            for key in range(0, len(data[index][0])):
                 transformed[key] = []
-                index = int(key);
-                for sample in sourceData[classIndex]:
-                    transformed[key].append(sample[index])
+                listIndex = int(key);
+                for sample in data[index]:
+                    transformed[key].append(sample[listIndex])
             
-            ax[rowIndex, colIndex].title.set_text("Id: " + str(classIndex))
+            ax[rowIndex, colIndex].title.set_text("Id: " + str(index) + " (n: " + str(len(data[index])) + ")")
             ax[rowIndex, colIndex].plot(transformed.values())
 
             colIndex += 1;
@@ -120,13 +120,10 @@ class ShapeletHistogramVisualiser():
 
     def _GetClassData(self, getTrain : bool = True, getTest : bool = True) -> dict:
         data = {};
-
         if getTrain:
             self._LoadDataIntoDict(data, "train.txt");
-
         if getTest:
             self._LoadDataIntoDict(data, "test.txt");
-
         return data;
 
     def _LoadDataIntoDict(self, data : dict, splitFile : str) -> None:
@@ -145,31 +142,32 @@ class ShapeletHistogramVisualiser():
                     data[classID] = []
                 data[classID].append(fileData)
 
-    def _GetShapeletData(self) -> dict:
-        shapeletData = {};
-        shapeletDataDir = os.path.join(self.DatasetPath, "features", "shapelets");
-        for shapeletName in os.listdir(shapeletDataDir):
-            fileData = []
-            with open(os.path.join(shapeletDataDir, shapeletName), "r") as file:
-                for line in file:
-                    value = float(line.replace("\n",""))
-                    fileData.append(value)
-            shapeletData[int(shapeletName)] = fileData
-        return shapeletData
-
-    def _GetSourceData(self) -> dict:
+    def _LoadDataDir(self, path : str) -> dict:
         data = {};
-        dataDir = os.path.join(self.DatasetPath, "source");
-        for className in os.listdir(dataDir):
-            classData = []
-            for fileName in os.listdir(os.path.join(dataDir, className)):
+        for folderID in os.listdir(path):
+            folderName = os.path.join(path, folderID);
+            if os.path.isdir(folderName):
+                subFolderData = []
+                for fileID in os.listdir(folderName):
+                    fileData = []
+                    with open(os.path.join(path, folderID, fileID), "r") as file:
+                        for line in file:
+                            value = float(line.replace("\n",""))
+                            fileData.append(value)
+                    subFolderData.append(fileData)
+                data[int(folderID)] = subFolderData
+        return data;
+
+    def _LoadSingleDataDir(self, path : str) -> dict:
+        data = {};
+        if os.path.isdir(path):
+            for fileID in os.listdir(path):
                 fileData = []
-                with open(os.path.join(dataDir, className, fileName), "r") as file:
+                with open(os.path.join(path, fileID), "r") as file:
                     for line in file:
                         value = float(line.replace("\n",""))
                         fileData.append(value)
-                classData.append(fileData)
-            data[int(className)] = classData
+                data[int(fileID)] = fileData;
         return data;
 
     def _GetFeatureData(self) -> dict:

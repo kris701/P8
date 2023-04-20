@@ -218,7 +218,7 @@ class ExperimentSuite():
         if self.Options.GenerateShapeletGraphs:
             self._DPrint("Generating shapelet graphs...")
             if dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
-                shapelets = visualizer.VisualiseShapelets();
+                shapelets = visualizer.VisualiseIndividualDatapoints(os.path.join(dataLoaderOptions.FormatedFolder, "features", "shapelets"), "Shapelets");
                 shapelets.savefig(os.path.join(roundResultDir, "allShapelets.png"))
                 plt.close(shapelets)
 
@@ -244,11 +244,17 @@ class ExperimentSuite():
             classAccGraph.savefig(os.path.join(roundResultDir, "classAccuracy.png"))
             plt.close(classAccGraph)
 
-        if self.Options.GenerateSourceGraphs:
-            self._DPrint("Generating source graphs...")
-            sourceVisual = visualizer.VisualiseSourceData();
-            sourceVisual.savefig(os.path.join(roundResultDir, "source.png"))
-            plt.close(sourceVisual)
+        if self.Options.GenerateOriginalSourceGraph:
+            self._DPrint("Generating original source graphs...")
+            originalSourceVisual = visualizer.VisualizeCombinedDatapoints(os.path.join(dataLoaderOptions.FormatedFolder, "source", "original"), "Source Data (Original)");
+            originalSourceVisual.savefig(os.path.join(roundResultDir, "originalSource.png"))
+            plt.close(originalSourceVisual)
+
+        if self.Options.GenerateAugmentedSourceGraph:
+            self._DPrint("Generating augmented source graphs...")
+            augmentedSourceVisual = visualizer.VisualizeCombinedDatapoints(os.path.join(dataLoaderOptions.FormatedFolder, "source", "augmentation"), "Source Data (Augmented)");
+            augmentedSourceVisual.savefig(os.path.join(roundResultDir, "augmentedSource.png"))
+            plt.close(augmentedSourceVisual)
 
     def _DPrint(self, text : str, logName : str = "log.txt") -> None:
         if self.Options.DebugMode:
