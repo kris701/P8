@@ -35,6 +35,11 @@ int main(int argc, char** argv) {
         candidates = purgeResult.acceptable;
         remainder = purgeResult.rejects;
         Logger::End(id2);
+        id2 = Logger::Begin("Writing Purged to Files");
+        const auto purgePath = arguments.outPath + "purged/";
+        FileHanding::WriteToFiles(purgePath + "candidates/", SeriesUtils::ToMap(candidates));
+        FileHanding::WriteToFiles(purgePath + "remainder/", SeriesUtils::ToMap(remainder));
+        Logger::End(id2);
     }
 
     id2 = Logger::Begin("Splitting");
