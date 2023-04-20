@@ -1,7 +1,6 @@
 import multiprocessing
 
 from ExperimentSuite import ExperimentSuite
-from ExperimentOptions import ExperimentOptions
 
 def main():
     multiprocessing.freeze_support()
