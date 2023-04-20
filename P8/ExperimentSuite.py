@@ -36,7 +36,7 @@ class ExperimentSuite():
                 self._ParseConfigIntoObject(item, "SUITEOPTIONS", option)
                 option.ExperimentResultsDir = os.path.join(option.ExperimentResultsDir, itemName + " - " + timestamp);
                 self.RunExperiments(option);
-            except:
+            except Exception as e:
                 print("An error occured in the execution of (" + item + ")")
             print("Queue item " + str(counter) + " ended!")
             counter += 1;
