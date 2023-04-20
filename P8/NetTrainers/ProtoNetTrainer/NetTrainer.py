@@ -37,8 +37,6 @@ class NetTrainer(BaseNetTrainer):
         self.Dataset = dataset;
         if self.Options.load_train_set:
             self.TrainDataloader = self._init_dataloader('train', self.Dataset)
-        if self.Options.load_val_set:
-            self.ValDataloader = self._init_dataloader('val', self.Dataset)
         if self.Options.load_test_set:
             self.TestDataloader = self._init_dataloader('test', self.Dataset)
 
@@ -73,9 +71,6 @@ class NetTrainer(BaseNetTrainer):
         if 'train' == mode:
             classes_per_it = self.Options.classes_per_it_tr
             num_samples = self.Options.num_support_tr + self.Options.num_query_tr
-        elif 'val' == mode:
-            classes_per_it = self.Options.classes_per_it_val
-            num_samples = self.Options.num_support_val + self.Options.num_query_val
         elif 'test' == mode:
             classes_per_it = self.Options.classes_per_it_test
             num_samples = self.Options.num_support_test + self.Options.num_query_test
@@ -131,11 +126,10 @@ class NetTrainer(BaseNetTrainer):
             step_size=self.Options.lr_scheduler_step);
         res = self._train(
             tr_dataloader=self.TrainDataloader,
-            val_dataloader=self.ValDataloader,
             model=model,
             optim=optim,
             lr_scheduler=lr_scheduler)
-        best_state, best_acc, train_loss, train_acc, val_loss, val_acc = res
+        best_state, best_acc, train_loss, train_acc = res
         
         model.load_state_dict(best_state)
 
@@ -144,19 +138,16 @@ class NetTrainer(BaseNetTrainer):
 
         return best_acc
 
-    def _train(self, tr_dataloader : data.DataLoader, model : nn.Module, optim : torch.optim.Optimizer, lr_scheduler : torch.optim.lr_scheduler._LRScheduler, val_dataloader : data.DataLoader = None):
+    def _train(self, tr_dataloader : data.DataLoader, model : nn.Module, optim : torch.optim.Optimizer, lr_scheduler : torch.optim.lr_scheduler._LRScheduler):
         '''
         Trains and Validates the model.
         Settings for these are given in the Options class.
         '''
         device = self._getDevice()
 
-        if val_dataloader is None:
-            best_state = None
+        best_state = None
         train_loss = []
         train_acc = []
-        val_loss = []
-        val_acc = []
         best_acc = 0
 
         best_model_path = os.path.join(self.Options.experiment_root, 'best_model.pth')
@@ -188,28 +179,7 @@ class NetTrainer(BaseNetTrainer):
                 pbar2.set_description('   Train Loss: {:0.2f}, Train Acc: {:0.2f}'.format(avg_loss, avg_acc), refresh=True);
             lr_scheduler.step()
             
-            # Eval
-            if val_dataloader is None:
-                if avg_acc > best_acc:
-                    torch.save(model.state_dict(), best_model_path)
-                    best_acc = avg_acc
-                    best_state = model.state_dict()
-                continue
-            val_iter = iter(val_dataloader)
-            model.eval()
-            pbar2 = tqdm(val_iter, desc='   Initializing model...', leave=False, position=1, colour="blue", disable=not self.DebugMode)
-            for batch in pbar2:
-                x, y = batch
-                x, y = x.to(device), y.to(device)
-                model_output = model(x)
-                loss, acc = loss_fn(model_output, target=y,
-                                    n_support=self.Options.num_support_val)
-                val_loss.append(loss.item())
-                val_acc.append(acc.item())
-                avg_loss = np.mean(val_loss[-self.Options.iterations:])
-                avg_acc = np.mean(val_acc[-self.Options.iterations:])
-                pbar2.set_description('   Val Loss: {:0.2f}, Val Acc: {:0.2f}    '.format(avg_loss, avg_acc), refresh=True);
-            if avg_acc >= best_acc:
+            if avg_acc > best_acc:
                 torch.save(model.state_dict(), best_model_path)
                 best_acc = avg_acc
                 best_state = model.state_dict()
@@ -218,11 +188,11 @@ class NetTrainer(BaseNetTrainer):
 
         if self.DebugMode is True:
             print("Outputting best model to '{}'".format(self.Options.experiment_root))
-        for name in ['train_loss', 'train_acc', 'val_loss', 'val_acc']:
+        for name in ['train_loss', 'train_acc']:
             self._save_list_to_file(os.path.join(self.Options.experiment_root,
                                            name + '.txt'), locals()[name])
 
-        return best_state, best_acc, train_loss, train_acc, val_loss, val_acc
+        return best_state, best_acc, train_loss, train_acc
 
     def Test(self) -> float:
         '''
