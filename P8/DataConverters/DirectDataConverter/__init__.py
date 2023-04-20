@@ -79,7 +79,7 @@ class DirectDataConverter(BaseDataConverter):
                 print("Formating dataset. This may take a while...")
             formated = self._formatData(self.Options.SourceTrainData, self.Options.SourceTestData)
             self._write_data(formated, self.Options.FormatedFolder)
-            self._create_splits(self.Options.FormatedFolder, int(len(formated) * (1 - self.Options.TestClassesSplit)), self.Options.TrainValSplit)
+            self._create_splits(self.Options.FormatedFolder, int(len(formated) * (1 - self.Options.TestClassesSplit)), 0)
             self.OutputChecksum();
             if self.DebugMode is True:
                 print("Formating complete!")

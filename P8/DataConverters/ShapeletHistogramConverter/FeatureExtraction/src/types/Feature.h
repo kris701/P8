@@ -15,7 +15,7 @@ struct Feature {
 
     bool operator==(const auto &rhs) {
         return (
-                attribute == rhs.attribute,
+                attribute == rhs.attribute &&
                 shapelet == rhs.shapelet
                 );
     }

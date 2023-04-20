@@ -33,15 +33,6 @@ class NetOptions():
     # number of samples per class to use as query for training
     num_query_tr : int = 5;
 
-    # if we should load the val set or not
-    load_val_set : bool = True;
-    # number of random classes per episode for validation
-    classes_per_it_val : int = 5;
-    # number of samples per class to use as support for validation
-    num_support_val : int = 5;
-    # number of samples per class to use as query for validation
-    num_query_val : int = 5;
-
     # if we should load the test set or not
     load_test_set : bool = True;
     # number of random classes per episode for test

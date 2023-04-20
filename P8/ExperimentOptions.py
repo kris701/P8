@@ -8,6 +8,7 @@ class ExperimentOptions():
 
     GenerateGraphs : bool = False
     GenerateAccuracyGraphs : bool = False
+    GenerateClassAccuracyGraph : bool = False
     GenerateExperimentGraph : bool = False
     GenerateClassGraphs : bool = False
     GenerateShapeletGraphs : bool = False

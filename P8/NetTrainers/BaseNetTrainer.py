@@ -23,6 +23,7 @@ class BaseNetTrainer():
 
     def Train(self) -> float:
         raise NotImplementedError("Not Implemented!")
-    
-    def Test(self) -> float:
+
+    # The total accuracy, and the pr. class accuracy (if available)
+    def Test(self) -> tuple[float,dict]:
         raise NotImplementedError("Not Implemented!")
