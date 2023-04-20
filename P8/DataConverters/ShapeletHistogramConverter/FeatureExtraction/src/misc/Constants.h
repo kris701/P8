@@ -8,8 +8,10 @@
 
 #define DOUBLE_MAX 99999999
 
-std::random_device rd;
-std::mt19937 g(rd());
+namespace {
+    std::random_device rd;
+    std::mt19937 g(rd());
+}
 
 using uint = unsigned int;
 constexpr uint MAX_CLASSES = 64;

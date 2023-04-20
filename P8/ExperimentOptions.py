@@ -1,4 +1,8 @@
 class ExperimentOptions():
+    FormatDataset : bool = True;
+    RunTrain : bool = True;
+    RunTest : bool = True;
+
     ExperimentConfigDir : str = "Experiments/Configs";
     ExperimentResultsDir : str = "Experiments/Results";
     ExperimentsToRun : list;
@@ -8,6 +12,7 @@ class ExperimentOptions():
 
     GenerateGraphs : bool = False
     GenerateAccuracyGraphs : bool = False
+    GenerateClassAccuracyGraph : bool = False
     GenerateExperimentGraph : bool = False
     GenerateClassGraphs : bool = False
     GenerateShapeletGraphs : bool = False

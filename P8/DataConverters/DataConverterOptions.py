@@ -9,10 +9,8 @@ class DataConverterOptions():
     # Output formated data to
     FormatedFolder : str = "Formatted/BaseOutput";
 
-    # What percentage of the data classes should be put into the test data
-    TestClassesSplit : int = 0.2;
-    # What percentage of the train data, should be regarded as a Validation set.
-    TrainValSplit : float = 0.7;
+    # Number of shots
+    TestClassesSplit : int = 5;
 
     # Settings for the ShapeletHistogramConverter
     minWindowSize : int = 2;

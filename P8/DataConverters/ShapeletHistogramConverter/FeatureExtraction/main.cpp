@@ -7,9 +7,9 @@
 #include "src/IO/ArgumentParser.h"
 #include "src/utilities/FeatureUtils.h"
 #include "core/attributes/AttributeBuilder.h"
-#include "Preprocessing/DataAugmentation.h"
-#include "Preprocessing/DataPurge.h"
-#include "Preprocessing/DataSplit.h"
+#include "src/preprocessing/DataAugmentation.h"
+#include "src/preprocessing/DataPurge.h"
+#include "src/preprocessing/DataSplit.h"
 
 int main(int argc, char** argv) {
     uint id = Logger::Begin("Parsing Arguments");
@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     auto data = FileHanding::ReadCSV({ arguments.trainPath, arguments.testPath }, "\t");
     Logger::End(id);
 
-    id = Logger::Begin("Preprocessing Data");
+    id = Logger::Begin("preprocessing Data");
     auto id2 = Logger::Begin("Normalizing");
     SeriesUtils::MinMaxNormalize(data);
     SeriesUtils::ForcePositiveRange(data);
