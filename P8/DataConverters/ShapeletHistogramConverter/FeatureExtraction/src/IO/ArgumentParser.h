@@ -10,7 +10,7 @@ namespace ArgumentParsing {
         const std::string trainPath;
         const std::string testPath;
         const std::string outPath;
-        const double split;
+        const uint split;
         const double valtrainsplit;
         const uint minWindowSize;
         const uint maxWindowSize;
@@ -21,7 +21,7 @@ namespace ArgumentParsing {
         const bool deleteOriginal;
         const uint smoothingDegree;
         const double noisifyAmount;
-        Arguments(const std::string &trainPath, const std::string &testPath, const std::string outPath, double split, double valTrainSplit,
+        Arguments(const std::string &trainPath, const std::string &testPath, const std::string outPath, uint split, double valTrainSplit,
                   uint minWindowSize, uint maxWindowSize, uint minSampleSize, uint maxSampleSize, uint featureCount,
                   std::vector<std::string> attributes,
                   bool delteOriginal, uint smoothingDegree, double noisifyAmount) :
@@ -38,7 +38,7 @@ namespace ArgumentParsing {
                 ("train", "Path to train data (Absolute)", cxxopts::value<std::string>())
                 ("test", "Path to test data (Absolute)", cxxopts::value<std::string>())
                 ("out", "Output path of formated data (Absolute)", cxxopts::value<std::string>())
-                ("split", "How much of the data should be training data. [0.0,1.0) for percent, [1, n) for data points", cxxopts::value<double>() -> default_value("5"))
+                ("split", "How many shots of each class", cxxopts::value<uint>() -> default_value("5"))
                 ("valtrainsplit", "How much of the data should be put into the validation set (0,1)", cxxopts::value<double>() -> default_value("0"))
                 ("minWindowSize", "Minimum size of windows. Should be between 2 and maxWindowSize.", cxxopts::value<uint>() -> default_value("2"))
                 ("maxWindowSize", "Maximum size of windows. 0 for max possible, same if larger than series length.", cxxopts::value<uint>() -> default_value("64"))
@@ -64,7 +64,7 @@ namespace ArgumentParsing {
                     result["train"].as<std::string>(),
                     result["test"].as<std::string>(),
                     result["out"].as<std::string>(),
-                    result["split"].as<double>(),
+                    result["split"].as<uint>(),
                     result["valtrainsplit"].as<double>(),
                     result["minWindowSize"].as<uint>(),
                     result["maxWindowSize"].as<uint>(),

@@ -1,5 +1,5 @@
-#ifndef FEATUREEXTRACTION_DATACHOOSING_H
-#define FEATUREEXTRACTION_DATACHOOSING_H
+#ifndef FEATUREEXTRACTION_DATAPURGE_H
+#define FEATUREEXTRACTION_DATAPURGE_H
 
 #include <unordered_map>
 #include <set>
@@ -7,7 +7,13 @@
 #include "utilities/SeriesUtils.h"
 #include "core/attributes/MinDist.h"
 
-namespace DataChoosing {
+namespace DataPurge {
+    struct Results {
+        const std::vector<LabelledSeries> acceptable;
+        const std::vector<LabelledSeries> rejects;
+        Results(std::vector<LabelledSeries> acceptable, std::vector<LabelledSeries> rejects) : acceptable(std::move(acceptable)), rejects(std::move(rejects)) {}
+    };
+
     double StdDiv(const std::vector<double> &vec) {
         const double mean = std::accumulate(vec.begin(), vec.end(), (double) 0) / (double) vec.size();
         return std::sqrt(
@@ -29,11 +35,9 @@ namespace DataChoosing {
         return totalDist / (double) allSeries.size();
     }
 
-    std::pair<std::vector<LabelledSeries>, std::vector<LabelledSeries>> Split(const std::vector<LabelledSeries> &series,
-                                                                              double trainSplit) {
+    Results Purge(const std::vector<LabelledSeries> &series) {
         const auto mappedData = SeriesUtils::ToMap(series);
         std::unordered_map<int, std::map<double, std::vector<Series>>> seriesScored;
-
 
         for (const auto &seriesSet : mappedData) {
             std::map<double, std::vector<Series>> setScores;
@@ -43,8 +47,8 @@ namespace DataChoosing {
             seriesScored[seriesSet.first] = setScores;
         }
 
-        std::unordered_map<int, std::vector<Series>> acceptable;
-        std::unordered_map<int, std::vector<Series>> rejects;
+        std::vector<LabelledSeries> acceptable;
+        std::vector<LabelledSeries> rejects;
 
         for (const auto &seriesSet : seriesScored) {
             std::vector<double> distances;
@@ -54,31 +58,17 @@ namespace DataChoosing {
             const double stdDiv = StdDiv(distances);
             for (const auto &ss : seriesSet.second) {
                 const auto diff = std::abs(ss.first - avg);
-                if (diff > stdDiv && false) {
+                if (diff > stdDiv) {
                     for (const auto &s: ss.second)
-                        rejects[seriesSet.first].push_back(s);
+                        rejects.emplace_back(seriesSet.first, s);
                 } else {
                     for (const auto &s: ss.second)
-                        acceptable[seriesSet.first].push_back(s);
+                        acceptable.emplace_back(seriesSet.first, s);
                 }
             }
         }
-        std::vector<LabelledSeries> trainSet;
-        std::vector<LabelledSeries> testSet;
-        for (auto &seriesSet : acceptable) {
-            std::shuffle(seriesSet.second.begin(), seriesSet.second.end(), g);
-            uint i = 0;
-            for (; i < trainSplit; i++)
-                trainSet.emplace_back(seriesSet.first, seriesSet.second.at(i));
-            for (; i < seriesSet.second.size(); i++)
-                testSet.emplace_back(seriesSet.first, seriesSet.second.at(i));
-        }
-        for (const auto &seriesSet : rejects)
-            for (const auto &s : seriesSet.second)
-                testSet.emplace_back(seriesSet.first, s);
-
-        return { trainSet, testSet };
+        return { acceptable, rejects };
     }
 }
 
-#endif //FEATUREEXTRACTION_DATACHOOSING_H
+#endif //FEATUREEXTRACTION_DATAPURGE_H

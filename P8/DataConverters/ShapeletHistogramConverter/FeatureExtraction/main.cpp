@@ -7,8 +7,9 @@
 #include "src/IO/ArgumentParser.h"
 #include "src/utilities/FeatureUtils.h"
 #include "core/attributes/AttributeBuilder.h"
-#include "core/DataAugmentation.h"
-#include "core/DataChoosing.h"
+#include "Preprocessing/DataAugmentation.h"
+#include "Preprocessing/DataPurge.h"
+#include "Preprocessing/DataSplit.h"
 
 int main(int argc, char** argv) {
     uint id = Logger::Begin("Parsing Arguments");
@@ -19,22 +20,24 @@ int main(int argc, char** argv) {
     auto data = FileHanding::ReadCSV({ arguments.trainPath, arguments.testPath }, "\t");
     Logger::End(id);
 
-    id = Logger::Begin("Normalizing Data");
+    id = Logger::Begin("Preprocessing Data");
+    auto id2 = Logger::Begin("Normalizing Data");
     SeriesUtils::MinMaxNormalize(data);
     SeriesUtils::ForcePositiveRange(data);
-    Logger::End(id);
-
-    id = Logger::Begin("Splitting Data");
-    const auto trainSplit = DataChoosing::Split(data, arguments.split);
-    auto trainData = trainSplit.first;
-
-    uint id2 = Logger::Begin("Augmenting Data");
-    trainData = DataAugmentation::Augment(trainData, false, arguments.smoothingDegree, arguments.noisifyAmount);
     Logger::End(id2);
 
-    const auto testData = trainSplit.second;
+    id2 = Logger::Begin("Splitting Data");
+    const auto map = SeriesUtils::ToMap(data);
+    auto splitData = DataSplit::Split(map, arguments.split);
+    Logger::End(id2);
+
+    id2 = Logger::Begin("Augmenting Data");
+    const auto trainData =
+            DataAugmentation::Augment(splitData.train, false, arguments.smoothingDegree, arguments.noisifyAmount);
+    const auto testData = splitData.test;
     const auto trainMap = SeriesUtils::ToMap(trainData);
     const auto testMap = SeriesUtils::ToMap(testData);
+    Logger::End(id2);
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Set");
