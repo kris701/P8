@@ -13,7 +13,12 @@ class ShapeletHistogramVisualiser():
     def VisualizeDictionary(self, dictValues : dict, title : str) -> plt.figure:
         fig = plt.figure(figsize=self.GraphSize)
         fig.suptitle(title);
-        fig.plot(dictValues)
+        xLabels = []
+        for key in dictValues.keys():
+            xLabels.append("Class " + str(key))
+        plt.bar(xLabels, dictValues.values())
+        plt.xlabel("Class ID")
+        plt.ylabel("Accuracy")
         return fig;
 
     def VisualizeClass(self, classIndex) -> plt.figure:

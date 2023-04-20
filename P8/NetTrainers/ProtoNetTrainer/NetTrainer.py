@@ -1,4 +1,4 @@
-from from .prototypical_loss import prototypical_loss as loss_fn
+from .prototypical_loss import prototypical_loss as loss_fn
 from ..BaseNetTrainer import BaseNetTrainer
 from ..NetOptions import NetOptions
 from .DataloaderVerifier import DataLoaderVerifier
@@ -272,4 +272,4 @@ class NetTrainer(BaseNetTrainer):
         for classId in class_acc:
             class_acc[classId] = class_acc[classId] / class_total[classId]
 
-        return avg_acc
+        return avg_acc, class_acc
