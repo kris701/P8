@@ -167,9 +167,10 @@ class ExperimentSuite():
             self._DPrint("Best train acc: " + str(bestTrainAcc))
 
         bestTestAcc = 0;
+        classAcc = {}
         if self.Options.RunTest:
             self._DPrint("Testing Model")
-            bestTestAcc = protonet.Test();
+            bestTestAcc, classAcc = protonet.Test();
             self._DPrint("Avg test acc: " + str(bestTestAcc))
 
         if self.Options.ZipDataset:
@@ -182,13 +183,13 @@ class ExperimentSuite():
             shutil.copyfile(configName, os.path.join(roundResultDir, "config.ini"));
 
         if self.Options.GenerateGraphs:
-            self._GenerateRoundGraphs(dataLoaderOptions, roundResultDir);
+            self._GenerateRoundGraphs(dataLoaderOptions, roundResultDir, classAcc);
 
         gc.collect();
 
         return (bestTestAcc, nShots, nWay)
 
-    def _GenerateRoundGraphs(self, dataLoaderOptions : BaseDataConverter, roundResultDir : str) -> None:
+    def _GenerateRoundGraphs(self, dataLoaderOptions : BaseDataConverter, roundResultDir : str, classAcc : dict) -> None:
         visualizer = ShapeletHistogramVisualiser(dataLoaderOptions.FormatedFolder)
         if self.Options.GenerateExperimentGraph:
             self._DPrint("Generating graphs of all classes combined... (TRAIN)")
@@ -226,6 +227,12 @@ class ExperimentSuite():
                 classfig = visualizer.VisualizeClass(int(classId));
                 classfig.savefig(os.path.join(roundResultDir, "class" + classId + ".png"))
                 plt.close(classfig)
+
+        if self.Options.GenerateClassAccuracyGraph is True:
+            self._DPrint("Generating class accuracy graph...")
+            classAccGraph = visualizer.VisualizeDictionary(classAcc, "Accuracy Pr Class");
+            classAccGraph.savefig(os.path.join(roundResultDir, "classAccuracy.png"))
+            plt.close(classAccGraph)
 
         if self.Options.GenerateSourceGraphs:
             self._DPrint("Generating source graphs...")

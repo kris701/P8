@@ -20,7 +20,6 @@ class ShapeletHistogramVisualiser():
         plt.ylabel("Accuracy")
         return fig;
 
-
     def VisualizeClass(self, classIndex, visualizeTrain : bool = True, visualizeTest : bool = True) -> plt.figure:
         classData = self._GetClassData(visualizeTrain, visualizeTest);
         shapeletData = self._GetShapeletData();
