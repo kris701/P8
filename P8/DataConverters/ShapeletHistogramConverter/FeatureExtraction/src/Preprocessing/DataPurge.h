@@ -56,16 +56,20 @@ namespace DataPurge {
                 distances.push_back(s.first);
             const double avg = std::accumulate(distances.begin(), distances.end(), (double) 0) / (double) distances.size();
             const double stdDiv = StdDiv(distances);
+            uint rejectCount = 0;
             for (const auto &ss : seriesSet.second) {
                 const auto diff = std::abs(ss.first - avg);
                 if (diff > stdDiv) {
-                    for (const auto &s: ss.second)
+                    for (const auto &s: ss.second) {
                         rejects.emplace_back(seriesSet.first, s);
+                        rejectCount++;
+                    }
                 } else {
                     for (const auto &s: ss.second)
                         acceptable.emplace_back(seriesSet.first, s);
                 }
             }
+            Logger::Info("Purged " + std::to_string(rejectCount) + " data points from class " + std::to_string(seriesSet.first));
         }
         return { acceptable, rejects };
     }

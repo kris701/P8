@@ -10,7 +10,7 @@ class DataConverterOptions():
     FormatedFolder : str = "Formatted/BaseOutput";
 
     # What percentage of the data classes should be put into the test data
-    TestClassesSplit : float = 0.2;
+    TestClassesSplit : int = 0.2;
     # What percentage of the train data, should be regarded as a Validation set.
     TrainValSplit : float = 0.7;
 

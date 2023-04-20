@@ -28,7 +28,6 @@ int main(int argc, char** argv) {
 
     id2 = Logger::Begin("Purging");
     const auto purgeResult = DataPurge::Purge(data);
-    Logger::Info("Purged " + std::to_string(purgeResult.rejects.size()) + " data points");
     Logger::End(id2);
 
     id2 = Logger::Begin("Splitting");
