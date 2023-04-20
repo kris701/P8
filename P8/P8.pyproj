@@ -158,6 +158,7 @@
     <Content Include="Experiments\Configs\ProximalPhalanxOutlineCorrect.ini" />
     <Content Include="Experiments\Configs\ProximalPhalanxOutlineAgeGroup.ini" />
     <Content Include="Experiments\Configs\SonyAIBORobotSurface2.ini" />
+    <Content Include="Experiments\Configs\SwedishLeaf.ini" />
     <Content Include="Experiments\Configs\Yoga.ini" />
     <Content Include="Experiments\Configs\Wafer.ini" />
     <Content Include="Experiments\Configs\UWaveGestureLibraryZ.ini" />
@@ -182,7 +183,7 @@
     <Content Include="Experiments\Configs\ArrowHead.ini" />
     <Content Include="Experiments\Configs\Wine.ini" />
     <Content Include="Experiments\readme.md" />
-    <Content Include="Experiments\SuiteConfigs\5ShotProtonetFullFast.ini" />
+    <Content Include="Experiments\SuiteConfigs\5ShotProtonetFast.ini" />
     <Content Include="Experiments\SuiteConfigs\6ShotProtonetFast.ini" />
     <Content Include="Experiments\SuiteConfigs\5ShotProtonetFull.ini" />
     <Content Include="Experiments\SuiteConfigs\8ShotProtonetFull.ini" />

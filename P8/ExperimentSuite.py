@@ -26,6 +26,7 @@ from Helpers import ReflexionHelper
 
 class ExperimentSuite():
     Options : ExperimentOptions;
+    _finished : int = 0
 
     def RunExperimentQueue(self, queue : list):
         print("Experiment Suite Queue started...")
@@ -65,9 +66,17 @@ class ExperimentSuite():
             self._LogPrint("No debug info will be printed.")
         self._LogPrint("")
 
+        self._DPrint("Checking if config files exist")
+        for configName in self.Options.ExperimentsToRun:
+            configName = os.path.join(self.Options.ExperimentConfigDir, configName + ".ini")
+            if not os.path.exists(configName):
+                raise FileNotFoundError("Config '" + configName + "' not found!")
+
         with open(os.path.join(self.Options.ExperimentResultsDir, "comparable.csv"), 'w', newline='') as comparableCSV:
             comparableCsvWriter = csv.writer(comparableCSV, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             comparableCsvWriter.writerow(['datasetName', 'NumberOfClasses', self.Options.ExperimentName])
+
+            self._finished = 0
 
             if self.Options.DebugMode is True:
                 for expName in self.Options.ExperimentsToRun:
@@ -119,7 +128,9 @@ class ExperimentSuite():
         end_time = time.time()
         time_lapsed = end_time - start_time
         
-        self._LogPrint("   === " + expName + " ended (took " + TimeHelpers.ConvertSecToTimeFormat(time_lapsed) + ") ===   ")
+        self._finished += 1;
+        progress : str = "[%.2f percent finished]" % ((self._finished / len(self.Options.ExperimentsToRun) * 100))
+        self._LogPrint("   === " + expName + " ended (took " + TimeHelpers.ConvertSecToTimeFormat(time_lapsed) + ") " + progress + " ===   ")
 
         avrTestAcc = avrTestAcc / self.Options.ExperimentRounds;
 

@@ -27,4 +27,4 @@ class ExperimentOptions():
 
     ForceRemakeDataset : bool = False;
 
-    MaxProcessesToSpawn : int = 8;
+    MaxProcessesToSpawn : int = 1;
