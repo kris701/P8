@@ -5,6 +5,7 @@
 #include <map>
 #include <numeric>
 #include <exception>
+#include <stdexcept>
 #include "misc/Constants.h"
 #include "utilities/SeriesUtils.h"
 #include "utilities/ClassCountUtils.h"
