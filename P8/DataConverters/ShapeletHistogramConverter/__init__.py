@@ -33,36 +33,28 @@ class ShapeletHistogramConverter(BaseDataConverter):
             if os.name == "nt":
                 extension = ".exe"
             executable = os.path.join(thisFile, "FeatureExtraction/out/Release/FeatureExtraction" + extension)
+            processParams = [executable, 
+                            "--train", str(os.path.join(workingDir, self.Options.SourceTrainData.replace("./","").replace("/",os.sep))),
+                            "--test", str(os.path.join(workingDir, self.Options.SourceTestData.replace("./","").replace("/",os.sep))),
+                            "--out", str(os.path.join(workingDir, self.Options.FormatedFolder.replace("./","").replace("/",os.sep))),
+                            "--split", str(self.Options.TestClassesSplit),
+                            "--minWindowSize", str(self.Options.minWindowSize),
+                            "--maxWindowSize", str(self.Options.maxWindowSize),
+                            "--featureCount", str(self.Options.featureCount),
+                            "--attributes", str(self.Options.attributes),
+                            "--smoothingDegree", str(self.Options.smoothingDegree),
+                            "--noisifyAmount", str(self.Options.noisifyAmount)
+                            ];
+
+            if self.Options.deleteOriginal:
+                processParams.append("--deleteOriginal");
+            if self.Options.purgeOddData:
+                processParams.append("--purge");
+
             if self.DebugMode is True:
-                subprocess.run([executable, 
-                            "--train", str(os.path.join(workingDir, self.Options.SourceTrainData.replace("./","").replace("/",os.sep))),
-                            "--test", str(os.path.join(workingDir, self.Options.SourceTestData.replace("./","").replace("/",os.sep))),
-                            "--out", str(os.path.join(workingDir, self.Options.FormatedFolder.replace("./","").replace("/",os.sep))),
-                            "--split", str(self.Options.TestClassesSplit),
-                            "--minWindowSize", str(self.Options.minWindowSize),
-                            "--maxWindowSize", str(self.Options.maxWindowSize),
-                            "--featureCount", str(self.Options.featureCount),
-                            "--attributes", str(self.Options.attributes),
-                            "--deleteOriginal", str(self.Options.deleteOriginal),
-                            "--smoothingDegree", str(self.Options.smoothingDegree),
-                            "--noisifyAmount", str(self.Options.noisifyAmount),
-                            "--purge", str(self.Options.purgeOddData).lower()
-                            ])
+                subprocess.run(processParams)
             else:
-                subprocess.run([executable, 
-                            "--train", str(os.path.join(workingDir, self.Options.SourceTrainData.replace("./","").replace("/",os.sep))),
-                            "--test", str(os.path.join(workingDir, self.Options.SourceTestData.replace("./","").replace("/",os.sep))),
-                            "--out", str(os.path.join(workingDir, self.Options.FormatedFolder.replace("./","").replace("/",os.sep))),
-                            "--split", str(self.Options.TestClassesSplit),
-                            "--minWindowSize", str(self.Options.minWindowSize),
-                            "--maxWindowSize", str(self.Options.maxWindowSize),
-                            "--featureCount", str(self.Options.featureCount),
-                            "--attributes", str(self.Options.attributes),
-                            "--deleteOriginal", str(self.Options.deleteOriginal),
-                            "--smoothingDegree", str(self.Options.smoothingDegree),
-                            "--noisifyAmount", str(self.Options.noisifyAmount),
-                            "--purge", str(self.Options.purgeOddData).lower()
-                            ],
+                subprocess.run(processParams,
                                stdout=subprocess.DEVNULL,
                                stderr=subprocess.DEVNULL) 
 
