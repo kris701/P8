@@ -71,6 +71,7 @@ namespace DataPurge {
             }
             Logger::Info("Purged " + std::to_string(rejectCount) + " data points from class " + std::to_string(seriesSet.first));
         }
+        Logger::Info("Purged " + std::to_string((double) rejects.size() / ((double) rejects.size() + (double) acceptable.size()) * 100.0) + "%");
         return { acceptable, rejects };
     }
 }
