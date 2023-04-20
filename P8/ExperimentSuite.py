@@ -26,7 +26,6 @@ from Helpers import ReflexionHelper
 
 class ExperimentSuite():
     Options : ExperimentOptions;
-    _finished : int = 0
 
     def RunExperimentQueue(self, queue : list):
         print("Experiment Suite Queue started...")
@@ -75,9 +74,7 @@ class ExperimentSuite():
         with open(os.path.join(self.Options.ExperimentResultsDir, "comparable.csv"), 'w', newline='') as comparableCSV:
             comparableCsvWriter = csv.writer(comparableCSV, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             comparableCsvWriter.writerow(['datasetName', 'NumberOfClasses', self.Options.ExperimentName])
-
-            self._finished = 0
-
+            
             if self.Options.DebugMode is True:
                 for expName in self.Options.ExperimentsToRun:
                     expName, avrTestAcc, nShot, nWay = self._RunExperiment(expName)
@@ -128,9 +125,7 @@ class ExperimentSuite():
         end_time = time.time()
         time_lapsed = end_time - start_time
         
-        self._finished += 1;
-        progress : str = "[%.2f percent finished]" % ((self._finished / len(self.Options.ExperimentsToRun) * 100))
-        self._LogPrint("   === " + expName + " ended (took " + TimeHelpers.ConvertSecToTimeFormat(time_lapsed) + ") " + progress + " ===   ")
+        self._LogPrint("   === " + expName + " ended (took " + TimeHelpers.ConvertSecToTimeFormat(time_lapsed) + ") ===   ")
 
         avrTestAcc = avrTestAcc / self.Options.ExperimentRounds;
 
