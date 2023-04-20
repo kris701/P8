@@ -46,8 +46,7 @@ namespace ArgumentParsing {
                 ("maxSampleSize", "Maximum number of samples for each class in a given feature. 0 for maximum possible", cxxopts::value<uint>() -> default_value("5"))
                 ("featureCount", "How many features to generate", cxxopts::value<uint>() -> default_value("128"))
                 ("attributes", "A given attribute", cxxopts::value<std::vector<std::string>>() ->default_value("minDist"))
-                ("deleteOriginal", "Deletes original training data. Should only be true, if it is either smoothed or noised",
-                        cxxopts::value<bool>()->default_value("false"))
+                ("deleteOriginal", "Deletes original training data. Should only be true, if it is either smoothed or noised")
                 ("smoothingDegree", "Neighbours count in smoothing. 0 for no smooth augmentation.",cxxopts::value<uint>()->default_value("0"))
                 ("noisifyAmount", "How much each point in time series should be noised. 0 for no noise augmentation.",cxxopts::value<double>()->default_value("0"))
                 ("purge", "Purges outliers")
@@ -72,7 +71,7 @@ namespace ArgumentParsing {
                     result["maxSampleSize"].as<uint>(),
                     result["featureCount"].as<uint>(),
                     result["attributes"].as<std::vector<std::string>>(),
-                    result["deleteOriginal"].as<bool>(),
+                    result.count("deleteOriginal"),
                     result["smoothingDegree"].as<uint>(),
                     result["noisifyAmount"].as<double>(),
                     result.count("purge")

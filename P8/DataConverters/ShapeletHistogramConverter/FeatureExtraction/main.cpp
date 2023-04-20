@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
     id2 = Logger::Begin("Writing Source Train Files");
     const auto sourceTrainPath = arguments.outPath + "source/";
     FileHanding::WriteToFiles(sourceTrainPath + "original/", SeriesUtils::ToMap(splitData.train));
-    FileHanding::WriteToFiles(sourceTrainPath + "augmentation/",SeriesUtils::ToMap(DataAugmentation::Augment(splitData.train,true,arguments.smoothingDegree,arguments.noisifyAmount)));
+    FileHanding::WriteToFiles(sourceTrainPath + "augmentation/",SeriesUtils::ToMap(DataAugmentation::Augment(splitData.train,arguments.deleteOriginal,arguments.smoothingDegree,arguments.noisifyAmount)));
     Logger::End(id2);
 
     id2 = Logger::Begin("Augmenting Data");
