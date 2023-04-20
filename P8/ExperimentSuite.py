@@ -6,6 +6,7 @@ import multiprocessing
 import gc
 import matplotlib
 import matplotlib.pyplot as plt
+import traceback
 
 matplotlib.use('Agg')
 
@@ -45,6 +46,9 @@ class ExperimentSuite():
                 self._LogPrint("The error message was:", "error.txt")
                 self._LogPrint("", "error.txt")
                 self._LogPrint(str(e), "error.txt")
+                self._LogPrint("", "error.txt")
+                self._LogPrint("Traceback:", "error.txt")
+                self._LogPrint(traceback.format_exc())
             print("Queue item " + str(counter) + " ended!")
             counter += 1;
         print("Experiment Suite Queue finised!")
