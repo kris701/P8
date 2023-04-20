@@ -6,6 +6,7 @@ import multiprocessing
 import gc
 import matplotlib
 import matplotlib.pyplot as plt
+import traceback
 
 matplotlib.use('Agg')
 
@@ -45,6 +46,9 @@ class ExperimentSuite():
                 self._LogPrint("The error message was:", "error.txt")
                 self._LogPrint("", "error.txt")
                 self._LogPrint(str(e), "error.txt")
+                self._LogPrint("", "error.txt")
+                self._LogPrint("Traceback:", "error.txt")
+                self._LogPrint(traceback.format_exc())
             print("Queue item " + str(counter) + " ended!")
             counter += 1;
         print("Experiment Suite Queue finised!")
@@ -61,10 +65,16 @@ class ExperimentSuite():
             self._LogPrint("No debug info will be printed.")
         self._LogPrint("")
 
+        self._DPrint("Checking if config files exist")
+        for configName in self.Options.ExperimentsToRun:
+            configName = os.path.join(self.Options.ExperimentConfigDir, configName + ".ini")
+            if not os.path.exists(configName):
+                raise FileNotFoundError("Config '" + configName + "' not found!")
+
         with open(os.path.join(self.Options.ExperimentResultsDir, "comparable.csv"), 'w', newline='') as comparableCSV:
             comparableCsvWriter = csv.writer(comparableCSV, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             comparableCsvWriter.writerow(['datasetName', 'NumberOfClasses', self.Options.ExperimentName])
-
+            
             if self.Options.DebugMode is True:
                 for expName in self.Options.ExperimentsToRun:
                     expName, avrTestAcc, nShot, nWay = self._RunExperiment(expName)
@@ -75,7 +85,7 @@ class ExperimentSuite():
                 for expName in self.Options.ExperimentsToRun:
                     data.append(expName);
 
-                poolResults = multiprocessing.Pool(len(self.Options.ExperimentsToRun)).map(self._RunExperiment, data)
+                poolResults = multiprocessing.Pool(self.Options.MaxProcessesToSpawn).map(self._RunExperiment, data)
                 for expName, avrTestAcc, nShot, nWay in poolResults:
                     results[expName] = avrTestAcc;
                     comparableCsvWriter.writerow([expName, nWay, avrTestAcc]);
