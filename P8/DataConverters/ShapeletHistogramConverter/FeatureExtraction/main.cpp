@@ -26,15 +26,22 @@ int main(int argc, char** argv) {
     SeriesUtils::ForcePositiveRange(data);
     Logger::End(id2);
 
-    id2 = Logger::Begin("Purging");
-    const auto purgeResult = DataPurge::Purge(data);
-    Logger::End(id2);
+    std::vector<LabelledSeries> candidates = data;
+    std::vector<LabelledSeries> remainder;
+
+    if (arguments.purge) {
+        id2 = Logger::Begin("Purging");
+        const auto purgeResult = DataPurge::Purge(data);
+        candidates = purgeResult.acceptable;
+        remainder = purgeResult.rejects;
+        Logger::End(id2);
+    }
 
     id2 = Logger::Begin("Splitting");
-    const auto map = SeriesUtils::ToMap(purgeResult.acceptable);
+    const auto map = SeriesUtils::ToMap(candidates);
     const auto splitData = DataSplit::Split(map, arguments.split);
     auto testData = splitData.test;
-    testData.insert(testData.end(), purgeResult.rejects.begin(), purgeResult.rejects.end());
+    testData.insert(testData.end(), remainder.begin(), remainder.end());
     Logger::End(id2);
 
     id2 = Logger::Begin("Augmenting Data");

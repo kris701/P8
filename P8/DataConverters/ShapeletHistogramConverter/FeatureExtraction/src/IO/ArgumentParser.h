@@ -20,15 +20,17 @@ namespace ArgumentParsing {
         const bool deleteOriginal;
         const uint smoothingDegree;
         const double noisifyAmount;
+        const bool purge;
         Arguments(const std::string &trainPath, const std::string &testPath, const std::string outPath, uint split,
                   uint minWindowSize, uint maxWindowSize, uint minSampleSize, uint maxSampleSize, uint featureCount,
                   std::vector<std::string> attributes,
-                  bool delteOriginal, uint smoothingDegree, double noisifyAmount) :
+                  bool delteOriginal, uint smoothingDegree, double noisifyAmount, bool purge) :
                   trainPath(trainPath), testPath(testPath), outPath(outPath), split(split),
                   minWindowSize(minWindowSize), maxWindowSize(maxWindowSize),
                   minSampleSize(minSampleSize), maxSampleSize(maxSampleSize), featureCount(featureCount),
                   attributes(attributes),
-                  deleteOriginal(delteOriginal), smoothingDegree(smoothingDegree), noisifyAmount(noisifyAmount){}
+                  deleteOriginal(delteOriginal), smoothingDegree(smoothingDegree), noisifyAmount(noisifyAmount),
+                  purge(purge){}
     };
 
     Arguments ParseArguments(int argc, char **argv) {
@@ -48,6 +50,8 @@ namespace ArgumentParsing {
                         cxxopts::value<bool>()->default_value("false"))
                 ("smoothingDegree", "Neighbours count in smoothing. 0 for no smooth augmentation.",cxxopts::value<uint>()->default_value("0"))
                 ("noisifyAmount", "How much each point in time series should be noised. 0 for no noise augmentation.",cxxopts::value<double>()->default_value("0"))
+                ("purge", "Purges outliers",
+                 cxxopts::value<bool>()->default_value("false"))
                 ("h,help", "Print usage")
                 ;
         auto result = options.parse(argc, argv);
@@ -71,7 +75,8 @@ namespace ArgumentParsing {
                     result["attributes"].as<std::vector<std::string>>(),
                     result["deleteOriginal"].as<bool>(),
                     result["smoothingDegree"].as<uint>(),
-                    result["noisifyAmount"].as<double>()
+                    result["noisifyAmount"].as<double>(),
+                    result["purge"].as<bool>()
                     );
         } catch (const cxxopts::exceptions::option_has_no_value& e) {
             printf("\nMissing argument: %s\n", e.what());
