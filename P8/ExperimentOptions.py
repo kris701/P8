@@ -18,6 +18,8 @@ class ExperimentOptions():
     GenerateShapeletGraphs : bool = False
     GenerateOriginalSourceGraph : bool = False
     GenerateAugmentedSourceGraph : bool = False
+    GenerateCandidatesGraph : bool = False
+    GenerateRejectsGraph : bool = False
 
     ComparisonData : list = []
 
