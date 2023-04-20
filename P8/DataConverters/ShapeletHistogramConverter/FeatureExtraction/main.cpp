@@ -27,18 +27,18 @@ int main(int argc, char** argv) {
     Logger::End(id2);
 
     std::vector<LabelledSeries> candidates = data;
-    std::vector<LabelledSeries> remainder;
+    std::vector<LabelledSeries> rejects;
 
     if (arguments.purge) {
         id2 = Logger::Begin("Purging");
         const auto purgeResult = DataPurge::Purge(data);
         candidates = purgeResult.acceptable;
-        remainder = purgeResult.rejects;
+        rejects = purgeResult.rejects;
         Logger::End(id2);
         id2 = Logger::Begin("Writing Purged to Files");
         const auto purgePath = arguments.outPath + "purged/";
         FileHanding::WriteToFiles(purgePath + "candidates/", SeriesUtils::ToMap(candidates));
-        FileHanding::WriteToFiles(purgePath + "remainder/", SeriesUtils::ToMap(remainder));
+        FileHanding::WriteToFiles(purgePath + "rejects/", SeriesUtils::ToMap(rejects));
         Logger::End(id2);
     }
 
@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
     const auto map = SeriesUtils::ToMap(candidates);
     const auto splitData = DataSplit::Split(map, arguments.split);
     auto testData = splitData.test;
-    testData.insert(testData.end(), remainder.begin(), remainder.end());
+    testData.insert(testData.end(), rejects.begin(), rejects.end());
     Logger::End(id2);
 
     id2 = Logger::Begin("Writing Source Train Files");
