@@ -24,6 +24,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ExperimentOptions.py" />
+    <Compile Include="Helpers\ReflexionHelper.py" />
+    <Compile Include="Helpers\TimeHelpers.py" />
+    <Compile Include="Helpers\__init__.py" />
     <Compile Include="ResultsCombiners\CSVResultsCombiner.py" />
     <Compile Include="DataConverters\BaseDataConverter.py" />
     <Compile Include="DataConverters\DataConverterBuilder.py" />
@@ -89,6 +92,7 @@
     <Folder Include="NetTrainers\ProtoNetTrainer\" />
     <Folder Include="NetTrainers\ProtoNetTrainer\Backbones\" />
     <Folder Include="DataVisualisers\" />
+    <Folder Include="Helpers\" />
     <Folder Include="ResultsCombiners\" />
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +120,7 @@
     <Content Include="Datasets\readme.md" />
     <Content Include="DataVisualisers\readme.md" />
     <Content Include="Data\readme.md" />
+    <Content Include="Experiments\Configs\BaseConfigs\6ShotProtonetFast.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\8ShotProtonet.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\8ShotKNN.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\6ShotKNN.ini" />

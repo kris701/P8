@@ -1,4 +1,8 @@
 class ExperimentOptions():
+    FormatDataset : bool = True;
+    RunTrain : bool = True;
+    RunTest : bool = True;
+
     ExperimentConfigDir : str = "Experiments/Configs";
     ExperimentResultsDir : str = "Experiments/Results";
     ExperimentsToRun : list;
