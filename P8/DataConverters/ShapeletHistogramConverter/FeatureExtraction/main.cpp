@@ -21,20 +21,26 @@ int main(int argc, char** argv) {
     Logger::End(id);
 
     id = Logger::Begin("Preprocessing Data");
-    auto id2 = Logger::Begin("Normalizing Data");
+    auto id2 = Logger::Begin("Normalizing");
     SeriesUtils::MinMaxNormalize(data);
     SeriesUtils::ForcePositiveRange(data);
     Logger::End(id2);
 
-    id2 = Logger::Begin("Splitting Data");
-    const auto map = SeriesUtils::ToMap(data);
-    auto splitData = DataSplit::Split(map, arguments.split);
+    id2 = Logger::Begin("Purging");
+    const auto purgeResult = DataPurge::Purge(data);
+    Logger::Info("Purged " + std::to_string(purgeResult.rejects.size()) + " data points");
+    Logger::End(id2);
+
+    id2 = Logger::Begin("Splitting");
+    const auto map = SeriesUtils::ToMap(purgeResult.acceptable);
+    const auto splitData = DataSplit::Split(map, arguments.split);
+    auto testData = splitData.test;
+    testData.insert(testData.end(), purgeResult.rejects.begin(), purgeResult.rejects.end());
     Logger::End(id2);
 
     id2 = Logger::Begin("Augmenting Data");
     const auto trainData =
             DataAugmentation::Augment(splitData.train, false, arguments.smoothingDegree, arguments.noisifyAmount);
-    const auto testData = splitData.test;
     const auto trainMap = SeriesUtils::ToMap(trainData);
     const auto testMap = SeriesUtils::ToMap(testData);
     Logger::End(id2);
