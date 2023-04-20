@@ -11,9 +11,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/contrib)
 
-# Make sure package is installed
-find_package(Catch2 REQUIRED)
-
 # Setup executable
 add_executable(all_tests core/GenerateWindows.cpp core/InformationGainTests.cpp)
 target_include_directories(all_tests PRIVATE ../include ../src)
