@@ -212,7 +212,7 @@ class ExperimentSuite():
                 shapelets.savefig(os.path.join(roundResultDir, "allShapelets.png"))
                 plt.close(shapelets)
 
-        if self.Options.GenerateClassGraphs is True and dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
+        if self.Options.GenerateClassGraphs:
             self._DPrint("Generating class graphs...")
             for classId in os.listdir(os.path.join(dataLoaderOptions.FormatedFolder, "data")):
                 self._DPrint("  Generating class " + classId + " graph... (TRAIN)")
@@ -228,7 +228,7 @@ class ExperimentSuite():
                 classfig.savefig(os.path.join(roundResultDir, "class" + classId + ".png"))
                 plt.close(classfig)
 
-        if self.Options.GenerateClassAccuracyGraph is True:
+        if self.Options.GenerateClassAccuracyGraph:
             self._DPrint("Generating class accuracy graph...")
             classAccGraph = visualizer.VisualizeDictionary(classAcc, "Accuracy Pr Class");
             classAccGraph.savefig(os.path.join(roundResultDir, "classAccuracy.png"))
