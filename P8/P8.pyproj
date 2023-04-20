@@ -117,6 +117,7 @@
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\test\window_generation\CMakeLists.txt" />
     <Content Include="DataConverters\ShapeletHistogramConverter\FeatureExtraction\test\window_generation\GenerateWindows.cpp" />
     <Content Include="Datasets\readme.md" />
+    <Content Include="DataVisualisers\readme.md" />
     <Content Include="Data\Beef\Beef_TEST.tsv" />
     <Content Include="Data\Beef\Beef_TRAIN.tsv" />
     <Content Include="Data\Beef\README.md" />

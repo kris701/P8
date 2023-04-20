@@ -22,7 +22,7 @@ class BaseNetTrainer():
             os.makedirs(self.Options.experiment_root)
 
     def Train(self) -> float:
-        raise Exception("Not Implemented!")
-
+        raise NotImplementedError("Not Implemented!")
+    
     def Test(self) -> float:
-        raise Exception("Not Implemented!")
+        raise NotImplementedError("Not Implemented!")
