@@ -4,7 +4,7 @@ import pandas as pd
 
 class ShapeletHistogramVisualiser():
     DatasetPath : str = "";
-    GraphSize = (10,10);
+    GraphSize = (20,10);
 
     def __init__(self, datasetPath : str) -> None:
         self.DatasetPath = datasetPath.replace("/",os.sep).replace("\\",os.sep)

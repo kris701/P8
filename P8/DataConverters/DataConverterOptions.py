@@ -22,6 +22,7 @@ class DataConverterOptions():
     deleteOriginal : bool = False
     smoothingDegree : int = 0
     noisifyAmount : float = 0
+    purgeOddData : bool = False
 
     def VerifySettings(self):
         if not os.path.isfile(self.SourceTrainData): raise Exception("Source train dataset not found: '" + self.SourceTrainData + "'")
