@@ -100,7 +100,7 @@ class ExperimentSuite():
                 [{self.Options.ExperimentName: results}],
                 True
                 );
-            fullVisualiser = ResultsVisualiser();
+            fullVisualiser = ResultsVisualiser("None");
             full = fullVisualiser.VisualiseAll(fullResults);
             full.savefig(os.path.join(self.Options.ExperimentResultsDir, "accuracies.png"))
             plt.close(full)
