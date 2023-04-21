@@ -1,28 +1,15 @@
 import os
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
+from .BaseVisualiser import BaseVisualiser
 
-class ShapeletHistogramVisualiser():
-    DatasetPath : str = "";
-    GraphSize = (20,10);
-
-    def __init__(self, datasetPath : str) -> None:
-        self.DatasetPath = datasetPath.replace("/",os.sep).replace("\\",os.sep)
-
-    def VisualizeDictionary(self, dictValues : dict, title : str) -> plt.figure:
-        fig = plt.figure(figsize=self.GraphSize)
-        fig.suptitle(title);
-        xLabels = []
-        for key in dictValues.keys():
-            xLabels.append("Class " + str(key))
-        plt.bar(xLabels, dictValues.values())
-        plt.xlabel("Class ID")
-        plt.ylabel("Accuracy")
-        return fig;
+class ShapeletHistogramVisualiser(BaseVisualiser):
+    def __init__(self, datasetPath: str) -> None:
+        super().__init__(datasetPath)
 
     def VisualizeClass(self, classIndex, visualizeTrain : bool = True, visualizeTest : bool = True) -> plt.figure:
         classData = self._GetClassData(visualizeTrain, visualizeTest);
-        shapeletData = self._LoadSingleDataDir(os.path.join(self.DatasetPath, "features", "shapelets"))
+        shapeletData = self.LoadSingleDataDir(os.path.join(self.DatasetPath, "features", "shapelets"))
         featureData = self._GetFeatureData();
 
         fig = plt.figure(figsize=self.GraphSize)
@@ -53,7 +40,7 @@ class ShapeletHistogramVisualiser():
     def VisualizeAllClasses(self, visualizeTrain : bool = True, visualizeTest : bool = True) -> plt.figure:
         classData = self._GetClassData(visualizeTrain, visualizeTest);
         
-        rows, cols = self._GetPlotSize(len(classData));
+        rows, cols = self.GetPlotSize(len(classData));
         fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True, figsize=self.GraphSize)
         fig.suptitle("All Classes (Train: " + str(visualizeTrain) + ", Test: " + str(visualizeTest) + ")")
         colIndex : int = 0;
@@ -68,49 +55,6 @@ class ShapeletHistogramVisualiser():
             
             ax[rowIndex, colIndex].title.set_text("Id: " + str(classIndex))
             ax[rowIndex, colIndex].boxplot(transformed.values(), labels=transformed.keys())
-
-            colIndex += 1;
-            if colIndex >= cols:
-                colIndex = 0;
-                rowIndex += 1;
-        return fig;
-
-    def VisualiseIndividualDatapoints(self, path : str, title : str) -> plt.figure:
-        data = self._LoadSingleDataDir(path);
-        
-        rows, cols = self._GetPlotSize(len(data));
-        fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True, figsize=self.GraphSize)
-        fig.suptitle(title)
-        colIndex : int = 0;
-        rowIndex : int = 0;
-        for index in data:           
-            ax[rowIndex, colIndex].title.set_text("Id: " + str(index))
-            ax[rowIndex, colIndex].plot(data[index])
-
-            colIndex += 1;
-            if colIndex >= cols:
-                colIndex = 0;
-                rowIndex += 1;
-        return fig;
-
-    def VisualizeCombinedDatapoints(self, path : str, title : str) -> plt.figure:
-        data = self._LoadDataDir(path);
-
-        rows, cols = self._GetPlotSize(len(data));
-        fig, ax = plt.subplots(nrows=rows, ncols=cols, sharex=True, sharey=True, figsize=self.GraphSize)
-        fig.suptitle(title)
-        colIndex : int = 0;
-        rowIndex : int = 0;
-        for index in data:
-            transformed = {}
-            for key in range(0, len(data[index][0])):
-                transformed[key] = []
-                listIndex = int(key);
-                for sample in data[index]:
-                    transformed[key].append(sample[listIndex])
-            
-            ax[rowIndex, colIndex].title.set_text("Id: " + str(index) + " (n: " + str(len(data[index])) + ")")
-            ax[rowIndex, colIndex].plot(transformed.values())
 
             colIndex += 1;
             if colIndex >= cols:
@@ -142,42 +86,9 @@ class ShapeletHistogramVisualiser():
                     data[classID] = []
                 data[classID].append(fileData)
 
-    def _LoadDataDir(self, path : str) -> dict:
-        data = {};
-        for folderID in os.listdir(path):
-            folderName = os.path.join(path, folderID);
-            if os.path.isdir(folderName):
-                subFolderData = []
-                for fileID in os.listdir(folderName):
-                    fileData = []
-                    with open(os.path.join(path, folderID, fileID), "r") as file:
-                        for line in file:
-                            value = float(line.replace("\n",""))
-                            fileData.append(value)
-                    subFolderData.append(fileData)
-                data[int(folderID)] = subFolderData
-        return data;
-
-    def _LoadSingleDataDir(self, path : str) -> dict:
-        data = {};
-        if os.path.isdir(path):
-            for fileID in os.listdir(path):
-                fileData = []
-                with open(os.path.join(path, fileID), "r") as file:
-                    for line in file:
-                        value = float(line.replace("\n",""))
-                        fileData.append(value)
-                data[int(fileID)] = fileData;
-        return data;
-
     def _GetFeatureData(self) -> dict:
         featureData = {};
         featureDataCsv = os.path.join(self.DatasetPath, "features", "features.csv");
         csvData = pd.read_csv(featureDataCsv);
         featureData = csvData.to_dict();
         return featureData
-    
-    def _GetPlotSize(self, nClasses) -> tuple[int,int]:
-        for n in range (2, 99999):
-            if nClasses <= n * n:
-                return n,n

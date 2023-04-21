@@ -23,6 +23,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DataVisualisers\BaseVisualiser.py" />
     <Compile Include="ExperimentOptions.py" />
     <Compile Include="Helpers\ReflexionHelper.py" />
     <Compile Include="Helpers\TimeHelpers.py" />

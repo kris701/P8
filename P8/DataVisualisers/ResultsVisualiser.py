@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from .BaseVisualiser import BaseVisualiser
 
-class ResultsVisualiser():
-    GraphSize = (15,10);
+class ResultsVisualiser(BaseVisualiser):
+    def __init__(self, datasetPath: str) -> None:
+        super().__init__(datasetPath)
 
     def VisualiseAll(self, data) -> plt.figure:
         datasetTotal = []

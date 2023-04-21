@@ -8,6 +8,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import traceback
 
+from DataVisualisers.BaseVisualiser import BaseVisualiser
+
 matplotlib.use('Agg')
 
 from DataConverters.DataConverterOptions import DataConverterOptions
@@ -203,86 +205,69 @@ class ExperimentSuite():
         visualizer = ShapeletHistogramVisualiser(dataLoaderOptions.FormatedFolder)
         if self.Options.GenerateExperimentGraph:
             self._DPrint("Generating graphs of all classes combined... (TRAIN)")
-            allVisual_train = visualizer.VisualizeAllClasses(True,False);
-            allVisual_train.savefig(os.path.join(roundResultDir, "train_allVisual.png"))
-            plt.close(allVisual_train)
+            visualizer.SaveAndClose(
+                visualizer.VisualizeAllClasses(True,False),
+                os.path.join(roundResultDir, "train_allVisual.png"))
             self._DPrint("Generating graphs of all classes combined... (TEST)")
-            allVisual_test = visualizer.VisualizeAllClasses(False,True);
-            allVisual_test.savefig(os.path.join(roundResultDir, "test_allVisual.png"))
-            plt.close(allVisual_test)
+            visualizer.SaveAndClose(
+                visualizer.VisualizeAllClasses(False,True),
+                os.path.join(roundResultDir, "test_allVisual.png"))
             self._DPrint("Generating graphs of all classes combined... (BOTH)")
-            allVisual = visualizer.VisualizeAllClasses(True,True);
-            allVisual.savefig(os.path.join(roundResultDir, "allVisual.png"))
-            plt.close(allVisual)
+            visualizer.SaveAndClose(
+                visualizer.VisualizeAllClasses(True,True),
+                os.path.join(roundResultDir, "allVisual.png"))
 
         if self.Options.GenerateShapeletGraphs:
             self._DPrint("Generating shapelet graphs...")
-            if dataLoaderOptions.UseConverter == "ShapeletHistogramConverter":
-                shapelets = visualizer.VisualiseIndividualDatapoints(os.path.join(dataLoaderOptions.FormatedFolder, "features", "shapelets"), "Shapelets");
-                shapelets.savefig(os.path.join(roundResultDir, "allShapelets.png"))
-                plt.close(shapelets)
+            visualizer.SaveAndClose(
+                visualizer.VisualiseIndividualDatapoints(os.path.join(dataLoaderOptions.FormatedFolder, "features", "shapelets"), "Shapelets"),
+                os.path.join(roundResultDir, "allShapelets.png"))
 
         if self.Options.GenerateClassGraphs:
             self._DPrint("Generating class graphs...")
             for classId in os.listdir(os.path.join(dataLoaderOptions.FormatedFolder, "data")):
                 self._DPrint("  Generating class " + classId + " graph... (TRAIN)")
-                classfig_train = visualizer.VisualizeClass(int(classId), True, False);
-                classfig_train.savefig(os.path.join(roundResultDir, "train_class" + classId + ".png"))
-                plt.close(classfig_train)
+                visualizer.SaveAndClose(
+                    visualizer.VisualizeClass(int(classId), True, False),
+                    os.path.join(roundResultDir, "train_class" + classId + ".png"))
                 self._DPrint("  Generating class " + classId + " graph... (TEST)")
-                classfig_test = visualizer.VisualizeClass(int(classId), False, True);
-                classfig_test.savefig(os.path.join(roundResultDir, "test_class" + classId + ".png"))
-                plt.close(classfig_test)
+                visualizer.SaveAndClose(
+                    visualizer.VisualizeClass(int(classId), False, True),
+                    os.path.join(roundResultDir, "test_class" + classId + ".png"))
                 self._DPrint("  Generating class " + classId + " graph... (BOTH)")
-                classfig = visualizer.VisualizeClass(int(classId));
-                classfig.savefig(os.path.join(roundResultDir, "class" + classId + ".png"))
-                plt.close(classfig)
+                visualizer.SaveAndClose(
+                    visualizer.VisualizeClass(int(classId)),
+                    os.path.join(roundResultDir, "class" + classId + ".png"))
 
         if self.Options.GenerateClassAccuracyGraph:
             self._DPrint("Generating class accuracy graph...")
-            classAccGraph = visualizer.VisualizeDictionary(classAcc, "Accuracy Pr Class");
-            classAccGraph.savefig(os.path.join(roundResultDir, "classAccuracy.png"))
-            plt.close(classAccGraph)
+            visualizer.SaveAndClose(
+                visualizer.VisualizeDictionary(classAcc, "Accuracy Pr Class", "Class: ", "Class ID", "Accuracy"),
+                os.path.join(roundResultDir, "classAccuracy.png"))
 
         if self.Options.GenerateOriginalSourceGraph:
             self._DPrint("Generating original source graphs...")
-            originalSourcePath = os.path.join(dataLoaderOptions.FormatedFolder, "source", "original")
-            if not os.path.exists(originalSourcePath):
-                self._DPrint("Source original path not found! Cannot generate graph")
-            else:
-                originalSourceVisual = visualizer.VisualizeCombinedDatapoints(originalSourcePath, "Source Data (Original)");
-                originalSourceVisual.savefig(os.path.join(roundResultDir, "originalSource.png"))
-                plt.close(originalSourceVisual)
+            visualizer.SaveAndClose(
+                visualizer.VisualizeCombinedDatapoints(os.path.join(dataLoaderOptions.FormatedFolder, "source", "original"), "Source Data (Original)"),
+                os.path.join(roundResultDir, "originalSource.png"))
 
         if self.Options.GenerateAugmentedSourceGraph:
             self._DPrint("Generating augmented source graphs...")
-            augmentedSourcePath = os.path.join(dataLoaderOptions.FormatedFolder, "source", "augmentation")
-            if not os.path.exists(augmentedSourcePath):
-                self._DPrint("Source augmentation path not found! Cannot generate graph")
-            else:
-                augmentedSourceVisual = visualizer.VisualizeCombinedDatapoints(augmentedSourcePath, "Source Data (Augmented)");
-                augmentedSourceVisual.savefig(os.path.join(roundResultDir, "augmentedSource.png"))
-                plt.close(augmentedSourceVisual)
+            visualizer.SaveAndClose(
+                visualizer.VisualizeCombinedDatapoints(os.path.join(dataLoaderOptions.FormatedFolder, "source", "augmentation"), "Source Data (Augmented)"),
+                os.path.join(roundResultDir, "augmentedSource.png"))
 
         if self.Options.GenerateCandidatesGraph:
             self._DPrint("Generating candidate purge graphs...")
-            purgeCandidatesPath = os.path.join(dataLoaderOptions.FormatedFolder, "purged", "candidates")
-            if not os.path.exists(purgeCandidatesPath):
-                self._DPrint("Purged candidates path not found! Cannot generate graph")
-            else:
-                purgeCandidateVisual = visualizer.VisualizeCombinedDatapoints(purgeCandidatesPath, "Purge Candidate Data");
-                purgeCandidateVisual.savefig(os.path.join(roundResultDir, "purgeCandidates.png"))
-                plt.close(purgeCandidateVisual)
+            visualizer.SaveAndClose(
+                visualizer.VisualizeCombinedDatapoints(os.path.join(dataLoaderOptions.FormatedFolder, "purged", "candidates"), "Purge Candidate Data"),
+                os.path.join(roundResultDir, "purgeCandidates.png"))
 
         if self.Options.GenerateRejectsGraph:
             self._DPrint("Generating reject purge graphs...")
-            purgeRejectsPath = os.path.join(dataLoaderOptions.FormatedFolder, "purged", "rejects")
-            if not os.path.exists(purgeRejectsPath):
-                self._DPrint("Purged rejects path not found! Cannot generate graph")
-            else:
-                purgeRejectsVisual = visualizer.VisualizeCombinedDatapoints(purgeRejectsPath, "Purge Reject Data");
-                purgeRejectsVisual.savefig(os.path.join(roundResultDir, "purgeRejects.png"))
-                plt.close(purgeRejectsVisual)
+            visualizer.SaveAndClose(
+                visualizer.VisualizeCombinedDatapoints(os.path.join(dataLoaderOptions.FormatedFolder, "purged", "rejects"), "Purge Reject Data"),
+                os.path.join(roundResultDir, "purgeRejects.png"))
 
     def _DPrint(self, text : str, logName : str = "log.txt") -> None:
         if self.Options.DebugMode:
