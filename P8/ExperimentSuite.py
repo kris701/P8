@@ -25,6 +25,7 @@ from ExperimentOptions import ExperimentOptions
 from Helpers import TimeHelpers
 from Helpers import ReflexionHelper
 from Helpers import ComparisonDataHelper
+from Helpers import CSVHelper
 
 class ExperimentSuite():
     Options : ExperimentOptions;
@@ -75,24 +76,23 @@ class ExperimentSuite():
             if not os.path.exists(configName):
                 raise FileNotFoundError("Config '" + configName + "' not found!")
 
-        with open(os.path.join(self.Options.ExperimentResultsDir, "comparable.csv"), 'w', newline='') as comparableCSV:
-            comparableCsvWriter = csv.writer(comparableCSV, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            comparableCsvWriter.writerow(['datasetName', 'NumberOfClasses', self.Options.ExperimentName])
-            
-            if self.Options.DebugMode is True:
-                for expName in self.Options.ExperimentsToRun:
-                    expName, avrTestAcc, nShot, nWay = self._RunExperiment(expName)
-                    results[expName] = avrTestAcc;
-                    comparableCsvWriter.writerow([expName, nWay, avrTestAcc]);
-            else:
-                data = []
-                for expName in self.Options.ExperimentsToRun:
-                    data.append(expName);
+        csvPath = os.path.join(self.Options.ExperimentResultsDir, "comparable.csv");
+        CSVHelper.AppendToCSV(['datasetName', 'NumberOfClasses', self.Options.ExperimentName], csvPath);
 
-                poolResults = multiprocessing.Pool(self.Options.MaxProcessesToSpawn).map(self._RunExperiment, data)
-                for expName, avrTestAcc, nShot, nWay in poolResults:
-                    results[expName] = avrTestAcc;
-                    comparableCsvWriter.writerow([expName, nWay, avrTestAcc]);
+        if self.Options.DebugMode is True:
+            for expName in self.Options.ExperimentsToRun:
+                expName, avrTestAcc, nShot, nWay = self._RunExperiment(expName)
+                results[expName] = avrTestAcc;
+                CSVHelper.AppendToCSV([expName, nWay, avrTestAcc], csvPath);
+        else:
+            data = []
+            for expName in self.Options.ExperimentsToRun:
+                data.append(expName);
+
+            poolResults = multiprocessing.Pool(self.Options.MaxProcessesToSpawn).map(self._RunExperiment, data)
+            for expName, avrTestAcc, nShot, nWay in poolResults:
+                results[expName] = avrTestAcc;
+                CSVHelper.AppendToCSV([expName, nWay, avrTestAcc], csvPath);
 
         if self.Options.GenerateGraphs is True and self.Options.GenerateAccuracyGraphs is True:
             self._LogPrint("Generating full experiment graphs...")
