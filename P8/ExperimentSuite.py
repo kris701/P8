@@ -29,7 +29,7 @@ from Helpers import ReflexionHelper
 class ExperimentSuite():
     Options : ExperimentOptions;
 
-    def RunExperimentQueue(self, queue : list):
+    def RunExperimentQueue(self, queue : list, throwOnError : bool = False):
         print("Experiment Suite Queue started...")
         print("There is a total of " + str(len(queue)) + " items in the queue")
         counter : int = 1;
@@ -44,6 +44,8 @@ class ExperimentSuite():
                 os.makedirs(os.path.join(options.ExperimentResultsDir))
                 self.RunExperiments(options);
             except Exception as e:
+                if throwOnError:
+                    raise e;
                 self._LogPrint("An error occured in the execution of (" + item + ")", "error.txt")
                 self._LogPrint("The error message was:", "error.txt")
                 self._LogPrint("", "error.txt")

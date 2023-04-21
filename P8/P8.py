@@ -8,7 +8,7 @@ def main():
     queueItems = ["Experiments/SuiteConfigs/6ShotProtonetFast.ini"]
 
     expSuite = ExperimentSuite()
-    expSuite.RunExperimentQueue(queueItems);
+    expSuite.RunExperimentQueue(queueItems, True);
 
 if __name__ == '__main__':
     main()
