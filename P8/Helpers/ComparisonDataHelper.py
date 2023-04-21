@@ -1,6 +1,6 @@
 import pandas as pd
 
-class CSVResultsCombiner():
+class ComparisonDataHelper():
     def Combine(self, fileSources : list, dictSources : list, dictExclusiveCombine : bool = False) -> dict:
         fullResults = {}
         acceptedDatasets = []
