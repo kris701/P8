@@ -95,16 +95,19 @@ class ExperimentSuite():
                 CSVHelper.AppendToCSV([expName, nWay, avrTestAcc], csvPath);
 
         if self.Options.GenerateGraphs is True and self.Options.GenerateAccuracyGraphs is True:
-            self._LogPrint("Generating full experiment graphs...")
+            self._LogPrint("Generating full experiment accuracy graphs...")
             fullResults = ComparisonDataHelper.CombineDictionaries(
                 self.Options.ComparisonData,
                 [{self.Options.ExperimentName: results}],
                 True
                 );
             fullVisualiser = ResultsVisualiser("None");
-            full = fullVisualiser.VisualiseAll(fullResults);
-            full.savefig(os.path.join(self.Options.ExperimentResultsDir, "accuracies.png"))
-            plt.close(full)
+            fullVisualiser.SaveAndClose(
+                fullVisualiser.VisualiseAccuracy(fullResults),
+                os.path.join(self.Options.ExperimentResultsDir, "accuracies.png"))
+            fullVisualiser.SaveAndClose(
+                fullVisualiser.VisualiseAverageAccuracy(fullResults),
+                os.path.join(self.Options.ExperimentResultsDir, "average_accuracies.png"))
 
         self._LogPrint("Experiments finished!")
         return {self.Options.ExperimentName: results};
