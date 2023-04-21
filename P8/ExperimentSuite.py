@@ -21,10 +21,10 @@ from NetTrainers.BaseNetTrainer import BaseNetTrainer
 from Datasets import DatasetBuilder
 from DataVisualisers.ShapeletHistogramVisualiser import ShapeletHistogramVisualiser
 from DataVisualisers.ResultsVisualiser import ResultsVisualiser
-from ResultsCombiners.CSVResultsCombiner import CSVResultsCombiner
 from ExperimentOptions import ExperimentOptions
 from Helpers import TimeHelpers
 from Helpers import ReflexionHelper
+from Helpers import ComparisonDataHelper
 
 class ExperimentSuite():
     Options : ExperimentOptions;
@@ -96,8 +96,7 @@ class ExperimentSuite():
 
         if self.Options.GenerateGraphs is True and self.Options.GenerateAccuracyGraphs is True:
             self._LogPrint("Generating full experiment graphs...")
-            combiner = CSVResultsCombiner();
-            fullResults = combiner.Combine(
+            fullResults = ComparisonDataHelper.CombineDictionaries(
                 self.Options.ComparisonData,
                 [{self.Options.ExperimentName: results}],
                 True

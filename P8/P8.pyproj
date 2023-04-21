@@ -94,7 +94,6 @@
     <Folder Include="NetTrainers\ProtoNetTrainer\Backbones\" />
     <Folder Include="DataVisualisers\" />
     <Folder Include="Helpers\" />
-    <Folder Include="ResultsCombiners\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataConverters\readme.md" />
