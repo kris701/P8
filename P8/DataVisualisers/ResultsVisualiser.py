@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from .BaseVisualiser import BaseVisualiser
 
-class ResultsVisualiser():
-    GraphSize = (15,10);
+class ResultsVisualiser(BaseVisualiser):
+    def __init__(self, datasetPath: str) -> None:
+        super().__init__(datasetPath)
 
-    def VisualiseAll(self, data) -> plt.figure:
+    def VisualiseAccuracy(self, data) -> plt.figure:
         datasetTotal = []
         for key in data:
             for key2 in data[key]:
@@ -36,4 +38,16 @@ class ResultsVisualiser():
         ax.set_ylim(0, 1)
         ax.set_ylabel('Accuracy')
         ax.legend(loc='right')
+        return fig
+    
+    def VisualiseAverageAccuracy(self, data) -> plt.figure:
+        showData = {}
+        for dataItem in data:
+            showData[dataItem] = []
+            for dataset in data[dataItem]:
+                showData[dataItem].append(data[dataItem][dataset])
+
+        fig = plt.figure(figsize=self.GraphSize)
+        plt.boxplot(showData.values())
+        plt.xticks(range(1, len(showData.keys()) + 1), showData.keys())
         return fig
