@@ -28,7 +28,7 @@
     <Compile Include="Helpers\ReflexionHelper.py" />
     <Compile Include="Helpers\TimeHelpers.py" />
     <Compile Include="Helpers\__init__.py" />
-    <Compile Include="ResultsCombiners\CSVResultsCombiner.py" />
+    <Compile Include="Helpers\ComparisonDataHelper.py" />
     <Compile Include="DataConverters\BaseDataConverter.py" />
     <Compile Include="DataConverters\DataConverterBuilder.py" />
     <Compile Include="DataConverters\DataConverterOptions.py" />
