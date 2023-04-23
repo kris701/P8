@@ -70,7 +70,7 @@ class ShapeletHistogramConverter(BaseDataConverter):
             subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out"), "-DCMAKE_BUILD_TYPE=RELEASE"]) 
         else:
             subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out"), "-DCMAKE_BUILD_TYPE=RELEASE", "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=Release"]) 
-        subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release"]) 
+        subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release", "-j 100"])
 
         checksum_value = self._GetExtractorChecksum();
         thisFile = pathlib.Path(__file__).parent.resolve();
