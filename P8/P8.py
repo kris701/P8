@@ -1,11 +1,13 @@
 import multiprocessing
+import os
 
 from ExperimentSuite import ExperimentSuite
 
 def main():
     multiprocessing.freeze_support()
 
-    queueItems = ["6ShotProtonetFast.ini"]
+    #queueItems = ["5ShotProtonetFast.ini"]
+    queueItems = os.listdir("Experiments/SuiteConfigs")
 
     expSuite = ExperimentSuite("Experiments/SuiteConfigs")
     expSuite.RunExperimentQueue(queueItems, True);
