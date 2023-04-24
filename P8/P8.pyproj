@@ -202,6 +202,8 @@
     <Content Include="Experiments\SuiteConfigs\8ShotProtonetFast.ini" />
     <Content Include="Experiments\SuiteConfigs\8ShotProtonetFull.ini" />
     <Content Include="Experiments\SuiteConfigs\6ShotProtonetFull.ini" />
+    <Content Include="Experiments\SuiteConfigs\BaseConfigs\BaseFull.ini" />
+    <Content Include="Experiments\SuiteConfigs\BaseConfigs\BaseFast.ini" />
     <Content Include="Experiments\SuiteConfigs\BaseConfigs\6ShotFast.ini" />
     <Content Include="Experiments\SuiteConfigs\BaseConfigs\8ShotFast.ini" />
     <Content Include="Experiments\SuiteConfigs\BaseConfigs\8ShotFull.ini" />
