@@ -18,6 +18,7 @@
 #include <thread>
 #include <future>
 #include "Evaluation.h"
+#include "types/FeatureSet.h"
 
 namespace FeatureFinding {
     static void FindOptimalFeature(const std::vector<LabelledSeries> &series,
@@ -82,14 +83,14 @@ namespace FeatureFinding {
     /// \param sampleSize How many samples to take from each class for each feature. If \p sampleSize is 3, it takes
     /// a 3 samples from each class.
     /// \return A list of features. Can be empty if no valid features are found.
-    [[nodiscard]] std::vector<Feature> GenerateFeaturesFromSamples(const std::unordered_map<int, std::vector<Series>> &seriesMap,
-                                                                   uint minWindowSize, uint maxWindowSize,
-                                                                   uint minSampleSize, uint maxSampleSize,
-                                                                   uint featureCount, std::vector<std::shared_ptr<Attribute>> attributes) {
+    [[nodiscard]] FeatureSet GenerateFeaturesFromSamples(const std::unordered_map<uint, std::vector<Series>> &seriesMap,
+                                                         uint minWindowSize, uint maxWindowSize,
+                                                         uint minSampleSize, uint maxSampleSize,
+                                                         uint featureCount, std::vector<std::shared_ptr<Attribute>> attributes) {
         uint attempts = 0;
-        std::vector<Feature> features;
+        FeatureSet features(featureCount);
 
-        while (features.size() < featureCount) {
+        while (features.Size() < featureCount) {
             if (attempts > 1000)
                 break;
             std::vector<LabelledSeries> samples;
@@ -115,14 +116,14 @@ namespace FeatureFinding {
             WindowGeneration::RemoveDuplicateWindows(&windows);
             auto feature = FindOptimalFeature(samples, windows, attributes);
             if (feature != nullptr) {
-                if (std::find(features.begin(), features.end(), *feature) != features.end()) {
+                if (features.Contains(*feature)) {
                     attempts++;
                     continue;
                 }
-                features.push_back(*feature);
+                features.Add(*feature);
             }
-            if (featureCount < 10 || features.size() % (featureCount / 10) == 0 || features.size() == featureCount)
-                Logger::Info("Generated: " + std::to_string(features.size()) + "/" + std::to_string(featureCount) + " | " + "Attempts : " + std::to_string(attempts));
+            if (featureCount < 10 || features.Size() % (featureCount / 10) == 0 || features.Size() == featureCount)
+                Logger::Info("Generated: " + std::to_string(features.Size()) + "/" + std::to_string(featureCount) + " | " + "Attempts : " + std::to_string(attempts));
             attempts = 0;
         }
 

@@ -19,6 +19,18 @@ struct Feature {
                 shapelet == rhs.shapelet
                 );
     }
+
+    // Returns header to be used in csv formats
+    static std::vector<std::string> Header() {
+        return {
+                "Gain",
+                "Attribute",
+                "Param1",
+                "Param2",
+                "Param3",
+                "Shapelet"
+        };
+    }
 };
 
 #endif //FEATUREEXTRACTION_FEATURE_H

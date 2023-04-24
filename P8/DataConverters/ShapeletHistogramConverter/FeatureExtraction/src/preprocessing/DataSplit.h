@@ -14,7 +14,7 @@ namespace DataSplit {
                 train(std::move(train)), test(std::move(test)){};
     };
 
-    Result Split(const std::unordered_map<int, std::vector<Series>> &dataPoints, uint split) {
+    Result Split(const std::unordered_map<uint, std::vector<Series>> &dataPoints, uint split) {
         std::vector<LabelledSeries> train;
         std::vector<LabelledSeries> test;
 

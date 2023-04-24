@@ -5,11 +5,11 @@
 #include "src/utilities/SeriesUtils.h"
 #include "src/IO/Logger.h"
 #include "src/IO/ArgumentParser.h"
-#include "src/utilities/FeatureUtils.h"
 #include "core/attributes/AttributeBuilder.h"
 #include "src/preprocessing/DataAugmentation.h"
 #include "src/preprocessing/DataPurge.h"
 #include "src/preprocessing/DataSplit.h"
+#include "types/FeatureHistogramBuilder.h"
 
 int main(int argc, char** argv) {
     uint id = Logger::Begin("Parsing Arguments");
@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
 
     id2 = Logger::Begin("Augmenting Data");
     const auto trainData =
-            DataAugmentation::Augment(splitData.train, false, arguments.smoothingDegree, arguments.noisifyAmount);
+            DataAugmentation::Augment(splitData.train, arguments.deleteOriginal, arguments.smoothingDegree, arguments.noisifyAmount);
     const auto trainMap = SeriesUtils::ToMap(trainData);
     const auto testMap = SeriesUtils::ToMap(testData);
     Logger::End(id2);
@@ -71,14 +71,14 @@ int main(int argc, char** argv) {
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Points");
-    const auto trainFeatures = FeatureUtils::GenerateFeatureSeries(trainData, features);
-    const auto testFeatures = FeatureUtils::GenerateFeatureSeries(testData, features);
+    const auto trainHistograms = FeatureHistogramBuilder::BuildSet(trainData, features);
+    const auto testHistograms = FeatureHistogramBuilder::BuildSet(trainData, features);
     Logger::End(id);
 
     id = Logger::Begin("Writing Feature Series to Files");
     const auto featureSeriesPath = arguments.outPath + "data/";
-    std::vector<std::string> trainFiles = FileHanding::WriteToFiles(featureSeriesPath, trainFeatures);
-    std::vector<std::string> testFiles = FileHanding::WriteToFiles(featureSeriesPath, testFeatures);
+    std::vector<std::string> trainFiles = FileHanding::WriteToFiles(featureSeriesPath, trainHistograms);
+    std::vector<std::string> testFiles = FileHanding::WriteToFiles(featureSeriesPath, testHistograms);
     Logger::End(id);
 
     id = Logger::Begin("Shuffles File Order");
@@ -95,11 +95,10 @@ int main(int argc, char** argv) {
     id = Logger::Begin("Writing Feature Files");
     const auto featurePath = arguments.outPath + "features/";
     const auto shapeletPath = featurePath + "shapelets/";
-    const auto shapelets = FeatureUtils::RetrieveShapelets(features);
-    const auto shapeletFiles = FileHanding::RemoveSubPath(featurePath, FileHanding::WriteToFiles(shapeletPath, shapelets));
+    const auto shapeletFiles = FileHanding::RemoveSubPath(featurePath, FileHanding::WriteToFiles(shapeletPath, features.Shapelets()));
     FileHanding::WriteCSV(featurePath + "features.csv",
-                          FeatureUtils::FeatureHeader(),
-                          FeatureUtils::FeatureCSV(features, shapeletFiles));
+                          Feature::Header(),
+                          features.FeatureCSV(shapeletFiles));
     Logger::End(id);
 
     return 0;

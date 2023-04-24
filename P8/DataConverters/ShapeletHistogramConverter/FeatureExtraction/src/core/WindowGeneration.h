@@ -82,7 +82,7 @@ namespace WindowGeneration {
     /// Removes duplicate series from a vector of series
     /// </summary>
     /// <param name="windows">A vector of series</param>
-    [[nodiscard]] static void RemoveDuplicateWindows(std::vector<Series>* windows) {
+    static void RemoveDuplicateWindows(std::vector<Series>* windows) {
         std::sort(windows->begin(), windows->end());
         windows->erase(std::unique(windows->begin(), windows->end()), windows->end());
     }

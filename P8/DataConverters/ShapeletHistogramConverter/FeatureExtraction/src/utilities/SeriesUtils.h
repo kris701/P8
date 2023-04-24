@@ -29,9 +29,9 @@ namespace SeriesUtils {
         return minValue;
     }
 
-    [[nodiscard]] static std::unordered_map<int, std::vector<Series>> ToMap
+    [[nodiscard]] static std::unordered_map<uint, std::vector<Series>> ToMap
     (const std::vector<LabelledSeries> &series) {
-        std::unordered_map<int, std::vector<Series>> map;
+        std::unordered_map<uint, std::vector<Series>> map;
 
         for (const auto &s : series)
             map[s.label].push_back(s.series);

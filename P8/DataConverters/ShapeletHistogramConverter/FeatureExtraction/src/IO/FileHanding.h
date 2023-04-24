@@ -102,7 +102,7 @@ namespace FileHanding {
         return paths;
     }
 
-    static std::vector<std::string> WriteToFiles(const std::string &dir, const std::unordered_map<int, std::vector<std::vector<double>>> &data) {
+    static std::vector<std::string> WriteToFiles(const std::string &dir, const std::unordered_map<uint, std::vector<std::vector<double>>> &data) {
         std::vector<std::string> paths;
 
         for (const auto &classSet : data) {
