@@ -42,6 +42,8 @@ class ExperimentSuite():
             options : ExperimentOptions = ExperimentOptions();
             try:
                 ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
+                ReflexionHelper.ParseConfigIntoObject(options.BaseSuiteConfig, "SUITEOPTIONS", options)
+                ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
             except Exception as e:
                 raise Exception("Cannot parse the queue config file: " + configItem);
 
