@@ -19,7 +19,7 @@ namespace FileHanding {
         int lineNum = 0;
         while (std::getline(file, line)) {
             std::optional<int> type;
-            std::vector<double> series;
+            Series series;
             while (!line.empty()) {
                 std::string token;
                 while (!line.empty() && line.substr(0, delimiter.size()) != delimiter) {

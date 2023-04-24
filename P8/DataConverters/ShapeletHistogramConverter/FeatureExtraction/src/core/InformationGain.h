@@ -30,7 +30,7 @@ namespace InformationGain {
     }
 
     [[nodiscard]] static inline double CalculateEntropy(const ClassCount &counts) {
-        return CalculateEntropy(counts.GetTotal(), counts);
+        return CalculateEntropy(counts.Total(), counts);
     }
 
     /// @brief Gets the sum of entropy values within a split of values
@@ -39,8 +39,8 @@ namespace InformationGain {
     /// @return A double, representing the entropy value
     [[nodiscard]] static double CalculateSplitEntropy(const std::map<double, ClassCount> &values, double splitPoint) {
         const auto split = ClassCountUtils::GetSplit(values, splitPoint);
-        const uint lowerTotal = split.first.GetTotal();
-        const uint upperTotal = split.second.GetTotal();
+        const uint lowerTotal = split.first.Total();
+        const uint upperTotal = split.second.Total();
 
         const uint total = lowerTotal + upperTotal;
         const double lowerProb = (double)lowerTotal / total;

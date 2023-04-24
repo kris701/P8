@@ -3,21 +3,9 @@
 
 #include "misc/Constants.h"
 
-struct ClassCount {
-    ClassCount() = default;
-
-    ClassCount(const ClassCount &cc) : classCount(cc) {}
-    /// @brief Gets the total amount of samples
-    /// @param values ClassCount of samples
-    /// @return The total amount of samples
-    [[nodiscard]] inline uint GetTotal() const { return std::accumulate(classCount.begin(), classCount.end(), (uint) 0); }
-
-    inline uint operator[](uint i) const { return classCount[i]; }
-    inline uint& operator[](uint i) { return classCount[i]; }
-    inline operator std::array<uint, MAX_CLASSES>() const { return classCount; }
-
-private:
-    std::array<uint, MAX_CLASSES> classCount{ 0 };
+struct ClassCount : public std::array<uint, MAX_CLASSES> {
+    /// @return The sum of counts
+    [[nodiscard]] inline uint Total() const { return std::accumulate(this->begin(), this->end(), (uint) 0); }
 };
 
 

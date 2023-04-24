@@ -88,9 +88,9 @@ namespace FeatureFinding {
                                                          uint minSampleSize, uint maxSampleSize,
                                                          uint featureCount, std::vector<std::shared_ptr<Attribute>> attributes) {
         uint attempts = 0;
-        FeatureSet features(featureCount);
+        FeatureSet features;
 
-        while (features.Size() < featureCount) {
+        while (features.size() < featureCount) {
             if (attempts > 1000)
                 break;
             std::vector<LabelledSeries> samples;
@@ -120,10 +120,10 @@ namespace FeatureFinding {
                     attempts++;
                     continue;
                 }
-                features.Add(*feature);
+                features.push_back(*feature);
             }
-            if (featureCount < 10 || features.Size() % (featureCount / 10) == 0 || features.Size() == featureCount)
-                Logger::Info("Generated: " + std::to_string(features.Size()) + "/" + std::to_string(featureCount) + " | " + "Attempts : " + std::to_string(attempts));
+            if (featureCount < 10 || features.size() % (featureCount / 10) == 0 || features.size() == featureCount)
+                Logger::Info("Generated: " + std::to_string(features.size()) + "/" + std::to_string(featureCount) + " | " + "Attempts : " + std::to_string(attempts));
             attempts = 0;
         }
 

@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <random>
+#include "types/Series.h"
 
 #define DOUBLE_MAX 99999999
 
@@ -16,8 +17,6 @@ namespace {
 using uint = unsigned int;
 constexpr uint MAX_CLASSES = 64;
 constexpr uint maxThreads = 100;
-
-using Series = std::vector<double>;
 
 struct LabelledSeries {
     int label;

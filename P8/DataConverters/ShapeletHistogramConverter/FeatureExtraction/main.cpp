@@ -37,8 +37,8 @@ int main(int argc, char** argv) {
         Logger::End(id2);
         id2 = Logger::Begin("Writing Purged to Files");
         const auto purgePath = arguments.outPath + "purged/";
-        FileHanding::WriteToFiles(purgePath + "candidates/", SeriesUtils::ToMap(candidates));
-        FileHanding::WriteToFiles(purgePath + "rejects/", SeriesUtils::ToMap(rejects));
+        //FileHanding::WriteToFiles(purgePath + "candidates/", SeriesUtils::ToMap(candidates));
+        //FileHanding::WriteToFiles(purgePath + "rejects/", SeriesUtils::ToMap(rejects));
         Logger::End(id2);
     }
 
@@ -51,8 +51,8 @@ int main(int argc, char** argv) {
 
     id2 = Logger::Begin("Writing Source Train Files");
     const auto sourceTrainPath = arguments.outPath + "source/";
-    FileHanding::WriteToFiles(sourceTrainPath + "original/", SeriesUtils::ToMap(splitData.train));
-    FileHanding::WriteToFiles(sourceTrainPath + "augmentation/",SeriesUtils::ToMap(DataAugmentation::Augment(splitData.train,arguments.deleteOriginal,arguments.smoothingDegree,arguments.noisifyAmount)));
+    //FileHanding::WriteToFiles(sourceTrainPath + "original/", SeriesUtils::ToMap(splitData.train));
+    //FileHanding::WriteToFiles(sourceTrainPath + "augmentation/",SeriesUtils::ToMap(DataAugmentation::Augment(splitData.train,arguments.deleteOriginal,arguments.smoothingDegree,arguments.noisifyAmount)));
     Logger::End(id2);
 
     id2 = Logger::Begin("Augmenting Data");
@@ -95,10 +95,10 @@ int main(int argc, char** argv) {
     id = Logger::Begin("Writing Feature Files");
     const auto featurePath = arguments.outPath + "features/";
     const auto shapeletPath = featurePath + "shapelets/";
-    const auto shapeletFiles = FileHanding::RemoveSubPath(featurePath, FileHanding::WriteToFiles(shapeletPath, features.Shapelets()));
+    /*const auto shapeletFiles = FileHanding::RemoveSubPath(featurePath, FileHanding::WriteToFiles(shapeletPath, features.Shapelets()));
     FileHanding::WriteCSV(featurePath + "features.csv",
                           Feature::Header(),
-                          features.FeatureCSV(shapeletFiles));
+                          features.FeatureCSV(shapeletFiles));*/
     Logger::End(id);
 
     return 0;

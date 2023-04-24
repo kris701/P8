@@ -13,10 +13,10 @@ public:
     }
 
     static inline FeatureHistogramSet BuildSet(const std::vector<LabelledSeries> &series, const FeatureSet &features) {
-        auto histograms = FeatureHistogramSet(series.size());
+        auto histograms = FeatureHistogramSet();
 
         for (const auto &s : series)
-            histograms.Add(s.label, Build(s.series, features));
+            histograms[s.label].push_back(Build(s.series, features));
 
         return histograms;
     }
