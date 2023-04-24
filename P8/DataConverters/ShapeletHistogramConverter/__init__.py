@@ -14,6 +14,8 @@ class ShapeletHistogramConverter(BaseDataConverter):
 
     def __init__(self, options: DataConverterOptions, debugMode : bool = False) -> None:
         super().__init__(options, debugMode)
+        thisFile = pathlib.Path(__file__).parent.resolve();
+        self.compile_dir = os.path.join(thisFile, self.compile_dir)
 
     def ConvertData(self):
         if not self.HaveConvertedBefore():
@@ -24,7 +26,7 @@ class ShapeletHistogramConverter(BaseDataConverter):
             if self._ShouldRecompile():
                 if self.DebugMode is True:
                     print("Compiling the feature extractor...")
-                self._CompileFeatureExtractor(os.path.join(thisFile, self.compile_dir))
+                self._CompileFeatureExtractor()
 
             if self.DebugMode is True:
                 print("Formating dataset. This may take a while...")
@@ -65,12 +67,12 @@ class ShapeletHistogramConverter(BaseDataConverter):
             if self.DebugMode is True:
                 print("Dataset already formated!")
 
-    def _CompileFeatureExtractor(self, compileDir):
+    def _CompileFeatureExtractor(self):
         if os.name == "nt":
-            subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out"), "-DCMAKE_BUILD_TYPE=RELEASE"]) 
+            subprocess.run(["cmake", self.compile_dir, "-B " + os.path.join(self.compile_dir, "out"), "-DCMAKE_BUILD_TYPE=RELEASE"]) 
         else:
-            subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out"), "-DCMAKE_BUILD_TYPE=RELEASE", "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=Release"]) 
-        subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release", "-j 100"])
+            subprocess.run(["cmake", self.compile_dir, "-B " + os.path.join(self.compile_dir, "out"), "-DCMAKE_BUILD_TYPE=RELEASE", "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=Release"]) 
+        subprocess.run(["cmake", "--build", os.path.join(self.compile_dir, "out"), "--config Release", "-j 100"])
 
         checksum_value = self._GetExtractorChecksum();
         thisFile = pathlib.Path(__file__).parent.resolve();
@@ -79,7 +81,7 @@ class ShapeletHistogramConverter(BaseDataConverter):
         with open(os.path.join(thisFile, "checksum" + os.sep + "checksum.txt"), "w") as f:
             f.write(checksum_value + "\n")
     
-    def _ShouldRecompile(self):
+    def _ShouldRecompile(self) -> bool:
         thisFile = pathlib.Path(__file__).parent.resolve();
         if not os.path.isdir(os.path.join(thisFile, self.compile_dir, "out")):
             return True;

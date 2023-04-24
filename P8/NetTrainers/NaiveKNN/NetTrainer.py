@@ -14,6 +14,8 @@ class NetTrainer(BaseNetTrainer):
 
     def __init__(self, options: NetOptions, dataset: data.Dataset, debugMode : bool) -> None:
         super().__init__(options, dataset, debugMode)
+        thisFile = pathlib.Path(__file__).parent.resolve();
+        self.compile_dir = os.path.join(thisFile, self.compile_dir)
 
     def Train(self) -> float:
         if self.DebugMode is True:
@@ -26,7 +28,7 @@ class NetTrainer(BaseNetTrainer):
 
         if self._ShouldRecompile():
             print("Compiling the naive KNN...")
-            self._CompileFeatureExtractor(os.path.join(thisFile, self.compile_dir))
+            self._CompileFeatureExtractor()
 
         extension = "";
         if os.name == "nt":
@@ -50,12 +52,12 @@ class NetTrainer(BaseNetTrainer):
 
         return res.returncode / 100, {};
 
-    def _CompileFeatureExtractor(self, compileDir):
+    def _CompileFeatureExtractor(self):
         if os.name == "nt":
-            subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out"), "-DCMAKE_BUILD_TYPE=RELEASE"]) 
+            subprocess.run(["cmake", self.compile_dir, "-B " + os.path.join(self.compile_dir, "out"), "-DCMAKE_BUILD_TYPE=RELEASE"]) 
         else:
-            subprocess.run(["cmake", compileDir, "-B " + os.path.join(compileDir, "out"), "-DCMAKE_BUILD_TYPE=RELEASE", "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=Release"]) 
-        subprocess.run(["cmake", "--build", os.path.join(compileDir, "out"), "--config Release"]) 
+            subprocess.run(["cmake", self.compile_dir, "-B " + os.path.join(self.compile_dir, "out"), "-DCMAKE_BUILD_TYPE=RELEASE", "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=Release"]) 
+        subprocess.run(["cmake", "--build", os.path.join(self.compile_dir, "out"), "--config Release"]) 
 
         checksum_value = self._GetExtractorChecksum();
         thisFile = pathlib.Path(__file__).parent.resolve();
