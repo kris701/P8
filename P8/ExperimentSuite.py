@@ -91,7 +91,7 @@ class ExperimentSuite():
     def _CheckForRecompilation(self) -> None:
         converter = ShapeletHistogramConverter(DataConverterOptions(), False);
         if converter._ShouldRecompile():
-            converter._CompileFeatureExtractor(converter.compile_dir);
+            converter._CompileFeatureExtractor();
 
         knn = NetTrainer(NetOptions(), None, False)
         if knn._ShouldRecompile():
