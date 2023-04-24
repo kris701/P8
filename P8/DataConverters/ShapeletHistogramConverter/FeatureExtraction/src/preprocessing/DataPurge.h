@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <set>
 #include "misc/Constants.h"
-#include "utilities/SeriesUtils.h"
 #include "core/attributes/MinDist.h"
 #include "types/SeriesMap.h"
 

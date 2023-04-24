@@ -1,18 +1,17 @@
-#ifndef FEATUREEXTRACTION_CLASSCOUNTUTILS_H
-#define FEATUREEXTRACTION_CLASSCOUNTUTILS_H
+#ifndef FEATUREEXTRACTION_VALUELINE_H
+#define FEATUREEXTRACTION_VALUELINE_H
 
-#include "misc/Constants.h"
-#include "types/ClassCount.h"
+#include <map>
+#include "ClassCount.h"
 
-namespace ClassCountUtils {
+struct ValueLine : public std::map<double, ClassCount> {
     /// @brief Takes in a map of ClassCount's and splits it into two based on if the key is lower than the given splitPoint value
-    /// @param values A map of ClassCount's
     /// @param splitPoint What value the ClassCount's should be split by
     /// @return A pair of class counts
-    [[nodiscard]] static std::pair<ClassCount, ClassCount> GetSplit(const std::map<double, ClassCount>& values, double splitPoint) {
+    [[nodiscard]] std::pair<ClassCount, ClassCount> Split(double splitPoint) const {
         ClassCount lowerCount;
         ClassCount upperCount;
-        for (const auto& value : values)
+        for (const auto& value : *this)
             if (value.first < splitPoint)
                 for (int i = 0; i < MAX_CLASSES; i++)
                     lowerCount[i] += value.second[i];
@@ -21,6 +20,6 @@ namespace ClassCountUtils {
                     upperCount[i] += value.second[i];
         return std::make_pair(lowerCount, upperCount);
     }
-}
+};
 
-#endif
+#endif //FEATUREEXTRACTION_VALUELINE_H

@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <stdexcept>
 #include "misc/Constants.h"
-#include "utilities/SeriesUtils.h"
 
 namespace DataSplit {
     struct Result {

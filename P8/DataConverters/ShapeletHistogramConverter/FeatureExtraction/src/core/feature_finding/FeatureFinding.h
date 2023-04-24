@@ -9,7 +9,6 @@
 #include <iostream>
 #include <vector>
 #include "misc/Constants.h"
-#include "utilities/SeriesUtils.h"
 #include "core/InformationGain.h"
 #include "core/WindowGeneration.h"
 #include "IO/Logger.h"

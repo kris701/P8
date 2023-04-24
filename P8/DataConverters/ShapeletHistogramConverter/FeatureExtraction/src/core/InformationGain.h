@@ -7,8 +7,7 @@
 #include <exception>
 #include <stdexcept>
 #include "misc/Constants.h"
-#include "utilities/SeriesUtils.h"
-#include "utilities/ClassCountUtils.h"
+#include "types/ValueLine.h"
 
 namespace InformationGain {
     /// @brief Calculates the entropy between a set of classes. Based on Definition 6 in http://alumni.cs.ucr.edu/~lexiangy/Shapelet/Shapelet.pdf
@@ -37,8 +36,8 @@ namespace InformationGain {
     /// @param values The values to calculate entropy for
     /// @param splitPoint The split point to split the values parameter on
     /// @return A double, representing the entropy value
-    [[nodiscard]] static double CalculateSplitEntropy(const std::map<double, ClassCount> &values, double splitPoint) {
-        const auto split = ClassCountUtils::GetSplit(values, splitPoint);
+    [[nodiscard]] static double CalculateSplitEntropy(const ValueLine &values, double splitPoint) {
+        const auto split = values.Split(splitPoint);
         const uint lowerTotal = split.first.Total();
         const uint upperTotal = split.second.Total();
 
@@ -55,7 +54,7 @@ namespace InformationGain {
     /// @brief Finds the most optimal split point, based on entropy calculations
     /// @param values The values to find the split point for
     /// @return A double, representing the optimal splitting point in the given map
-    [[nodiscard]] static double GetOptimalSplitPoint(const std::map<double, ClassCount> &values) {
+    [[nodiscard]] static double GetOptimalSplitPoint(const ValueLine &values) {
         if (values.size() < 2)
             throw std::logic_error("Trying to split a single point");
         double bestPoint = -1;
@@ -83,7 +82,7 @@ namespace InformationGain {
     /// @param values The values to calcuate the information gain on
     /// @param priorEntropy An optional offset, so not to give back gains thats worse than previous ones
     /// @return A double representing the information gain
-    [[nodiscard]] static double CalculateInformationGain(const std::map<double, ClassCount> &values, double priorEntropy) {
+    [[nodiscard]] static double CalculateInformationGain(const ValueLine &values, double priorEntropy) {
         if (values.empty())
             return 0;
 
