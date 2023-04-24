@@ -10,10 +10,12 @@ matplotlib.use('Agg')
 
 from DataConverters.DataConverterOptions import DataConverterOptions
 from DataConverters.DirectDataConverter import BaseDataConverter
+from DataConverters.ShapeletHistogramConverter import ShapeletHistogramConverter
 from DataConverters import DataConverterBuilder
 from NetTrainers.NetOptions import NetOptions
 from NetTrainers import NetTrainerBuilder
 from NetTrainers.BaseNetTrainer import BaseNetTrainer
+from NetTrainers.NaiveKNN.NetTrainer import NetTrainer
 from Datasets import DatasetBuilder
 from DataVisualisers.ShapeletHistogramVisualiser import ShapeletHistogramVisualiser
 from DataVisualisers.ResultsVisualiser import ResultsVisualiser
@@ -86,9 +88,24 @@ class ExperimentSuite():
                 if not os.path.isfile(dataLoaderOptions.SourceTestData):
                     raise FileNotFoundError("The experiment config item '" + configName + "' requires the dataset '" + dataLoaderOptions.SourceTestData + "' to be available!")
 
+    def _CheckForRecompilation(self) -> None:
+        converter = ShapeletHistogramConverter(DataConverterOptions(), False);
+        if converter._ShouldRecompile():
+            converter._CompileFeatureExtractor(converter.compile_dir);
+
+        knn = NetTrainer(NetOptions(), None, False)
+        if knn._ShouldRecompile():
+            knn._CompileFeatureExtractor();
+
     def RunExperimentQueue(self, queue : list, throwOnError : bool = False):
         print("Checking if queue is valid...")
         self.CheckIfQueueIsValid(queue)
+        print("Queue is valid!")
+
+        print("Cheking if anything needs to compile...")
+        self._CheckForRecompilation();
+        print("Compile check done!")
+
         print("Experiment Suite Queue started...")
         print("There is a total of " + str(len(queue)) + " items in the queue")
         counter : int = 1;

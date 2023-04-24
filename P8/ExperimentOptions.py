@@ -27,8 +27,8 @@ class ExperimentOptions():
 
     DebugMode : bool = True;
 
-    ZipDataset : bool = True;
-    CopyConfigs : bool = True;
+    ZipDataset : bool = False;
+    CopyConfigs : bool = False;
 
     ForceRemakeDataset : bool = False;
 
