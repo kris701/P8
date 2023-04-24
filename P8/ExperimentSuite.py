@@ -1,3 +1,4 @@
+from email.mime import base
 import os
 import csv
 import time
@@ -30,7 +31,63 @@ from Helpers import CSVHelper
 class ExperimentSuite():
     Options : ExperimentOptions;
 
+    def CheckIfQueueIsValid(self, queue : list):
+        for item in queue:
+            # Check if queue item exist
+            if not os.path.exists(item):
+                raise FileNotFoundError("The config queue item '" + item + "' was not found!")
+
+            # Check if the item can be parsed
+            options : ExperimentOptions = ExperimentOptions();
+            try:
+                ReflexionHelper.ParseConfigIntoObject(item, "SUITEOPTIONS", options)
+            except Exception as e:
+                raise Exception("Cannot parse the queue config file: " + item);
+
+            # Check if base config is there
+            if not os.path.exists(options.BaseConfig):
+                raise FileNotFoundError("The base experiment config item '" + options.BaseConfig + "' was not found!")
+
+            # Check if the base config can be parsed
+            try:
+                dataLoaderOptions = DataConverterOptions()
+                ReflexionHelper.ParseConfigIntoObject(options.BaseConfig, "DATACONVERTER", dataLoaderOptions)
+
+                protonetOptions = NetOptions()
+                ReflexionHelper.ParseConfigIntoObject(options.BaseConfig, "NETTRAINER", protonetOptions)
+            except Exception as e:
+                raise Exception("Cannot parse the base config file: " + options.BaseConfig);
+
+            for experiment in options.ExperimentsToRun:
+                configName = os.path.join(options.ExperimentConfigDir, experiment + ".ini")
+
+                # Check if Experiment exists
+                if not os.path.exists(configName):
+                    raise FileNotFoundError("The experiment config item '" + configName + "' was not found!")
+
+                # Check if the experiment config can be parsed
+                try:
+                    dataLoaderOptions = DataConverterOptions()
+                    ReflexionHelper.ParseConfigIntoObject(options.BaseConfig, "DATACONVERTER", dataLoaderOptions)
+                    ReflexionHelper.ParseConfigIntoObject(configName, "DATACONVERTER", dataLoaderOptions)
+                    dataLoaderOptions.VerifySettings();
+
+                    protonetOptions = NetOptions()
+                    ReflexionHelper.ParseConfigIntoObject(options.BaseConfig, "NETTRAINER", protonetOptions)
+                    ReflexionHelper.ParseConfigIntoObject(configName, "NETTRAINER", protonetOptions)
+                    protonetOptions.VerifySettings();
+                except Exception as e:
+                    raise Exception("Cannot parse the experiment config file: " + options.BaseConfig);
+
+                # Check if data files are there
+                if not os.path.isfile(dataLoaderOptions.SourceTrainData):
+                    raise FileNotFoundError("The experiment config item '" + configName + "' requires the dataset '" + dataLoaderOptions.SourceTrainData + "' to be available!")
+                if not os.path.isfile(dataLoaderOptions.SourceTestData):
+                    raise FileNotFoundError("The experiment config item '" + configName + "' requires the dataset '" + dataLoaderOptions.SourceTestData + "' to be available!")
+
     def RunExperimentQueue(self, queue : list, throwOnError : bool = False):
+        print("Checking if queue is valid...")
+        self.CheckIfQueueIsValid(queue)
         print("Experiment Suite Queue started...")
         print("There is a total of " + str(len(queue)) + " items in the queue")
         counter : int = 1;
@@ -137,22 +194,22 @@ class ExperimentSuite():
 
         return expName, avrTestAcc, nShots, nWay;
 
-    def _SetupDataConverter(self, configName : str) -> tuple[DataConverterOptions,BaseDataConverter]:
+    def _SetupDataConverter(self, configName : str, baseConfig : str, isDebugMode : bool) -> tuple[DataConverterOptions,BaseDataConverter]:
         dataLoaderOptions = DataConverterOptions()
-        ReflexionHelper.ParseConfigIntoObject(self.Options.BaseConfig, "DATACONVERTER", dataLoaderOptions)
+        ReflexionHelper.ParseConfigIntoObject(baseConfig, "DATACONVERTER", dataLoaderOptions)
         ReflexionHelper.ParseConfigIntoObject(configName, "DATACONVERTER", dataLoaderOptions)
         dataLoaderOptions.VerifySettings();
-        dataConverter = DataConverterBuilder.GetDataConverter(dataLoaderOptions.UseConverter)(dataLoaderOptions, self.Options.DebugMode)
+        dataConverter = DataConverterBuilder.GetDataConverter(dataLoaderOptions.UseConverter)(dataLoaderOptions, isDebugMode)
 
         return dataLoaderOptions, dataConverter
 
-    def _SetupNetTrainer(self, configName : str, roundResultDir : str) -> tuple[NetOptions,BaseNetTrainer]:
+    def _SetupNetTrainer(self, configName : str, roundResultDir : str, baseConfig : str, isDebugMode : bool) -> tuple[NetOptions,BaseNetTrainer]:
         protonetOptions = NetOptions()
-        ReflexionHelper.ParseConfigIntoObject(self.Options.BaseConfig, "NETTRAINER", protonetOptions)
+        ReflexionHelper.ParseConfigIntoObject(baseConfig, "NETTRAINER", protonetOptions)
         ReflexionHelper.ParseConfigIntoObject(configName, "NETTRAINER", protonetOptions)
         protonetOptions.VerifySettings();
         protonetOptions.experiment_root = roundResultDir
-        protonet = NetTrainerBuilder.GetNetTrainer(protonetOptions.trainer_name)(protonetOptions, DatasetBuilder.GetDataset(protonetOptions.dataset_name), self.Options.DebugMode)
+        protonet = NetTrainerBuilder.GetNetTrainer(protonetOptions.trainer_name)(protonetOptions, DatasetBuilder.GetDataset(protonetOptions.dataset_name), isDebugMode)
 
         return protonetOptions, protonet
 
@@ -160,7 +217,7 @@ class ExperimentSuite():
         self._LogPrint("[" + expName + "] Round " + str(step + 1) + " of " + str(self.Options.ExperimentRounds))
         roundResultDir : str = os.path.join(self.Options.ExperimentResultsDir, expName, str(step + 1));
 
-        dataLoaderOptions, dataConverter = self._SetupDataConverter(configName);
+        dataLoaderOptions, dataConverter = self._SetupDataConverter(configName, self.Options.BaseConfig, self.Options.DebugMode);
           
         if self.Options.ForceRemakeDataset:
             self._DPrint("Force removing old dataset")
@@ -171,7 +228,7 @@ class ExperimentSuite():
             self._DPrint("Formatting Dataset")
             dataConverter.ConvertData()
 
-        protonetOptions, protonet = self._SetupNetTrainer(configName, roundResultDir);
+        protonetOptions, protonet = self._SetupNetTrainer(configName, roundResultDir, self.Options.BaseConfig, self.Options.DebugMode);
 
         nShots = dataLoaderOptions.TestClassesSplit;
         nWay = protonetOptions.classes_per_it_tr;
