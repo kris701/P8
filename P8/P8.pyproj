@@ -122,6 +122,11 @@
     <Content Include="Datasets\readme.md" />
     <Content Include="DataVisualisers\readme.md" />
     <Content Include="Data\readme.md" />
+    <Content Include="Experiments\Configs\BaseConfigs\8Shot.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\6Shot.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\5Shot.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\BaseKNN.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\BaseProtonet.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\5ShotKNNFast.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\5ShotProtonetFast.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\8ShotProtonetFast.ini" />
@@ -202,6 +207,8 @@
     <Content Include="Experiments\SuiteConfigs\8ShotProtonetFast.ini" />
     <Content Include="Experiments\SuiteConfigs\8ShotProtonetFull.ini" />
     <Content Include="Experiments\SuiteConfigs\6ShotProtonetFull.ini" />
+    <Content Include="Experiments\SuiteConfigs\BaseConfigs\BaseFull.ini" />
+    <Content Include="Experiments\SuiteConfigs\BaseConfigs\BaseFast.ini" />
     <Content Include="Experiments\SuiteConfigs\BaseConfigs\6ShotFast.ini" />
     <Content Include="Experiments\SuiteConfigs\BaseConfigs\8ShotFast.ini" />
     <Content Include="Experiments\SuiteConfigs\BaseConfigs\8ShotFull.ini" />
