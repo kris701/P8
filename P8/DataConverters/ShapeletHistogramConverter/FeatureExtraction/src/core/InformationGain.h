@@ -21,8 +21,8 @@ namespace InformationGain {
 
         double entropy = 0;
         for (int i = 0; i < MAX_CLASSES; i++) {
-            if (values.at(i) > 0) {
-                const double proportion = (double)values.at(i) / total;
+            if (values[i] > 0) {
+                const double proportion = (double)values[i] / total;
                 entropy += (-proportion) * (std::log2(proportion));
             }
         }
@@ -30,7 +30,7 @@ namespace InformationGain {
     }
 
     [[nodiscard]] static inline double CalculateEntropy(const ClassCount &counts) {
-        return CalculateEntropy(ClassCountUtils::GetTotalClassCount(counts), counts);
+        return CalculateEntropy(counts.GetTotal(), counts);
     }
 
     /// @brief Gets the sum of entropy values within a split of values
@@ -39,8 +39,8 @@ namespace InformationGain {
     /// @return A double, representing the entropy value
     [[nodiscard]] static double CalculateSplitEntropy(const std::map<double, ClassCount> &values, double splitPoint) {
         const auto split = ClassCountUtils::GetSplit(values, splitPoint);
-        const uint lowerTotal = ClassCountUtils::GetTotalClassCount(split.first);
-        const uint upperTotal = ClassCountUtils::GetTotalClassCount(split.second);
+        const uint lowerTotal = split.first.GetTotal();
+        const uint upperTotal = split.second.GetTotal();
 
         const uint total = lowerTotal + upperTotal;
         const double lowerProb = (double)lowerTotal / total;

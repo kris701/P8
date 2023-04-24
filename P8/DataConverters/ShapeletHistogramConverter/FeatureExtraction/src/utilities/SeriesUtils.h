@@ -4,12 +4,13 @@
 #include <unordered_set>
 #include <unordered_map>
 #include "misc/Constants.h"
+#include "types/ClassCount.h"
 
 namespace SeriesUtils {
     [[nodiscard]] static ClassCount GetCount(const std::vector<LabelledSeries> &series) {
-        ClassCount counts { 0 };
+        ClassCount counts;
         for (const auto &s : series)
-            counts[s.label]++;
+            counts[s.label]++;;
         return counts;
     }
 

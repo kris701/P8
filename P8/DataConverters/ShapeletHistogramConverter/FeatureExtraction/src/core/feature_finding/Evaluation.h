@@ -40,7 +40,7 @@ namespace FeatureFinding::Evaluation {
         ClassCount diff { counts };
         for (const auto &s : series) {
             valueCount[attribute->GenerateValue(s.series, window)][s.label]++;
-            diff.at(s.label)--;
+            diff[s.label]--;
 
             if (EntropyPrune(bestScore, priorEntropy, valueCount, diff))
                 return 0;

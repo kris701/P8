@@ -18,7 +18,6 @@ constexpr uint MAX_CLASSES = 64;
 constexpr uint maxThreads = 100;
 
 using Series = std::vector<double>;
-using ClassCount = std::array<uint, MAX_CLASSES>;
 
 struct LabelledSeries {
     int label;
