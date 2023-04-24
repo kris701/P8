@@ -56,22 +56,20 @@ namespace FeatureFinding {
         if (windows.empty())
             throw std::logic_error("Missing windows.");
 
-        const uint threadCount = std::thread::hardware_concurrency();
-
         const ClassCount count = series.Count();
         const double entropy = InformationGain::CalculateEntropy(count);
 
         std::thread threads[MAX_THREADS];
-        std::shared_ptr<Feature> optimalFeature;
+        std::shared_ptr<Feature> optimalFeature = nullptr;
         std::mutex featureMutex;
 
-        for (uint i = 0; i < threadCount; i++) {
-            const uint startIndex = i * (windows.size() / threadCount);
-            const uint endIndex = (i + 1) * (windows.size() / threadCount);
+        for (uint i = 0; i < MAX_THREADS; i++) {
+            const uint startIndex = i * (windows.size() / MAX_THREADS);
+            const uint endIndex = (i + 1) * (windows.size() / MAX_THREADS);
             threads[i] = std::thread([&, i] { FindOptimalFeature(series, count, entropy, windows, startIndex, endIndex, optimalFeature, featureMutex, attributes); } );
         }
 
-        for (uint i = 0; i < threadCount; i++)
+        for (uint i = 0; i < MAX_THREADS; i++)
             threads[i].join();
 
         return optimalFeature;

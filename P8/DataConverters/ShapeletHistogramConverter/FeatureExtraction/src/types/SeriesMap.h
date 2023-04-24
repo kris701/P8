@@ -8,7 +8,7 @@
 #include "ClassCount.h"
 #include "SeriesSet.h"
 
-struct SeriesMap : public std::unordered_map<uint, SeriesSet> {
+struct SeriesMap : public std::unordered_map<int, SeriesSet> {
     // Returns the minimum value found in any series contained in the map
     inline double Min() const {
         return std::min_element((*this).begin(), (*this).end())->second.Min();
@@ -21,7 +21,7 @@ struct SeriesMap : public std::unordered_map<uint, SeriesSet> {
 
     // Returns how many series of each class is contained in the map
     ClassCount Count() const {
-        ClassCount count;
+        ClassCount count{0};
 
         for (const auto &seriesSet : *this)
             count.at(seriesSet.first) += seriesSet.second.size();
@@ -55,6 +55,7 @@ struct SeriesMap : public std::unordered_map<uint, SeriesSet> {
         });
     }
 
+    // Moves all indexes to a positive 0-indexed range
     void ForcePositiveRange() {
         std::unordered_set<int> labels;
         for (const auto &dataPoint : *this)
