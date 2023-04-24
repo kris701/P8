@@ -1,12 +1,9 @@
-from email.mime import base
 import os
-import csv
 import time
 import shutil
 import multiprocessing
 import gc
 import matplotlib
-import matplotlib.pyplot as plt
 import traceback
 
 from DataVisualisers.BaseVisualiser import BaseVisualiser
