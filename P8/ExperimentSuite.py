@@ -6,8 +6,6 @@ import gc
 import matplotlib
 import traceback
 
-from DataVisualisers.BaseVisualiser import BaseVisualiser
-
 matplotlib.use('Agg')
 
 from DataConverters.DataConverterOptions import DataConverterOptions
