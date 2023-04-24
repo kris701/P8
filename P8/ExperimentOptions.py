@@ -1,11 +1,13 @@
 class ExperimentOptions():
+    BaseSuiteConfig : str = "";
+
     FormatDataset : bool = True;
     RunTrain : bool = True;
     RunTest : bool = True;
 
     ExperimentConfigDir : str = "Experiments/Configs";
     ExperimentResultsDir : str = "Experiments/Results";
-    ExperimentsToRun : list;
+    ExperimentsToRun : list = [];
     ExperimentRounds : int = 1;
     ExperimentName : str = "Ours"
     BaseConfig : str = "Experiments/Configs/Base.ini"
@@ -25,8 +27,8 @@ class ExperimentOptions():
 
     DebugMode : bool = True;
 
-    ZipDataset : bool = True;
-    CopyConfigs : bool = True;
+    ZipDataset : bool = False;
+    CopyConfigs : bool = False;
 
     ForceRemakeDataset : bool = False;
 
