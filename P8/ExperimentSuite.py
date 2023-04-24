@@ -100,6 +100,8 @@ class ExperimentSuite():
                 itemName = item.replace(".ini","")
                 options : ExperimentOptions = ExperimentOptions();
                 ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
+                ReflexionHelper.ParseConfigIntoObject(options.BaseSuiteConfig, "SUITEOPTIONS", options)
+                ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
                 options.ExperimentResultsDir = os.path.join(options.ExperimentResultsDir, itemName + " - " + timestamp);
                 os.makedirs(os.path.join(options.ExperimentResultsDir))
                 self.RunExperiments(options);
