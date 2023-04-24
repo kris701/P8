@@ -44,8 +44,6 @@ class ExperimentSuite():
             options : ExperimentOptions = ExperimentOptions();
             try:
                 ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
-                ReflexionHelper.ParseConfigIntoObject(options.BaseSuiteConfig, "SUITEOPTIONS", options)
-                ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
             except Exception as e:
                 raise Exception("Cannot parse the queue config file: " + configItem);
 
@@ -116,8 +114,6 @@ class ExperimentSuite():
                 timestamp = time.strftime("%Y%m%d-%H%M%S")
                 itemName = item.replace(".ini","")
                 options : ExperimentOptions = ExperimentOptions();
-                ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
-                ReflexionHelper.ParseConfigIntoObject(options.BaseSuiteConfig, "SUITEOPTIONS", options)
                 ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
                 options.ExperimentResultsDir = os.path.join(options.ExperimentResultsDir, itemName + " - " + timestamp);
                 os.makedirs(os.path.join(options.ExperimentResultsDir))

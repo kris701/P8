@@ -1,6 +1,4 @@
 class ExperimentOptions():
-    BaseSuiteConfig : str = "";
-
     FormatDataset : bool = True;
     RunTrain : bool = True;
     RunTest : bool = True;
