@@ -57,21 +57,19 @@ int main(int argc, char** argv) {
     id2 = Logger::Begin("Augmenting Data");
     const auto trainData =
             DataAugmentation::Augment(splitData.train, arguments.deleteOriginal, arguments.smoothingDegree, arguments.noisifyAmount);
-    const auto trainMap = SeriesMap(trainData);
-    const auto testMap = SeriesMap(testData);
     Logger::End(id2);
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Set");
     auto features = FeatureFinding::GenerateFeaturesFromSamples(
-            trainMap, arguments.minWindowSize, arguments.maxWindowSize,
+            trainData, arguments.minWindowSize, arguments.maxWindowSize,
             arguments.minSampleSize, arguments.maxSampleSize, arguments.featureCount,
             AttributeBuilder::GenerateAttributes(arguments.attributes));
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Points");
     const auto trainHistograms = FeatureHistogramBuilder::BuildSet(trainData, features);
-    const auto testHistograms = FeatureHistogramBuilder::BuildSet(trainData, features);
+    const auto testHistograms = FeatureHistogramBuilder::BuildSet(testData, features);
     Logger::End(id);
 
     id = Logger::Begin("Writing Feature Series to Files");
