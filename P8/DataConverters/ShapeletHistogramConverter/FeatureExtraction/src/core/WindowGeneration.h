@@ -3,6 +3,8 @@
 
 #include "misc/Constants.h"
 #include "IO/Logger.h"
+#include "types/SeriesSet.h"
+#include "types/SeriesMap.h"
 
 namespace WindowGeneration {
     /// <summary>
@@ -11,8 +13,8 @@ namespace WindowGeneration {
     /// <param name="series">A vector of doubles</param>
     /// <param name="length">An integer, representing the length of each window to be made</param>
     /// <returns>A vector of sub-series</returns>
-    [[nodiscard]] static std::vector<Series> GenerateWindowsOfLength(const Series &series, uint length) {
-        std::vector<Series> windows;
+    [[nodiscard]] static SeriesSet GenerateWindowsOfLength(const Series &series, uint length) {
+        SeriesSet windows;
 
         if (series.empty() || length == 0)
             return windows;
