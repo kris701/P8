@@ -73,12 +73,10 @@ class ExperimentSuite():
                     dataLoaderOptions = DataConverterOptions()
                     ReflexionHelper.ParseConfigIntoObject(options.BaseConfig, "DATACONVERTER", dataLoaderOptions)
                     ReflexionHelper.ParseConfigIntoObject(configName, "DATACONVERTER", dataLoaderOptions)
-                    dataLoaderOptions.VerifySettings();
 
                     protonetOptions = NetOptions()
                     ReflexionHelper.ParseConfigIntoObject(options.BaseConfig, "NETTRAINER", protonetOptions)
                     ReflexionHelper.ParseConfigIntoObject(configName, "NETTRAINER", protonetOptions)
-                    protonetOptions.VerifySettings();
                 except Exception as e:
                     raise Exception("Cannot parse the experiment config file: " + options.BaseConfig);
 
