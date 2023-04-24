@@ -25,19 +25,25 @@ from Helpers import CSVHelper
 
 class ExperimentSuite():
     Options : ExperimentOptions;
+    SuiteConfigPath : str = "Experiments/SuiteConfigs/";
+
+    def __init__(self, suiteConfigPath : str) -> None:
+        self.SuiteConfigPath = suiteConfigPath;
 
     def CheckIfQueueIsValid(self, queue : list):
         for item in queue:
+            configItem = os.path.join(self.SuiteConfigPath, item)
+
             # Check if queue item exist
-            if not os.path.exists(item):
-                raise FileNotFoundError("The config queue item '" + item + "' was not found!")
+            if not os.path.exists(configItem):
+                raise FileNotFoundError("The config queue item '" + configItem + "' was not found!")
 
             # Check if the item can be parsed
             options : ExperimentOptions = ExperimentOptions();
             try:
-                ReflexionHelper.ParseConfigIntoObject(item, "SUITEOPTIONS", options)
+                ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
             except Exception as e:
-                raise Exception("Cannot parse the queue config file: " + item);
+                raise Exception("Cannot parse the queue config file: " + configItem);
 
             # Check if base config is there
             if not os.path.exists(options.BaseConfig):
@@ -88,18 +94,19 @@ class ExperimentSuite():
         counter : int = 1;
         for item in queue:
             print("Queue item " + str(counter) + " out of " + str(len(queue)) + " started!")
+            configItem = os.path.join(self.SuiteConfigPath, item)
             try:
                 timestamp = time.strftime("%Y%m%d-%H%M%S")
-                itemName = item.rsplit("/", 1)[1].replace(".ini","")
+                itemName = item.replace(".ini","")
                 options : ExperimentOptions = ExperimentOptions();
-                ReflexionHelper.ParseConfigIntoObject(item, "SUITEOPTIONS", options)
+                ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
                 options.ExperimentResultsDir = os.path.join(options.ExperimentResultsDir, itemName + " - " + timestamp);
                 os.makedirs(os.path.join(options.ExperimentResultsDir))
                 self.RunExperiments(options);
             except Exception as e:
                 if throwOnError:
                     raise e;
-                self._LogPrint("An error occured in the execution of (" + item + ")", "error.txt")
+                self._LogPrint("An error occured in the execution of (" + configItem + ")", "error.txt")
                 self._LogPrint("The error message was:", "error.txt")
                 self._LogPrint("", "error.txt")
                 self._LogPrint(str(e), "error.txt")
