@@ -124,6 +124,10 @@
     <Content Include="Data\readme.md" />
     <Content Include="Experiments\Configs\BaseConfigs\5ShotKNNFast.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\5ShotProtonetFast.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\8ShotProtonetFast.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\8ShotProtonetFull.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\8ShotKNNFast.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\8ShotKNNFull.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\6ShotKNNFull.ini" />
     <Content Include="Experiments\Configs\DistalPhalanxTW.ini" />
     <Content Include="Experiments\Configs\DistalPhalanxOutlineCorrect.ini" />
@@ -140,8 +144,6 @@
     <Content Include="Experiments\Configs\BaseConfigs\5ShotKNNFull.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\5ShotProtonetFull.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\6ShotProtonetFast.ini" />
-    <Content Include="Experiments\Configs\BaseConfigs\8ShotProtonet.ini" />
-    <Content Include="Experiments\Configs\BaseConfigs\8ShotKNN.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\6ShotKNNFast.ini" />
     <Content Include="Experiments\Configs\ECGFiveDays.ini" />
     <Content Include="Experiments\Configs\ECG5000.ini" />
