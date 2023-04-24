@@ -6,6 +6,7 @@
 #include "misc/Constants.h"
 #include "utilities/SeriesUtils.h"
 #include "core/attributes/MinDist.h"
+#include "types/SeriesMap.h"
 
 namespace DataPurge {
     struct Results {
@@ -36,8 +37,8 @@ namespace DataPurge {
     }
 
     Results Purge(const std::vector<LabelledSeries> &series) {
-        const auto mappedData = SeriesUtils::ToMap(series);
-        std::unordered_map<int, std::map<double, std::vector<Series>>> seriesScored;
+        const auto mappedData = SeriesMap(series);
+        std::unordered_map<uint, std::map<double, std::vector<Series>>> seriesScored;
 
         for (const auto &seriesSet : mappedData) {
             std::map<double, std::vector<Series>> setScores;

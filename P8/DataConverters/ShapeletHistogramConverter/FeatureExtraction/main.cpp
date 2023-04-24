@@ -10,6 +10,7 @@
 #include "src/preprocessing/DataPurge.h"
 #include "src/preprocessing/DataSplit.h"
 #include "types/FeatureHistogramBuilder.h"
+#include "types/SeriesMap.h"
 
 int main(int argc, char** argv) {
     uint id = Logger::Begin("Parsing Arguments");
@@ -37,13 +38,13 @@ int main(int argc, char** argv) {
         Logger::End(id2);
         id2 = Logger::Begin("Writing Purged to Files");
         const auto purgePath = arguments.outPath + "purged/";
-        //FileHanding::WriteToFiles(purgePath + "candidates/", SeriesUtils::ToMap(candidates));
-        //FileHanding::WriteToFiles(purgePath + "rejects/", SeriesUtils::ToMap(rejects));
+        FileHanding::WriteToFiles(purgePath + "candidates/", SeriesMap(candidates));
+        FileHanding::WriteToFiles(purgePath + "rejects/", SeriesMap(rejects));
         Logger::End(id2);
     }
 
     id2 = Logger::Begin("Splitting");
-    const auto map = SeriesUtils::ToMap(candidates);
+    const auto map = SeriesMap(candidates);
     const auto splitData = DataSplit::Split(map, arguments.split);
     auto testData = splitData.test;
     testData.insert(testData.end(), rejects.begin(), rejects.end());
@@ -51,15 +52,15 @@ int main(int argc, char** argv) {
 
     id2 = Logger::Begin("Writing Source Train Files");
     const auto sourceTrainPath = arguments.outPath + "source/";
-    //FileHanding::WriteToFiles(sourceTrainPath + "original/", SeriesUtils::ToMap(splitData.train));
-    //FileHanding::WriteToFiles(sourceTrainPath + "augmentation/",SeriesUtils::ToMap(DataAugmentation::Augment(splitData.train,arguments.deleteOriginal,arguments.smoothingDegree,arguments.noisifyAmount)));
+    FileHanding::WriteToFiles(sourceTrainPath + "original/", SeriesMap(splitData.train));
+    FileHanding::WriteToFiles(sourceTrainPath + "augmentation/", SeriesMap(DataAugmentation::Augment(splitData.train,arguments.deleteOriginal,arguments.smoothingDegree,arguments.noisifyAmount)));
     Logger::End(id2);
 
     id2 = Logger::Begin("Augmenting Data");
     const auto trainData =
             DataAugmentation::Augment(splitData.train, arguments.deleteOriginal, arguments.smoothingDegree, arguments.noisifyAmount);
-    const auto trainMap = SeriesUtils::ToMap(trainData);
-    const auto testMap = SeriesUtils::ToMap(testData);
+    const auto trainMap = SeriesMap(trainData);
+    const auto testMap = SeriesMap(testData);
     Logger::End(id2);
     Logger::End(id);
 
@@ -95,10 +96,10 @@ int main(int argc, char** argv) {
     id = Logger::Begin("Writing Feature Files");
     const auto featurePath = arguments.outPath + "features/";
     const auto shapeletPath = featurePath + "shapelets/";
-    /*const auto shapeletFiles = FileHanding::RemoveSubPath(featurePath, FileHanding::WriteToFiles(shapeletPath, features.Shapelets()));
+    const auto shapeletFiles = FileHanding::RemoveSubPath(featurePath, FileHanding::WriteToFiles(shapeletPath, features.Shapelets()));
     FileHanding::WriteCSV(featurePath + "features.csv",
                           Feature::Header(),
-                          features.FeatureCSV(shapeletFiles));*/
+                          features.FeatureCSV(shapeletFiles));
     Logger::End(id);
 
     return 0;

@@ -30,16 +30,6 @@ namespace SeriesUtils {
         return minValue;
     }
 
-    [[nodiscard]] static std::unordered_map<uint, std::vector<Series>> ToMap
-    (const std::vector<LabelledSeries> &series) {
-        std::unordered_map<uint, std::vector<Series>> map;
-
-        for (const auto &s : series)
-            map[s.label].push_back(s.series);
-
-        return map;
-    }
-
     static void MinMaxNormalize(std::vector<LabelledSeries> &series) {
         const auto min = MinValue(series);
         const auto max = MaxValue(series) - min;

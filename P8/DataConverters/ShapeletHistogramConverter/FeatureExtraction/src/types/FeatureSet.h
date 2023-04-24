@@ -3,17 +3,17 @@
 
 #include <vector>
 #include "Feature.h"
+#include "SeriesSet.h"
 
 struct FeatureSet : public std::vector<Feature> {
-public:
     inline bool Contains(const Feature &feature) { return std::find(this->begin(), this->end(), feature) != this->end(); }
-    [[nodiscard]] std::vector<Series> Shapelets() const;
+    [[nodiscard]] SeriesSet Shapelets() const;
     [[nodiscard]] std::vector<std::vector<std::string>> FeatureCSV(const std::vector<std::string> &shapeletPaths) const;
     [[nodiscard]] std::vector<double> GenerateValues(const Series &series) const;
 };
 
-std::vector<Series> FeatureSet::Shapelets() const {
-    std::vector<Series> shapelets;
+SeriesSet FeatureSet::Shapelets() const {
+    SeriesSet shapelets;
 
     for (const auto &feature : *this)
         shapelets.push_back(feature.shapelet);

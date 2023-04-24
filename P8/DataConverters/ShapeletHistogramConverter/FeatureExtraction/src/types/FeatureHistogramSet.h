@@ -5,7 +5,7 @@
 #include "FeatureHistogram.h"
 
 struct FeatureHistogramSet : public std::unordered_map<uint, std::vector<FeatureHistogram>> {
-    operator std::unordered_map<uint, std::vector<std::vector<double>>>() const {
+    inline operator std::unordered_map<uint, std::vector<std::vector<double>>>() const {
         std::unordered_map<uint, std::vector<std::vector<double>>> values;
 
         for (const auto &vSet : *this)
