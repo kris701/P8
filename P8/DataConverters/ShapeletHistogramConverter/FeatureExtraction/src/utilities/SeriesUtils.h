@@ -7,13 +7,7 @@
 #include "types/ClassCount.h"
 
 namespace SeriesUtils {
-    [[nodiscard]] static ClassCount GetCount(const std::vector<LabelledSeries> &series) {
-        ClassCount counts;
-        for (const auto &s : series)
-            counts[s.label]++;;
-        return counts;
-    }
-
+/*
     [[nodiscard]] static double MinValue(const std::vector<LabelledSeries> &series) {
         double minValue = 9999;
         for (const auto &s : series)
@@ -59,6 +53,7 @@ namespace SeriesUtils {
                 if (dataPoint.label == labelPos[i])
                     dataPoint.label = i;
     }
+    */
 }
 
 #endif //FEATUREEXTRACTION_SERIESUTILS_H

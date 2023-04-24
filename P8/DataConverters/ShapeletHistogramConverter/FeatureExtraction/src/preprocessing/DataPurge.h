@@ -10,9 +10,9 @@
 
 namespace DataPurge {
     struct Results {
-        const std::vector<LabelledSeries> acceptable;
-        const std::vector<LabelledSeries> rejects;
-        Results(std::vector<LabelledSeries> acceptable, std::vector<LabelledSeries> rejects) : acceptable(std::move(acceptable)), rejects(std::move(rejects)) {}
+        const SeriesMap acceptable;
+        const SeriesMap rejects;
+        Results(SeriesMap acceptable, SeriesMap rejects) : acceptable(std::move(acceptable)), rejects(std::move(rejects)) {}
     };
 
     double StdDiv(const std::vector<double> &vec) {
@@ -36,7 +36,7 @@ namespace DataPurge {
         return totalDist / (double) allSeries.size();
     }
 
-    Results Purge(const std::vector<LabelledSeries> &series) {
+    Results Purge(const SeriesMap &series) {
         const auto mappedData = SeriesMap(series);
         std::unordered_map<uint, std::map<double, std::vector<Series>>> seriesScored;
 
@@ -48,8 +48,8 @@ namespace DataPurge {
             seriesScored[seriesSet.first] = setScores;
         }
 
-        std::vector<LabelledSeries> acceptable;
-        std::vector<LabelledSeries> rejects;
+        SeriesMap acceptable;
+        SeriesMap rejects;
 
         for (const auto &seriesSet : seriesScored) {
             std::vector<double> distances;
@@ -62,12 +62,12 @@ namespace DataPurge {
                 const auto diff = std::abs(ss.first - avg);
                 if (diff > stdDiv) {
                     for (const auto &s: ss.second) {
-                        rejects.emplace_back(seriesSet.first, s);
+                        rejects[seriesSet.first].push_back(s);
                         rejectCount++;
                     }
                 } else {
                     for (const auto &s: ss.second)
-                        acceptable.emplace_back(seriesSet.first, s);
+                        acceptable[seriesSet.first].push_back(s);
                 }
             }
             Logger::Info("Purged " + std::to_string(rejectCount) + " data points from class " + std::to_string(seriesSet.first));

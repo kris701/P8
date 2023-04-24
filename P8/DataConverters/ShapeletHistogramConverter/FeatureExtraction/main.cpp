@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include "src/IO/FileHanding.h"
 #include "core/feature_finding/FeatureFinding.h"
@@ -23,12 +22,12 @@ int main(int argc, char** argv) {
 
     id = Logger::Begin("preprocessing Data");
     auto id2 = Logger::Begin("Normalizing");
-    SeriesUtils::MinMaxNormalize(data);
-    SeriesUtils::ForcePositiveRange(data);
+    data.MinMaxNormalize();
+    data.ForcePositiveRange();
     Logger::End(id2);
 
-    std::vector<LabelledSeries> candidates = data;
-    std::vector<LabelledSeries> rejects;
+    SeriesMap candidates = data;
+    SeriesMap rejects;
 
     if (arguments.purge) {
         id2 = Logger::Begin("Purging");
@@ -47,7 +46,7 @@ int main(int argc, char** argv) {
     const auto map = SeriesMap(candidates);
     const auto splitData = DataSplit::Split(map, arguments.split);
     auto testData = splitData.test;
-    testData.insert(testData.end(), rejects.begin(), rejects.end());
+    testData.InsertAll(rejects);
     Logger::End(id2);
 
     id2 = Logger::Begin("Writing Source Train Files");

@@ -7,15 +7,15 @@
 #include <unordered_map>
 #include <filesystem>
 #include <vector>
-#include "misc/Constants.h"
+#include "types/SeriesMap.h"
 
 namespace FileHanding {
-    [[nodiscard]] static std::vector<LabelledSeries> ReadCSV(const std::string &path, const std::string &delimiter = ",") {
+    [[nodiscard]] static SeriesMap ReadCSV(const std::string &path, const std::string &delimiter = ",") {
         if (!std::filesystem::exists(path))
             throw std::logic_error("Could not find file " + path);
         std::ifstream file(path);
         std::string line;
-        std::vector<LabelledSeries> dataPoints;
+        SeriesMap dataPoints;
         int lineNum = 0;
         while (std::getline(file, line)) {
             std::optional<int> type;
@@ -37,7 +37,7 @@ namespace FileHanding {
             }
 
             if (type.has_value())
-                dataPoints.emplace_back(type.value(), series);
+                dataPoints[type.value()].push_back(series);
             else
                 throw std::logic_error(&"Missing type on line " [lineNum]);
 
@@ -47,12 +47,13 @@ namespace FileHanding {
         return dataPoints;
     }
 
-    [[nodiscard]] static std::vector<LabelledSeries> ReadCSV(const std::vector<std::string> &paths, const std::string &delimiter = ",") {
-        std::vector<LabelledSeries> series;
+    [[nodiscard]] static SeriesMap ReadCSV(const std::vector<std::string> &paths, const std::string &delimiter = ",") {
+        SeriesMap series;
 
         for (const auto &path : paths) {
             const auto tempSeries = ReadCSV(path, delimiter);
-            series.insert(series.end(), tempSeries.begin(), tempSeries.end());
+            for (const auto &seriesSet : tempSeries)
+                series[seriesSet.first].insert(series[seriesSet.first].end(), tempSeries.at(seriesSet.first).begin(), tempSeries.at(seriesSet.first).end());
         }
 
         return series;

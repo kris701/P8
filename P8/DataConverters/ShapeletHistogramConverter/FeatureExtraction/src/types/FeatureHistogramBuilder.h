@@ -12,11 +12,12 @@ public:
         return FeatureHistogram(features.GenerateValues(series));
     }
 
-    static inline FeatureHistogramSet BuildSet(const std::vector<LabelledSeries> &series, const FeatureSet &features) {
+    static inline FeatureHistogramSet BuildSet(const SeriesMap &series, const FeatureSet &features) {
         auto histograms = FeatureHistogramSet();
 
-        for (const auto &s : series)
-            histograms[s.label].push_back(Build(s.series, features));
+        for (const auto &seriesSet : series)
+            for (const auto &s : seriesSet.second)
+                histograms[seriesSet.first].push_back(Build(s, features));
 
         return histograms;
     }

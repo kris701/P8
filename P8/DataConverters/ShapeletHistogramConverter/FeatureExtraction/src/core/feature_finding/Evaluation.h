@@ -34,17 +34,18 @@ namespace FeatureFinding::Evaluation {
 
     [[nodiscard]] static double EvaluateWindow(double priorEntropy, double bestScore, const ClassCount &counts,
                                                const std::shared_ptr<Attribute> attribute,
-                                               const std::vector<LabelledSeries> &series, const Series &window) {
+                                               const SeriesMap &series, const Series &window) {
         std::map<double, ClassCount> valueCount; // At the given value, how many of each class
 
         ClassCount diff { counts };
-        for (const auto &s : series) {
-            valueCount[attribute->GenerateValue(s.series, window)][s.label]++;
-            diff[s.label]--;
+        for (const auto &seriesSet : series)
+            for (const auto &s : seriesSet.second) {
+                valueCount[attribute->GenerateValue(s, window)][seriesSet.first]++;
+                diff[seriesSet.first]--;
 
-            if (EntropyPrune(bestScore, priorEntropy, valueCount, diff))
-                return 0;
-        }
+                if (EntropyPrune(bestScore, priorEntropy, valueCount, diff))
+                    return 0;
+            }
 
         if (valueCount.size() < 2) // Impossible to split a single point
             return 0;

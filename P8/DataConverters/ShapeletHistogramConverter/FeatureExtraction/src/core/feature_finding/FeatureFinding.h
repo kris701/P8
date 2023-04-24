@@ -19,9 +19,10 @@
 #include <future>
 #include "Evaluation.h"
 #include "types/FeatureSet.h"
+#include "types/SeriesMap.h"
 
 namespace FeatureFinding {
-    static void FindOptimalFeature(const std::vector<LabelledSeries> &series,
+    static void FindOptimalFeature(const SeriesMap &series,
                                    const ClassCount &counts,
                                    double entropy,
                                    const std::vector<Series> &windows,
@@ -49,7 +50,7 @@ namespace FeatureFinding {
 
     /// Multi-threaded. Evaluates each window in \p windows, in combination with each attribute
     /// \return Returns the feature with highest information gain. Can be nullptr if no valid feature found.
-    [[nodiscard]] std::shared_ptr<Feature> FindOptimalFeature(const std::vector<LabelledSeries> &series, const std::vector<Series> &windows,
+    [[nodiscard]] std::shared_ptr<Feature> FindOptimalFeature(const SeriesMap &series, const std::vector<Series> &windows,
                                                               const std::vector<std::shared_ptr<Attribute>> &attributes) {
         if (series.size() < 2)
             throw std::logic_error("Cannot find features for less than two series.");
@@ -58,10 +59,10 @@ namespace FeatureFinding {
 
         const uint threadCount = std::thread::hardware_concurrency();
 
-        const ClassCount count = SeriesUtils::GetCount(series);
+        const ClassCount count = series.Count();
         const double entropy = InformationGain::CalculateEntropy(count);
 
-        std::thread threads[maxThreads];
+        std::thread threads[MAX_THREADS];
         std::shared_ptr<Feature> optimalFeature;
         std::mutex featureMutex;
 
@@ -83,7 +84,7 @@ namespace FeatureFinding {
     /// \param sampleSize How many samples to take from each class for each feature. If \p sampleSize is 3, it takes
     /// a 3 samples from each class.
     /// \return A list of features. Can be empty if no valid features are found.
-    [[nodiscard]] FeatureSet GenerateFeaturesFromSamples(const std::unordered_map<uint, std::vector<Series>> &seriesMap,
+    [[nodiscard]] FeatureSet GenerateFeaturesFromSamples(const SeriesMap &seriesMap,
                                                          uint minWindowSize, uint maxWindowSize,
                                                          uint minSampleSize, uint maxSampleSize,
                                                          uint featureCount, std::vector<std::shared_ptr<Attribute>> attributes) {
@@ -93,7 +94,7 @@ namespace FeatureFinding {
         while (features.size() < featureCount) {
             if (attempts > 1000)
                 break;
-            std::vector<LabelledSeries> samples;
+            SeriesMap samples;
             uint diffClassCount = 0; // How many classes are included in the feature
 
             // Retrieve n samples from each class
@@ -102,7 +103,7 @@ namespace FeatureFinding {
                 const uint sampleSize = (rand() % ((maxSampleSize == 0) ? seriesSet.second.size() : maxSampleSize)) + minSampleSize;
                 std::sample(seriesSet.second.begin(), seriesSet.second.end(), std::back_inserter(tempSamples), sampleSize, rd);
                 for (const auto &sample : tempSamples)
-                    samples.emplace_back(seriesSet.first, sample);
+                    samples[seriesSet.first].push_back(sample);
                 if (!tempSamples.empty())
                     diffClassCount++;
             }

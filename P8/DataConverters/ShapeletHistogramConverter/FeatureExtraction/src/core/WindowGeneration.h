@@ -62,18 +62,19 @@ namespace WindowGeneration {
     /// <param name="minLength">An inclusive minimum length of a window</param>
     /// <param name="maxLength">An inclusive maximum length of a window</param>
     /// <returns>A vector of windows</returns>
-    [[nodiscard]] static std::vector<Series> GenerateWindowsOfMinMaxLength(const std::vector<LabelledSeries> &series, uint minLength, uint maxLength) {
+    [[nodiscard]] static std::vector<Series> GenerateWindowsOfMinMaxLength(const SeriesMap &series, uint minLength, uint maxLength) {
         std::vector<Series> windows;
         if (series.size() == 0)
             return windows;
         if (minLength > maxLength)
             return windows;
 
-        for (const auto &s : series) {
-            const auto tempWindows = GenerateWindowsOfMinMaxLength(s.series, minLength, maxLength);
-            for (const auto &window : tempWindows)
-                windows.push_back(window);
-        }
+        for (const auto &seriesSet : series)
+            for (const auto &s : seriesSet.second) {
+                const auto tempWindows = GenerateWindowsOfMinMaxLength(s, minLength, maxLength);
+                for (const auto &window : tempWindows)
+                    windows.push_back(window);
+            }
 
         return windows;
     }
