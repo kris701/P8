@@ -19,6 +19,7 @@
 #include "Evaluation.h"
 #include "types/FeatureSet.h"
 #include "types/SeriesMap.h"
+#include "../Sampling.h"
 
 namespace FeatureFinding {
     static void FindOptimalFeature(const SeriesMap &series,
@@ -66,11 +67,14 @@ namespace FeatureFinding {
         for (uint i = 0; i < MAX_THREADS; i++) {
             const uint startIndex = i * (windows.size() / MAX_THREADS);
             const uint endIndex = (i + 1) * (windows.size() / MAX_THREADS);
-            threads[i] = std::thread([&, i] { FindOptimalFeature(series, count, entropy, windows, startIndex, endIndex, optimalFeature, featureMutex, attributes); } );
+            threads[i] = std::thread([&] { FindOptimalFeature(series, count, entropy, windows, startIndex, endIndex, optimalFeature, featureMutex, attributes); } );
         }
 
         for (uint i = 0; i < MAX_THREADS; i++)
             threads[i].join();
+
+        if (optimalFeature == nullptr)
+            printf("");
 
         return optimalFeature;
     }
@@ -88,39 +92,29 @@ namespace FeatureFinding {
         uint attempts = 0;
         FeatureSet features;
 
+        Sampling::RandomSampler sampler;
+
         while (features.size() < featureCount) {
             if (attempts > 1000)
                 break;
-            SeriesMap samples;
-            uint diffClassCount = 0; // How many classes are included in the feature
 
-            // Retrieve n samples from each class
-            for (const auto &seriesSet : seriesMap) {
-                std::vector<Series> tempSamples;
-                const uint sampleSize = (rand() % ((maxSampleSize == 0) ? seriesSet.second.size() : maxSampleSize)) + minSampleSize;
-                std::sample(seriesSet.second.begin(), seriesSet.second.end(), std::back_inserter(tempSamples), sampleSize, rd);
-                for (const auto &sample : tempSamples)
-                    samples[seriesSet.first].push_back(sample);
-                if (!tempSamples.empty())
-                    diffClassCount++;
-            }
-            if (diffClassCount < 2) {
+            const auto sample = sampler.Sample(seriesMap);
+            if (!sample.has_value())
+                break;
+
+            // Generate feature based on samples
+            auto windows = WindowGeneration::GenerateWindowsOfMinMaxLength(sample.value(), minWindowSize, maxWindowSize);
+            WindowGeneration::RemoveDuplicateWindows(&windows);
+            auto feature = FindOptimalFeature(sample.value(), windows, attributes);
+            if (feature == nullptr)
+                throw std::logic_error("You done goofed");
+
+            if (features.Contains(*feature)) {
                 attempts++;
                 continue;
             }
-
-            // Generate feature based on samples
-            auto windows = WindowGeneration::GenerateWindowsOfMinMaxLength(samples, minWindowSize, maxWindowSize);
-            WindowGeneration::RemoveDuplicateWindows(&windows);
-            auto feature = FindOptimalFeature(samples, windows, attributes);
-            if (feature != nullptr) {
-                if (features.Contains(*feature)) {
-                    attempts++;
-                    continue;
-                }
-                features.push_back(*feature);
-            }
-            if (featureCount < 10 || features.size() % (featureCount / 10) == 0 || features.size() == featureCount)
+            features.push_back(*feature);
+            //if (featureCount < 10 || features.size() % (featureCount / 10) == 0 || features.size() == featureCount)
                 Logger::Info("Generated: " + std::to_string(features.size()) + "/" + std::to_string(featureCount) + " | " + "Attempts : " + std::to_string(attempts));
             attempts = 0;
         }

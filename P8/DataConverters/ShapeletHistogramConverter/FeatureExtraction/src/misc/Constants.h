@@ -17,6 +17,6 @@ namespace {
 using uint = unsigned int;
 
 constexpr uint MAX_CLASSES = 64;
-constexpr uint MAX_THREADS = 100;
+constexpr uint MAX_THREADS = 1;
 
 #endif //FEATUREEXTRACTION_CONSTANTS_H
