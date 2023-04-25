@@ -7,12 +7,12 @@
 
 struct FeatureSet : public std::vector<Feature> {
     inline bool Contains(const Feature &feature) { return std::find(this->begin(), this->end(), feature) != this->end(); }
-    [[nodiscard]] SeriesSet Shapelets() const;
-    [[nodiscard]] std::vector<std::vector<std::string>> FeatureCSV(const std::vector<std::string> &shapeletPaths) const;
-    [[nodiscard]] std::vector<double> GenerateValues(const Series &series) const;
+    [[nodiscard]] SeriesSet RetrieveShapelets() const;
+    [[nodiscard]] std::vector<std::vector<std::string>> AsCSV(const std::vector<std::string> &shapeletPaths) const;
+    [[nodiscard]] std::vector<double> GenerateHistogram(const Series &series) const;
 };
 
-SeriesSet FeatureSet::Shapelets() const {
+SeriesSet FeatureSet::RetrieveShapelets() const {
     SeriesSet shapelets;
 
     for (const auto &feature : *this)
@@ -21,7 +21,7 @@ SeriesSet FeatureSet::Shapelets() const {
     return shapelets;
 }
 
-std::vector<std::vector<std::string>> FeatureSet::FeatureCSV(const std::vector<std::string> &shapeletPaths) const {
+std::vector<std::vector<std::string>> FeatureSet::AsCSV(const std::vector<std::string> &shapeletPaths) const {
     std::vector<std::vector<std::string>> lines;
 
     for (uint i = 0; i < this->size(); i++) {
@@ -38,7 +38,7 @@ std::vector<std::vector<std::string>> FeatureSet::FeatureCSV(const std::vector<s
     return lines;
 }
 
-std::vector<double> FeatureSet::GenerateValues(const Series &series) const {
+std::vector<double> FeatureSet::GenerateHistogram(const Series &series) const {
     std::vector<double> values;
 
     for (const auto &feature : *this)

@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     id = Logger::Begin("preprocessing Data");
     auto id2 = Logger::Begin("Normalizing");
     data.MinMaxNormalize();
-    data.ForcePositiveRange();
+    data = data.MoveToPositiveRange();
     Logger::End(id2);
 
     SeriesMap candidates = data;
@@ -92,10 +92,11 @@ int main(int argc, char** argv) {
     id = Logger::Begin("Writing Feature Files");
     const auto featurePath = arguments.outPath + "features/";
     const auto shapeletPath = featurePath + "shapelets/";
-    const auto shapeletFiles = FileHanding::RemoveSubPath(featurePath, FileHanding::WriteToFiles(shapeletPath, features.Shapelets()));
+    const auto shapeletFiles = FileHanding::RemoveSubPath(featurePath, FileHanding::WriteToFiles(shapeletPath,
+                                                                                                 features.RetrieveShapelets()));
     FileHanding::WriteCSV(featurePath + "features.csv",
                           Feature::Header(),
-                          features.FeatureCSV(shapeletFiles));
+                          features.AsCSV(shapeletFiles));
     Logger::End(id);
 
     return 0;

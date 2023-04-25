@@ -9,7 +9,7 @@
 class FeatureHistogramBuilder {
 public:
     static inline FeatureHistogram Build(const Series &series, const FeatureSet &features) {
-        return FeatureHistogram(features.GenerateValues(series));
+        return FeatureHistogram(features.GenerateHistogram(series));
     }
 
     static inline FeatureHistogramSet BuildSet(const SeriesMap &series, const FeatureSet &features) {

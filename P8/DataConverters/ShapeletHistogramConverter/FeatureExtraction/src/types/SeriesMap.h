@@ -56,12 +56,11 @@ struct SeriesMap : public std::unordered_map<int, SeriesSet> {
     }
 
     // Moves all indexes to a positive 0-indexed range
-    void ForcePositiveRange() {
-        const auto tempMap = *this;
-        (*this).clear();
+    [[nodiscard]] SeriesMap MoveToPositiveRange() const {
+        SeriesMap tempMap;
 
         std::unordered_set<int> labels;
-        for (const auto &dataPoint : tempMap)
+        for (const auto &dataPoint : *this)
             labels.emplace(dataPoint.first);
 
         std::vector<int> labelPos;
@@ -72,7 +71,9 @@ struct SeriesMap : public std::unordered_map<int, SeriesSet> {
         for (uint i = 0; i < labelPos.size(); i++)
             for (const auto &index : labelPos)
                 if (index == labelPos.at(i))
-                    (*this)[i].insert((*this)[i].end(), tempMap.at(index).begin(), tempMap.at(index).end());
+                    (tempMap[i].insert(tempMap[i].end(), (*this).at(index).begin(), (*this).at(index).end()));
+
+        return tempMap;
     }
 
     inline operator std::unordered_map<uint, std::vector<std::vector<double>>>() const {
