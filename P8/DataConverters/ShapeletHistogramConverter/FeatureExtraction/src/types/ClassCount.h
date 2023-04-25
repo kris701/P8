@@ -1,6 +1,7 @@
 #ifndef FEATUREEXTRACTION_CLASSCOUNT_H
 #define FEATUREEXTRACTION_CLASSCOUNT_H
 
+#include <numeric>
 #include "misc/Constants.h"
 
 struct ClassCount : public std::array<uint, MAX_CLASSES> {
