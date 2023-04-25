@@ -6,7 +6,23 @@ from ExperimentSuite import ExperimentSuite
 def main():
     multiprocessing.freeze_support()
 
-    queueItems = ["5ShotProtonetFast.ini"]
+    queueItems = ["6ShotProtonetFull4Features.ini",
+                  "6ShotProtonetFull8Features.ini",
+                  "6ShotProtonetFull16Features.ini",
+                  "6ShotProtonetFull32Features.ini",
+                  "6ShotProtonetFull.ini",
+                  "6ShotProtonetFull128Features.ini",
+                  "6ShotProtonetFull256Features.ini",
+
+                  "8ShotProtonetFull4Features.ini",
+                  "8ShotProtonetFull8Features.ini",
+                  "8ShotProtonetFull16Features.ini",
+                  "8ShotProtonetFull32Features.ini",
+                  "8ShotProtonetFull.ini",
+                  "8ShotProtonetFull128Features.ini",
+                  "8ShotProtonetFull256Features.ini",
+                  ]
+    #queueItems = ["5ShotProtonetFast.ini"]
     #queueItems = GetFilesInDir("Experiments/SuiteConfigs")
 
     expSuite = ExperimentSuite("Experiments/SuiteConfigs")
