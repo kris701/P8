@@ -3,6 +3,8 @@
 
 #include "misc/Constants.h"
 #include "IO/Logger.h"
+#include "types/SeriesSet.h"
+#include "types/SeriesMap.h"
 
 namespace WindowGeneration {
     /// <summary>
@@ -11,8 +13,8 @@ namespace WindowGeneration {
     /// <param name="series">A vector of doubles</param>
     /// <param name="length">An integer, representing the length of each window to be made</param>
     /// <returns>A vector of sub-series</returns>
-    [[nodiscard]] static std::vector<Series> GenerateWindowsOfLength(const Series &series, uint length) {
-        std::vector<Series> windows;
+    [[nodiscard]] static SeriesSet GenerateWindowsOfLength(const Series &series, uint length) {
+        SeriesSet windows;
 
         if (series.empty() || length == 0)
             return windows;
@@ -62,18 +64,19 @@ namespace WindowGeneration {
     /// <param name="minLength">An inclusive minimum length of a window</param>
     /// <param name="maxLength">An inclusive maximum length of a window</param>
     /// <returns>A vector of windows</returns>
-    [[nodiscard]] static std::vector<Series> GenerateWindowsOfMinMaxLength(const std::vector<LabelledSeries> &series, uint minLength, uint maxLength) {
+    [[nodiscard]] static std::vector<Series> GenerateWindowsOfMinMaxLength(const SeriesMap &series, uint minLength, uint maxLength) {
         std::vector<Series> windows;
         if (series.size() == 0)
             return windows;
         if (minLength > maxLength)
             return windows;
 
-        for (const auto &s : series) {
-            const auto tempWindows = GenerateWindowsOfMinMaxLength(s.series, minLength, maxLength);
-            for (const auto &window : tempWindows)
-                windows.push_back(window);
-        }
+        for (const auto &seriesSet : series)
+            for (const auto &s : seriesSet.second) {
+                const auto tempWindows = GenerateWindowsOfMinMaxLength(s, minLength, maxLength);
+                for (const auto &window : tempWindows)
+                    windows.push_back(window);
+            }
 
         return windows;
     }
@@ -82,7 +85,7 @@ namespace WindowGeneration {
     /// Removes duplicate series from a vector of series
     /// </summary>
     /// <param name="windows">A vector of series</param>
-    [[nodiscard]] static void RemoveDuplicateWindows(std::vector<Series>* windows) {
+    static void RemoveDuplicateWindows(std::vector<Series>* windows) {
         std::sort(windows->begin(), windows->end());
         windows->erase(std::unique(windows->begin(), windows->end()), windows->end());
     }

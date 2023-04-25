@@ -5,67 +5,65 @@
 #include "misc/Constants.h"
 
 namespace DataAugmentation {
-    LabelledSeries Smooth(LabelledSeries series, uint degree) {
+    Series Smooth(Series series, uint degree) {
         Series smoothSeries;
 
-        for (int i = 0; i < series.series.size(); i++) {
+        for (int i = 0; i < series.size(); i++) {
             uint count = 0;
             double total = 0;
-            for (int t = std::max(0, i - (int) degree); t < std::min((uint) series.series.size(), i + degree); t++) {
-                total += series.series.at(t);
+            for (int t = std::max(0, i - (int) degree); t < std::min((uint) series.size(), i + degree); t++) {
+                total += series.at(t);
                 count++;
             }
             smoothSeries.push_back(total / count);
         }
 
-        return { series.label, smoothSeries };
+        return smoothSeries;
     }
 
-    std::vector<LabelledSeries> Smooth(std::vector<LabelledSeries> series, uint degree) {
-        std::vector<LabelledSeries> smoothedSeries;
+    SeriesMap Smooth(const SeriesMap &series, uint degree) {
+        SeriesMap smoothedSeries;
 
-        for (const auto &s : series)
-            smoothedSeries.push_back(Smooth(s, degree));
+        for (const auto &seriesSet : series)
+            for (const auto &s : seriesSet.second)
+            smoothedSeries[seriesSet.first].push_back(Smooth(s, degree));
 
         return smoothedSeries;
     }
 
-    LabelledSeries Noiseify(LabelledSeries series, double amount) {
-        Series smoothSeries;
+    Series Noiseify(Series series, double amount) {
+        Series noisySeries;
 
-        for (double s : series.series) {
+        for (double s : series) {
             const double change = s * amount;
 
-            smoothSeries.push_back(s + ((rand() % 2 == 0) ? change : -change));
+            noisySeries.push_back(s + ((rand() % 2 == 0) ? change : -change));
         }
 
-        return { series.label, smoothSeries };
+        return noisySeries;
     }
 
-    std::vector<LabelledSeries> Noiseify(std::vector<LabelledSeries> series, double amount) {
-        std::vector<LabelledSeries> smoothedSeries;
+    SeriesMap Noiseify(SeriesMap series, double amount) {
+        SeriesMap noisySeries;
 
-        for (const auto &s : series)
-            smoothedSeries.push_back(Noiseify(s, amount));
+        for (const auto &seriesSet : series)
+            for (const auto &s : seriesSet.second)
+                noisySeries[seriesSet.first].push_back(Noiseify(s, amount));
 
-        return smoothedSeries;
+        return noisySeries;
     }
 
-    std::vector<LabelledSeries> Augment(std::vector<LabelledSeries> original, bool deleteOriginal, uint smoothDegree, double noiseifyAmount) {
-        std::vector<LabelledSeries> newSeries;
+    SeriesMap Augment(const SeriesMap &original, bool deleteOriginal, uint smoothDegree, double noiseifyAmount) {
+        SeriesMap newSeries;
 
         if (!deleteOriginal)
-            newSeries.insert(newSeries.end(), original.begin(), original.end());
+            newSeries.InsertAll(original);
 
-        if (smoothDegree != 0) {
-            const auto smoothed = Smooth(original, smoothDegree);
-            newSeries.insert(newSeries.end(), smoothed.begin(), smoothed.end());
-        }
+        if (smoothDegree != 0)
+            newSeries.InsertAll(Smooth(original, smoothDegree));
 
-        if (noiseifyAmount != 0) {
-            const auto noised = Noiseify(original, noiseifyAmount);
-            newSeries.insert(newSeries.end(), noised.begin(), noised.end());
-        }
+        if (noiseifyAmount != 0)
+            newSeries.InsertAll(Noiseify(original, noiseifyAmount));
 
         return newSeries;
     }

@@ -202,14 +202,14 @@ namespace WindowGenerationTests {
             for (uint j = 0; j + i <= seriesLength; j++)
                 expectedWindowCount++;
 
-        std::vector<LabelledSeries> labelledSeries;
+        SeriesMap seriesMap;
 
         Series series;
         for (uint i = 0; i < seriesLength; i++)
             series.push_back(i);
-        labelledSeries.push_back(LabelledSeries(0, series));
+        seriesMap[0].push_back(series);
 
-        auto windows = GenerateWindowsOfMinMaxLength(labelledSeries, minWindowSize, maxWindowSize);
+        auto windows = GenerateWindowsOfMinMaxLength(seriesMap, minWindowSize, maxWindowSize);
 
         INFO("Series Length: " << seriesLength);
         INFO("Min Window Size: " << minWindowSize);
@@ -228,7 +228,7 @@ namespace WindowGenerationTests {
                 expectedWindowCount++;
         expectedWindowCount *= 2;
 
-        std::vector<LabelledSeries> labelledSeries;
+        SeriesMap seriesMap;
 
         Series series1;
         Series series2;
@@ -236,10 +236,10 @@ namespace WindowGenerationTests {
             series1.push_back(i);
             series2.push_back(seriesLength + i);
         }
-        labelledSeries.push_back(LabelledSeries(0, series1));
-        labelledSeries.push_back(LabelledSeries(1, series2));
+        seriesMap[0].push_back(series1);
+        seriesMap[1].push_back(series2);
 
-        auto windows = GenerateWindowsOfMinMaxLength(labelledSeries, minWindowSize, maxWindowSize);
+        auto windows = GenerateWindowsOfMinMaxLength(seriesMap, minWindowSize, maxWindowSize);
 
         INFO("Series Length: " << seriesLength);
         INFO("Min Window Size: " << minWindowSize);
