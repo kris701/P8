@@ -4,6 +4,7 @@
 #include <optional>
 #include <random>
 #include "types/SeriesMap.h"
+#include "misc/Constants.h"
 
 namespace Sampling {
     struct Sampler {
@@ -51,7 +52,7 @@ namespace Sampling {
     };
 
     struct SemiRandomSampler : public Sampler {
-        static inline uint MAX_ATTEMPTS = 10;
+        static inline uint MAX_ATTEMPTS = 100;
         std::optional<SeriesMap> Sample(const SeriesMap &data) final {
             uint attempts = 0;
 
@@ -62,24 +63,21 @@ namespace Sampling {
 
                 sample.clear();
                 ClassCount count{0};
+
                 for (const auto &seriesSet : data) {
-                    const auto num = rand() % 100;
-                    const uint zeroOdds = (data.size() == 2) ? 0 : 25;
-                    if (num < zeroOdds) {
-                        count.at(seriesSet.first) = 0;
-                        continue;
-                    }
+                    std::binomial_distribution<> d(seriesSet.second.size(), 0.5);
+                    std::map<uint, uint> hist;
+                    for (uint i = 0; i < 100; i++)
+                        ++hist[d(g)];
 
-                    const uint remainder = 100 - zeroOdds;
-                    const uint size = seriesSet.second.size();
-                    const uint halfSize = (data.size() == 2) ? 0 : size / 2;
-                    const uint sizeOdds = (uint) std::round((double)remainder / (double)halfSize);
-
-                    for (uint i = 0; i <= remainder; i++) {
-                        if (zeroOdds + (i * sizeOdds) > num) {
-                            count.at(seriesSet.first) = halfSize + i;
+                    const auto r = rand() % 100;
+                    uint acc = 0;
+                    for (const auto h : hist) {
+                        if (acc >= r) {
+                            count[seriesSet.first] = h.first;
                             break;
                         }
+                        acc += h.second;
                     }
                 }
 

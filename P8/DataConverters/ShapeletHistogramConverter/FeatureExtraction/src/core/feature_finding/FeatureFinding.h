@@ -95,7 +95,7 @@ namespace FeatureFinding {
             sampler = new Sampling::SemiRandomSampler();
 
         while (features.size() < featureCount) {
-            if (attempts > 10)
+            if (attempts > 100)
                 break;
 
             const auto sample = sampler->Sample(seriesMap);
