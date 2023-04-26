@@ -88,13 +88,17 @@ namespace FeatureFinding {
         uint attempts = 0;
         FeatureSet features;
 
-        Sampling::RandomSampler sampler;
+        Sampling::Sampler *sampler;
+        //if (seriesMap.size() < 5)
+        //    sampler = new Sampling::RandomSampler();
+        //else
+            sampler = new Sampling::SemiRandomSampler();
 
         while (features.size() < featureCount) {
-            if (attempts > 1000)
+            if (attempts > 10)
                 break;
 
-            const auto sample = sampler.Sample(seriesMap);
+            const auto sample = sampler->Sample(seriesMap);
             if (!sample.has_value())
                 break;
 
