@@ -73,9 +73,6 @@ namespace FeatureFinding {
         for (uint i = 0; i < MAX_THREADS; i++)
             threads[i].join();
 
-        if (optimalFeature == nullptr)
-            printf("");
-
         return optimalFeature;
     }
 
@@ -87,7 +84,6 @@ namespace FeatureFinding {
     /// \return A list of features. Can be empty if no valid features are found.
     [[nodiscard]] FeatureSet GenerateFeaturesFromSamples(const SeriesMap &seriesMap,
                                                          uint minWindowSize, uint maxWindowSize,
-                                                         uint minSampleSize, uint maxSampleSize,
                                                          uint featureCount, std::vector<std::shared_ptr<Attribute>> attributes) {
         uint attempts = 0;
         FeatureSet features;
@@ -114,7 +110,7 @@ namespace FeatureFinding {
                 continue;
             }
             features.push_back(*feature);
-            //if (featureCount < 10 || features.size() % (featureCount / 10) == 0 || features.size() == featureCount)
+            if (featureCount < 10 || features.size() % (featureCount / 10) == 0 || features.size() == featureCount)
                 Logger::Info("Generated: " + std::to_string(features.size()) + "/" + std::to_string(featureCount) + " | " + "Attempts : " + std::to_string(attempts));
             attempts = 0;
         }

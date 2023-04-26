@@ -13,24 +13,25 @@ namespace Sampling {
         static inline uint MAX_ATTEMPTS = 10;
         std::optional<SeriesMap> Sample(const SeriesMap &data) final {
             uint attempts = 0;
-            std::optional<SeriesMap> sample;
 
-            SeriesMap tempSample;
-            uint diffClassCount;
+            SeriesMap sample;
             do {
                 if (attempts++ > MAX_ATTEMPTS)
-                    return sample;
+                    return {};
 
-                diffClassCount = 0;
+                sample.clear();
+
                 for (const auto &seriesSet : data) {
                     const uint sampleSize = rand() % seriesSet.second.size();
-                    std::sample(seriesSet.second.begin(), seriesSet.second.end(), std::back_inserter(tempSample[seriesSet.first]), sampleSize, rd);
+                    if (sampleSize > 0)
+                        std::sample(seriesSet.second.begin(), seriesSet.second.end(),
+                                    std::back_inserter(sample[seriesSet.first]), sampleSize, rd);
                 }
             } while (
-                    std::find(priorSamples.begin(), priorSamples.end(), sample) != priorSamples.end() &&
-                    tempSample.size() < 2);
+                    std::find(priorSamples.begin(), priorSamples.end(), sample) != priorSamples.end() ||
+                    sample.size() < 2);
 
-            return tempSample;
+            return sample;
         }
     private:
         std::vector<SeriesMap> priorSamples;
