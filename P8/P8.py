@@ -10,6 +10,23 @@ def main():
                   "6ShotProtonetFullPurge.ini",
                   "8ShotProtonetFullPurge.ini",
 
+                  "AugmentationTests/6ShotProtonetFull10Noise.ini",
+                  "AugmentationTests/6ShotProtonetFull25Noise.ini",
+                  "AugmentationTests/6ShotProtonetFull50Noise.ini",
+                  "AugmentationTests/6ShotProtonetFull1Smooth.ini",
+                  "AugmentationTests/6ShotProtonetFull3Smooth.ini",
+                  "AugmentationTests/6ShotProtonetFull6Smooth.ini",
+                  "AugmentationTests/6ShotProtonetFull10Smooth.ini",
+
+                  "AugmentationTests/8ShotProtonetFull10Noise.ini",
+                  "AugmentationTests/8ShotProtonetFull25Noise.ini",
+                  "AugmentationTests/8ShotProtonetFull50Noise.ini",
+                  "AugmentationTests/8ShotProtonetFull75Noise.ini",
+                  "AugmentationTests/8ShotProtonetFull1Smooth.ini",
+                  "AugmentationTests/8ShotProtonetFull3Smooth.ini",
+                  "AugmentationTests/8ShotProtonetFull6Smooth.ini",
+                  "AugmentationTests/8ShotProtonetFull10Smooth.ini",
+
                   "FeatureCountTests/6ShotProtonetFull4Features.ini",
                   "FeatureCountTests/6ShotProtonetFull8Features.ini",
                   "FeatureCountTests/6ShotProtonetFull16Features.ini",
