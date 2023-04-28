@@ -39,8 +39,8 @@ int main(int argc, char** argv) {
         Logger::End(id2);
         id2 = Logger::Begin("Writing Purged to Files");
         const auto purgePath = arguments.outPath + "purged/";
-        FileHanding::WriteToFiles(purgePath + "candidates/", SeriesMap(candidates));
-        FileHanding::WriteToFiles(purgePath + "rejects/", testData);
+        FileHanding::WriteToFiles(purgePath + "candidates/", purgeResult.acceptable);
+        FileHanding::WriteToFiles(purgePath + "rejects/", purgeResult.rejects);
         Logger::End(id2);
     }
 
