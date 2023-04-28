@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
         id2 = Logger::Begin("Purging");
         const auto purgeResult = DataPurge::Purge(rawTrainData);
         candidates = purgeResult.acceptable;
-        rejects.InsertAll(purgeResult.rejects);
+        //rejects.InsertAll(purgeResult.rejects);
         Logger::End(id2);
         id2 = Logger::Begin("Writing Purged to Files");
         const auto purgePath = arguments.outPath + "purged/";
