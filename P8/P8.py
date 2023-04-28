@@ -22,7 +22,7 @@ def main():
                   "FeatureCountTests/8ShotProtonetFull128Features.ini",
                   "FeatureCountTests/8ShotProtonetFull256Features.ini",
                   ]
-    #queueItems = ["5ShotProtonetFast.ini"]
+    #queueItems = ["6ShotKNNFast.ini"]
     #queueItems = GetFilesInDir("Experiments/SuiteConfigs")
 
     expSuite = ExperimentSuite("Experiments/SuiteConfigs")

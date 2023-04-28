@@ -6,7 +6,7 @@ class ResultsVisualiser(BaseVisualiser):
     def __init__(self, datasetPath: str) -> None:
         super().__init__(datasetPath)
 
-    def VisualiseAccuracy(self, data) -> plt.figure:
+    def VisualiseAccuracy(self, data : dict, title : str) -> plt.figure:
         datasetTotal = []
         for key in data:
             for key2 in data[key]:
@@ -25,6 +25,7 @@ class ResultsVisualiser(BaseVisualiser):
         width = 0.1  # the width of the bars
         x = np.arange(len(datasetTotal))
         fig, ax = plt.subplots(figsize=self.GraphSize)
+        fig.suptitle(title);
         index = 0
         for datapoint in showData:
             offset = -((len(showData) * width) / 2) + (index * width)
@@ -38,9 +39,11 @@ class ResultsVisualiser(BaseVisualiser):
         ax.set_ylim(0, 1)
         ax.set_ylabel('Accuracy')
         ax.legend(loc='right')
+        plt.xlabel("Method")
+        plt.ylabel("Accuracy")
         return fig
     
-    def VisualiseAverageAccuracy(self, data) -> plt.figure:
+    def VisualiseAverageAccuracy(self, data : dict, title : str) -> plt.figure:
         showData = {}
         for dataItem in data:
             showData[dataItem] = []
@@ -48,6 +51,9 @@ class ResultsVisualiser(BaseVisualiser):
                 showData[dataItem].append(data[dataItem][dataset])
 
         fig = plt.figure(figsize=self.GraphSize)
+        fig.suptitle(title);
         plt.boxplot(showData.values())
         plt.xticks(range(1, len(showData.keys()) + 1), showData.keys())
+        plt.xlabel("Method")
+        plt.ylabel("Accuracy")
         return fig

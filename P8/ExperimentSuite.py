@@ -178,10 +178,10 @@ class ExperimentSuite():
                 );
             fullVisualiser = ResultsVisualiser("None");
             fullVisualiser.SaveAndClose(
-                fullVisualiser.VisualiseAccuracy(fullResults),
+                fullVisualiser.VisualiseAccuracy(fullResults, "Accuracy Pr Dataset (" + options.ExperimentName + ")"),
                 os.path.join(self.Options.ExperimentResultsDir, "accuracies.png"))
             fullVisualiser.SaveAndClose(
-                fullVisualiser.VisualiseAverageAccuracy(fullResults),
+                fullVisualiser.VisualiseAverageAccuracy(fullResults, "Accuracy Pr Method (" + options.ExperimentName + ")"),
                 os.path.join(self.Options.ExperimentResultsDir, "average_accuracies.png"))
 
         self._LogPrint("Experiments finished!")
