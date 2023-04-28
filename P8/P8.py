@@ -22,7 +22,7 @@ def main():
                   "8ShotProtonetFull128Features.ini",
                   "8ShotProtonetFull256Features.ini",
                   ]
-    #queueItems = ["5ShotProtonetFast.ini"]
+    queueItems = ["5ShotProtonetFast.ini"]
     #queueItems = GetFilesInDir("Experiments/SuiteConfigs")
 
     expSuite = ExperimentSuite("Experiments/SuiteConfigs")
