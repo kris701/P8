@@ -232,7 +232,7 @@ class ExperimentSuite():
         return protonetOptions, protonet
 
     def _RunRound(self, expName : str, step : int, configName : str) -> tuple[float,int,int]:
-        self._LogPrint("[" + expName + "] Round " + str(step + 1) + " of " + str(self.Options.ExperimentRounds))
+        self._LogPrint("      [" + expName + "] Round " + str(step + 1) + " of " + str(self.Options.ExperimentRounds))
         roundResultDir : str = os.path.join(self.Options.ExperimentResultsDir, expName, str(step + 1));
 
         dataLoaderOptions, dataConverter = self._SetupDataConverter(configName, self.Options.BaseConfig, self.Options.DebugMode);
