@@ -69,7 +69,7 @@ namespace WindowGeneration {
         if (series.size() == 0)
             return windows;
         if (maxLength == 0)
-            maxLength = series.at(0).size();
+            maxLength = series.begin()->second.at(0).size();
         if (minLength > maxLength)
             return windows;
 
