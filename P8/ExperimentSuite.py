@@ -109,6 +109,7 @@ class ExperimentSuite():
         counter : int = 1;
         for item in queue:
             print("Queue item " + str(counter) + " out of " + str(len(queue)) + " started!")
+            print("Queue config: " + item)
             configItem = os.path.join(self.SuiteConfigPath, item)
             try:
                 timestamp = time.strftime("%Y%m%d-%H%M%S")
