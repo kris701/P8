@@ -6,7 +6,11 @@ from ExperimentSuite import ExperimentSuite
 def main():
     multiprocessing.freeze_support()
 
-    queueItems = ["FeatureCountTests/6ShotProtonetFull4Features.ini",
+    queueItems = [
+                  "6ShotProtonetFullPurge.ini",
+                  "8ShotProtonetFullPurge.ini",
+
+                  "FeatureCountTests/6ShotProtonetFull4Features.ini",
                   "FeatureCountTests/6ShotProtonetFull8Features.ini",
                   "FeatureCountTests/6ShotProtonetFull16Features.ini",
                   "FeatureCountTests/6ShotProtonetFull32Features.ini",

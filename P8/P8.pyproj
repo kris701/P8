@@ -126,6 +126,8 @@
     <Content Include="Data\readme.md" />
     <Content Include="Experiments\Configs\BaseConfigs\6ShotProtonetFull256Features.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\6ShotProtonetFull128Features.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\8ShotProtonetFullPurge.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\6ShotProtonetFullPurge.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\6ShotProtonetFull32Features.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\6ShotProtonetFull16Features.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\6ShotProtonetFull8Features.ini" />
@@ -209,6 +211,8 @@
     <Content Include="Experiments\Configs\DatasetConfigs\ArrowHead.ini" />
     <Content Include="Experiments\Configs\DatasetConfigs\Wine.ini" />
     <Content Include="Experiments\readme.md" />
+    <Content Include="Experiments\SuiteConfigs\8ShotProtonetFullPurge.ini" />
+    <Content Include="Experiments\SuiteConfigs\6ShotProtonetFullPurge.ini" />
     <Content Include="Experiments\SuiteConfigs\FeatureCountTests\6ShotProtonetFull256Features.ini" />
     <Content Include="Experiments\SuiteConfigs\FeatureCountTests\6ShotProtonetFull128Features.ini" />
     <Content Include="Experiments\SuiteConfigs\FeatureCountTests\6ShotProtonetFull32Features.ini" />
