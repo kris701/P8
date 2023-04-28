@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
 
     id = Logger::Begin("Reading Data");
     auto rawTrainData = FileHanding::ReadCSV(arguments.trainPath, "\t");
-    auto rawTestData = FileHanding::ReadCSV( arguments.trainPath, "\t");
+    auto rawTestData = FileHanding::ReadCSV(arguments.testPath, "\t");
     Logger::End(id);
 
     id = Logger::Begin("preprocessing Data");
