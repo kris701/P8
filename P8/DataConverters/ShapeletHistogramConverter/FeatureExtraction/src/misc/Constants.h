@@ -13,19 +13,10 @@ namespace {
     std::mt19937 g(rd());
 }
 
+// Already defined in Linux, but redefined here for compatibility
 using uint = unsigned int;
+
 constexpr uint MAX_CLASSES = 64;
-constexpr uint maxThreads = 100;
-
-using Series = std::vector<double>;
-using ClassCount = std::array<uint, MAX_CLASSES>;
-
-struct LabelledSeries {
-    int label;
-    Series series;
-    LabelledSeries(int label, const Series &series) : label(label), series(series) {};
-};
-
-
+constexpr uint MAX_THREADS = 100;
 
 #endif //FEATUREEXTRACTION_CONSTANTS_H

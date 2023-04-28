@@ -4,19 +4,18 @@
 #include <unordered_map>
 #include <stdexcept>
 #include "misc/Constants.h"
-#include "utilities/SeriesUtils.h"
 
 namespace DataSplit {
     struct Result {
-        const std::vector<LabelledSeries> train;
-        const std::vector<LabelledSeries> test;
-        Result(std::vector<LabelledSeries> train, std::vector<LabelledSeries> test) :
+        const SeriesMap train;
+        const SeriesMap test;
+        Result(SeriesMap train, SeriesMap test) :
                 train(std::move(train)), test(std::move(test)){};
     };
 
-    Result Split(const std::unordered_map<int, std::vector<Series>> &dataPoints, uint split) {
-        std::vector<LabelledSeries> train;
-        std::vector<LabelledSeries> test;
+    Result Split(const SeriesMap &dataPoints, uint split) {
+        SeriesMap train;
+        SeriesMap test;
 
         for (const auto &dataSet : dataPoints) {
             if (split > dataSet.second.size()) {
@@ -34,9 +33,9 @@ namespace DataSplit {
 
             for (const auto &index : indexes)
                 if (chosenIndexSet.contains(index))
-                    train.emplace_back(dataSet.first, dataSet.second.at(index));
+                    train[dataSet.first].push_back(dataSet.second.at(index));
                 else
-                    test.emplace_back(dataSet.first, dataSet.second.at(index));
+                    test[dataSet.first].push_back(dataSet.second.at(index));
         }
 
         return { train, test };

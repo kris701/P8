@@ -123,13 +123,13 @@ namespace InformationGainTests {
         //    Class count of {4} gives entropy: 0.2575
 
         double total = 5;
-        std::map<double, ClassCount> values = {
-            {0, {1}},
-            {0.25, {1}},
-            {0.50, {1}},
-            {0.75, {1}},
-            {1, {1}},
-        };
+        ValueLine values = ValueLine({
+                                             {0,    {1}},
+                                             {0.25, {1}},
+                                             {0.50, {1}},
+                                             {0.75, {1}},
+                                             {1,    {1}},
+                                     });
 
         double resultingSplitEntropy1 = CalculateSplitEntropy(values, 0.125);
         //                       Entropy  Probability           Entropy  Probability

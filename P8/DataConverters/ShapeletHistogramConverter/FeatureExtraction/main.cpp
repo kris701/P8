@@ -1,15 +1,14 @@
-#include <iostream>
 #include <string>
 #include "src/IO/FileHanding.h"
 #include "core/feature_finding/FeatureFinding.h"
-#include "src/utilities/SeriesUtils.h"
 #include "src/IO/Logger.h"
 #include "src/IO/ArgumentParser.h"
-#include "src/utilities/FeatureUtils.h"
 #include "core/attributes/AttributeBuilder.h"
 #include "src/preprocessing/DataAugmentation.h"
 #include "src/preprocessing/DataPurge.h"
 #include "src/preprocessing/DataSplit.h"
+#include "types/FeatureHistogramBuilder.h"
+#include "types/SeriesMap.h"
 
 int main(int argc, char** argv) {
     uint id = Logger::Begin("Parsing Arguments");
@@ -22,12 +21,12 @@ int main(int argc, char** argv) {
 
     id = Logger::Begin("preprocessing Data");
     auto id2 = Logger::Begin("Normalizing");
-    SeriesUtils::MinMaxNormalize(data);
-    SeriesUtils::ForcePositiveRange(data);
+    data.MinMaxNormalize();
+    data = data.MoveToPositiveRange();
     Logger::End(id2);
 
-    std::vector<LabelledSeries> candidates = data;
-    std::vector<LabelledSeries> rejects;
+    SeriesMap candidates = data;
+    SeriesMap rejects;
 
     if (arguments.purge) {
         id2 = Logger::Begin("Purging");
@@ -37,48 +36,46 @@ int main(int argc, char** argv) {
         Logger::End(id2);
         id2 = Logger::Begin("Writing Purged to Files");
         const auto purgePath = arguments.outPath + "purged/";
-        FileHanding::WriteToFiles(purgePath + "candidates/", SeriesUtils::ToMap(candidates));
-        FileHanding::WriteToFiles(purgePath + "rejects/", SeriesUtils::ToMap(rejects));
+        FileHanding::WriteToFiles(purgePath + "candidates/", SeriesMap(candidates));
+        FileHanding::WriteToFiles(purgePath + "rejects/", SeriesMap(rejects));
         Logger::End(id2);
     }
 
     id2 = Logger::Begin("Splitting");
-    const auto map = SeriesUtils::ToMap(candidates);
+    const auto map = SeriesMap(candidates);
     const auto splitData = DataSplit::Split(map, arguments.split);
     auto testData = splitData.test;
-    testData.insert(testData.end(), rejects.begin(), rejects.end());
+    testData.InsertAll(rejects);
     Logger::End(id2);
 
     id2 = Logger::Begin("Writing Source Train Files");
     const auto sourceTrainPath = arguments.outPath + "source/";
-    FileHanding::WriteToFiles(sourceTrainPath + "original/", SeriesUtils::ToMap(splitData.train));
-    FileHanding::WriteToFiles(sourceTrainPath + "augmentation/",SeriesUtils::ToMap(DataAugmentation::Augment(splitData.train,arguments.deleteOriginal,arguments.smoothingDegree,arguments.noisifyAmount)));
+    FileHanding::WriteToFiles(sourceTrainPath + "original/", SeriesMap(splitData.train));
+    FileHanding::WriteToFiles(sourceTrainPath + "augmentation/", SeriesMap(DataAugmentation::Augment(splitData.train, true,arguments.smoothingDegree,arguments.noisifyAmount)));
     Logger::End(id2);
 
     id2 = Logger::Begin("Augmenting Data");
     const auto trainData =
-            DataAugmentation::Augment(splitData.train, false, arguments.smoothingDegree, arguments.noisifyAmount);
-    const auto trainMap = SeriesUtils::ToMap(trainData);
-    const auto testMap = SeriesUtils::ToMap(testData);
+            DataAugmentation::Augment(splitData.train, arguments.deleteOriginal, arguments.smoothingDegree, arguments.noisifyAmount);
     Logger::End(id2);
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Set");
     auto features = FeatureFinding::GenerateFeaturesFromSamples(
-            trainMap, arguments.minWindowSize, arguments.maxWindowSize,
+            trainData, arguments.minWindowSize, arguments.maxWindowSize,
             arguments.minSampleSize, arguments.maxSampleSize, arguments.featureCount,
             AttributeBuilder::GenerateAttributes(arguments.attributes));
     Logger::End(id);
 
     id = Logger::Begin("Generating Feature Points");
-    const auto trainFeatures = FeatureUtils::GenerateFeatureSeries(trainData, features);
-    const auto testFeatures = FeatureUtils::GenerateFeatureSeries(testData, features);
+    const auto trainHistograms = FeatureHistogramBuilder::BuildSet(trainData, features);
+    const auto testHistograms = FeatureHistogramBuilder::BuildSet(testData, features);
     Logger::End(id);
 
     id = Logger::Begin("Writing Feature Series to Files");
     const auto featureSeriesPath = arguments.outPath + "data/";
-    std::vector<std::string> trainFiles = FileHanding::WriteToFiles(featureSeriesPath, trainFeatures);
-    std::vector<std::string> testFiles = FileHanding::WriteToFiles(featureSeriesPath, testFeatures);
+    std::vector<std::string> trainFiles = FileHanding::WriteToFiles(featureSeriesPath, trainHistograms);
+    std::vector<std::string> testFiles = FileHanding::WriteToFiles(featureSeriesPath, testHistograms);
     Logger::End(id);
 
     id = Logger::Begin("Shuffles File Order");
@@ -95,11 +92,11 @@ int main(int argc, char** argv) {
     id = Logger::Begin("Writing Feature Files");
     const auto featurePath = arguments.outPath + "features/";
     const auto shapeletPath = featurePath + "shapelets/";
-    const auto shapelets = FeatureUtils::RetrieveShapelets(features);
-    const auto shapeletFiles = FileHanding::RemoveSubPath(featurePath, FileHanding::WriteToFiles(shapeletPath, shapelets));
+    const auto shapeletFiles = FileHanding::RemoveSubPath(featurePath, FileHanding::WriteToFiles(shapeletPath,
+                                                                                                 features.RetrieveShapelets()));
     FileHanding::WriteCSV(featurePath + "features.csv",
-                          FeatureUtils::FeatureHeader(),
-                          FeatureUtils::FeatureCSV(features, shapeletFiles));
+                          Feature::Header(),
+                          features.AsCSV(shapeletFiles));
     Logger::End(id);
 
     return 0;
