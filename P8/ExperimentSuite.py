@@ -206,7 +206,7 @@ class ExperimentSuite():
         end_time = time.time()
         time_lapsed = end_time - start_time
         
-        self._LogPrint("   === " + expName + " ended (took " + TimeHelpers.ConvertSecToTimeFormat(time_lapsed) + ") ===   ")
+        self._LogPrint("   === " + expName + " ended (took " + TimeHelpers.ConvertSecToTimeFormat(int(time_lapsed)) + ") ===   ")
 
         avrTestAcc = avrTestAcc / self.Options.ExperimentRounds;
 
