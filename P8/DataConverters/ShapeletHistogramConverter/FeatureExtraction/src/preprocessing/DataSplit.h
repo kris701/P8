@@ -18,15 +18,12 @@ namespace DataSplit {
         SeriesMap test;
 
         for (const auto &dataSet : dataPoints) {
-            if (split > dataSet.second.size()) {
-                const std::string msg = "Asking for " + std::to_string(split) + " split, while class " + std::to_string(dataSet.first) + " only contains " + std::to_string(dataSet.second.size());
-                throw std::invalid_argument(msg.c_str());
-            }
+            uint tempSplit = std::min(split, (uint) dataSet.second.size());
             std::vector<uint> indexes(dataSet.second.size());
             std::iota(indexes.begin(), indexes.end(), 0);
 
             std::vector<uint> chosenIndexes;
-            std::sample(indexes.begin(), indexes.end(), std::back_inserter(chosenIndexes), split, g);
+            std::sample(indexes.begin(), indexes.end(), std::back_inserter(chosenIndexes), tempSplit, g);
             std::unordered_set<uint> chosenIndexSet;
             for (const auto &index : chosenIndexes)
                 chosenIndexSet.emplace(index);
