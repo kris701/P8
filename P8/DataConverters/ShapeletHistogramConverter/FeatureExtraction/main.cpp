@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     Logger::End(id2);
 
     SeriesMap candidates = rawTrainData;
-    SeriesMap rejects = rawTestData;
+    SeriesMap testData  = rawTestData;
 
     if (arguments.purge) {
         id2 = Logger::Begin("Purging");
@@ -40,15 +40,13 @@ int main(int argc, char** argv) {
         id2 = Logger::Begin("Writing Purged to Files");
         const auto purgePath = arguments.outPath + "purged/";
         FileHanding::WriteToFiles(purgePath + "candidates/", SeriesMap(candidates));
-        FileHanding::WriteToFiles(purgePath + "rejects/", SeriesMap(rejects));
+        FileHanding::WriteToFiles(purgePath + "rejects/", testData);
         Logger::End(id2);
     }
 
     id2 = Logger::Begin("Splitting");
     const auto map = SeriesMap(candidates);
     const auto splitData = DataSplit::Split(map, arguments.split);
-    auto testData = splitData.test;
-    testData.InsertAll(rejects);
     Logger::End(id2);
 
     id2 = Logger::Begin("Writing Source Train Files");
