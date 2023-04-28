@@ -240,6 +240,7 @@
     <Content Include="Experiments\SuiteConfigs\BaseConfigs\6ShotFull.ini" />
     <Content Include="Experiments\SuiteConfigs\BaseConfigs\5ShotFull.ini" />
     <Content Include="Experiments\SuiteConfigs\BaseConfigs\5ShotFast.ini" />
+    <Content Include="Experiments\SuiteConfigs\FeatureCountTests\FeatureCountBase.ini" />
     <Content Include="Formatted\readme.md" />
     <Content Include="NetTrainers\NaiveKNN\NaiveKNN\CMakeLists.txt" />
     <Content Include="NetTrainers\NaiveKNN\NaiveKNN\include\cxxopts\cxxopts.hpp" />
