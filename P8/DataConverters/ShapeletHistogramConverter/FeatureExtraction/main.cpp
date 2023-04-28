@@ -24,8 +24,8 @@ int main(int argc, char** argv) {
     auto id2 = Logger::Begin("Normalizing");
     rawTrainData.MinMaxNormalize();
     rawTestData.MinMaxNormalize();
-    rawTrainData = rawTestData.MoveToPositiveRange();
     rawTrainData = rawTrainData.MoveToPositiveRange();
+    rawTestData = rawTestData.MoveToPositiveRange();
     Logger::End(id2);
 
     SeriesMap candidates = rawTrainData;
