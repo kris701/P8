@@ -16,36 +16,37 @@ int main(int argc, char** argv) {
     Logger::End(id);
 
     id = Logger::Begin("Reading Data");
-    auto data = FileHanding::ReadCSV({ arguments.trainPath, arguments.testPath }, "\t");
+    auto rawTrainData = FileHanding::ReadCSV(arguments.trainPath, "\t");
+    auto rawTestData = FileHanding::ReadCSV(arguments.testPath, "\t");
     Logger::End(id);
 
     id = Logger::Begin("preprocessing Data");
     auto id2 = Logger::Begin("Normalizing");
-    data.MinMaxNormalize();
-    data = data.MoveToPositiveRange();
+    rawTrainData.MinMaxNormalize();
+    rawTestData.MinMaxNormalize();
+    rawTrainData = rawTrainData.MoveToPositiveRange();
+    rawTestData = rawTestData.MoveToPositiveRange();
     Logger::End(id2);
 
-    SeriesMap candidates = data;
-    SeriesMap rejects;
+    SeriesMap candidates = rawTrainData;
+    SeriesMap testData  = rawTestData;
 
     if (arguments.purge) {
         id2 = Logger::Begin("Purging");
-        const auto purgeResult = DataPurge::Purge(data);
+        const auto purgeResult = DataPurge::Purge(rawTrainData);
         candidates = purgeResult.acceptable;
-        rejects = purgeResult.rejects;
+        //rejects.InsertAll(purgeResult.rejects);
         Logger::End(id2);
         id2 = Logger::Begin("Writing Purged to Files");
         const auto purgePath = arguments.outPath + "purged/";
-        FileHanding::WriteToFiles(purgePath + "candidates/", SeriesMap(candidates));
-        FileHanding::WriteToFiles(purgePath + "rejects/", SeriesMap(rejects));
+        FileHanding::WriteToFiles(purgePath + "candidates/", purgeResult.acceptable);
+        FileHanding::WriteToFiles(purgePath + "rejects/", purgeResult.rejects);
         Logger::End(id2);
     }
 
     id2 = Logger::Begin("Splitting");
     const auto map = SeriesMap(candidates);
     const auto splitData = DataSplit::Split(map, arguments.split);
-    auto testData = splitData.test;
-    testData.InsertAll(rejects);
     Logger::End(id2);
 
     id2 = Logger::Begin("Writing Source Train Files");
