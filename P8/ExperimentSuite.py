@@ -110,10 +110,9 @@ class ExperimentSuite():
             print("Queue config: " + configItem)
             try:
                 timestamp = time.strftime("%Y%m%d-%H%M%S")
-                itemName = configItem.replace(".ini","")
                 options : ExperimentOptions = ExperimentOptions();
                 ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
-                options.ExperimentResultsDir = os.path.join(options.ExperimentResultsDir, " - " + timestamp);
+                options.ExperimentResultsDir = options.ExperimentResultsDir + " - " + timestamp;
                 os.makedirs(os.path.join(options.ExperimentResultsDir))
                 self.RunExperiments(options);
             except Exception as e:
