@@ -3,8 +3,10 @@ import time
 import shutil
 import multiprocessing
 import gc
+from weakref import ref
 import matplotlib
 import traceback
+from tqdm import tqdm
 
 matplotlib.use('Agg')
 
@@ -29,7 +31,9 @@ class ExperimentSuite():
     Options : ExperimentOptions;
     
     def CheckIfQueueIsValid(self, queue : list):
-        for configItem in queue:
+        bar = tqdm(queue, colour="yellow")
+        for configItem in bar:
+            bar.set_postfix({"Checking ": configItem.replace("\\", "/").rsplit('/', 1)[-1]},refresh=True);
             # Check if queue item exist
             if not os.path.exists(configItem):
                 raise FileNotFoundError("The config queue item '" + configItem + "' was not found!")
