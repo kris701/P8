@@ -13,6 +13,7 @@ def main():
                   "AugmentationTests/6ShotProtonetFull10Noise.ini",
                   "AugmentationTests/6ShotProtonetFull25Noise.ini",
                   "AugmentationTests/6ShotProtonetFull50Noise.ini",
+                  "AugmentationTests/6ShotProtonetFull75Noise.ini",
                   "AugmentationTests/6ShotProtonetFull1Smooth.ini",
                   "AugmentationTests/6ShotProtonetFull3Smooth.ini",
                   "AugmentationTests/6ShotProtonetFull6Smooth.ini",
