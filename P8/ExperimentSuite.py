@@ -27,15 +27,9 @@ from Helpers import CSVHelper
 
 class ExperimentSuite():
     Options : ExperimentOptions;
-    SuiteConfigPath : str = "Experiments/SuiteConfigs/";
-
-    def __init__(self, suiteConfigPath : str) -> None:
-        self.SuiteConfigPath = suiteConfigPath;
-
+    
     def CheckIfQueueIsValid(self, queue : list):
-        for item in queue:
-            configItem = os.path.join(self.SuiteConfigPath, item)
-
+        for configItem in queue:
             # Check if queue item exist
             if not os.path.exists(configItem):
                 raise FileNotFoundError("The config queue item '" + configItem + "' was not found!")
@@ -107,13 +101,12 @@ class ExperimentSuite():
         print("Experiment Suite Queue started...")
         print("There is a total of " + str(len(queue)) + " items in the queue")
         counter : int = 1;
-        for item in queue:
+        for configItem in queue:
             print("Queue item " + str(counter) + " out of " + str(len(queue)) + " started!")
-            print("Queue config: " + item)
-            configItem = os.path.join(self.SuiteConfigPath, item)
+            print("Queue config: " + configItem)
             try:
                 timestamp = time.strftime("%Y%m%d-%H%M%S")
-                itemName = item.replace(".ini","")
+                itemName = configItem.replace(".ini","")
                 options : ExperimentOptions = ExperimentOptions();
                 ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
                 options.ExperimentResultsDir = os.path.join(options.ExperimentResultsDir, itemName + " - " + timestamp);
