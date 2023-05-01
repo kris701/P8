@@ -1,6 +1,7 @@
 #ifndef FEATUREEXTRACTION_MINDIST_H
 #define FEATUREEXTRACTION_MINDIST_H
 
+#include <numeric>
 #include <string>
 #include "Attribute.h"
 
@@ -9,7 +10,7 @@ public:
     [[nodiscard]] inline std::string Name() const final { return "MinDist"; };
 
     [[nodiscard]] static double MinimumDistance(const Series &series, uint offset, const Series &window, std::optional<double> currentMin) {
-        const double yOffset = series[offset];
+       const double yOffset = series[offset];
         double dist = 0;
 
         for (uint i = 1; i < window.size(); i++) {

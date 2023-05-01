@@ -379,8 +379,12 @@ P8/Data/*
 *cmake-build-debug*
 *cmake-build-release*
 *cmake-build-relwithdebinfo*
+*cmake-build-Debug*
+*cmake-build-Release*
+*cmake-build-Relwithdebinfo*
 
 P8/DataConverters/ShapeletHistogramConverter/checksum/**
+P8/DataConverters/ShapeletHistogramConverter/FeatureExtraction/build/**
 P8/DataConverters/ShapeletHistogramConverter/FeatureExtraction/include/**
 P8/Experiments/Results/**
 P8/NetTrainers/NaiveKNN/checksum/**
