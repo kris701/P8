@@ -3,7 +3,8 @@
 
 #include <unordered_map>
 #include <stdexcept>
-#include "misc/Constants.hpp"
+#include "../misc/Constants.hpp"
+#include "../types/SeriesMap.hpp"
 
 namespace DataSplit {
     struct Result {
@@ -24,13 +25,18 @@ namespace DataSplit {
 
             std::vector<uint> chosenIndexes;
             std::sample(indexes.begin(), indexes.end(), std::back_inserter(chosenIndexes), tempSplit, g);
-            std::unordered_set<uint> chosenIndexSet;
+            // If fewer than split was chosen, chose some as duplicate
+            if (split - (uint) chosenIndexes.size() > 0)
+                std::sample(indexes.begin(), indexes.end(), std::back_inserter(chosenIndexes), split - (uint) chosenIndexes.size(), g);
+
+            std::unordered_map<uint, uint> indexCount;
             for (const auto &index : chosenIndexes)
-                chosenIndexSet.emplace(index);
+                ++indexCount[index];
 
             for (const auto &index : indexes)
-                if (chosenIndexSet.contains(index))
-                    train[dataSet.first].push_back(dataSet.second.at(index));
+                if (indexCount.contains(index))
+                    for (uint i = 0; i < indexCount.at(index); i++)
+                        train[dataSet.first].push_back(dataSet.second.at(index));
                 else
                     test[dataSet.first].push_back(dataSet.second.at(index));
         }
