@@ -2,7 +2,7 @@
 #define FEATUREEXTRACTION_CLASSCOUNT_H
 
 #include <numeric>
-#include "misc/Constants.hpp"
+#include "../misc/Constants.hpp"
 
 struct ClassCount : public std::array<uint, MAX_CLASSES> {
     /// @return The sum of counts
