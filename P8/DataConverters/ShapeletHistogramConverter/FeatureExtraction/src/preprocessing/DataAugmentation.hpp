@@ -2,7 +2,7 @@
 #define FEATUREEXTRACTION_DATAAUGMENTATION_H
 
 #include <stdexcept>
-#include "misc/Constants.h"
+#include "misc/Constants.hpp"
 
 namespace DataAugmentation {
     Series Smooth(Series series, uint degree) {

@@ -1,14 +1,14 @@
-#ifndef FEATUREEXTRACTION_FREQUENCY_H
-#define FEATUREEXTRACTION_FREQUENCY_H
+#ifndef FEATUREEXTRACTION_OCCPOS_H
+#define FEATUREEXTRACTION_OCCPOS_H
 
 #include <string>
-#include "Attribute.h"
+#include "Attribute.hpp"
 
-class Frequency : public Attribute {
+class OccPos : public Attribute {
 public:
-    explicit Frequency(double tolerance) : tolerance(tolerance) {}
+    explicit OccPos(double tolerance) : tolerance(tolerance) {}
 
-    [[nodiscard]] inline std::string Name() const final { return "Frequency"; };
+    [[nodiscard]] inline std::string Name() const final { return "OccPos"; };
     [[nodiscard]] inline std::string Param1() const final { return std::to_string(tolerance); };
 
     [[nodiscard]] bool ToleranceMatch(const Series &series, uint offset, const Series &window) const {
@@ -22,20 +22,16 @@ public:
     }
 
     [[nodiscard]] double GenerateValue(const Series &series, const Series &window) const final {
-        uint checked = 0;
-        uint matchCount = 0;
-
-        for (uint i = 0; i < series.size() - window.size(); ++i) {
+        const uint maxI = series.size() - window.size();
+        for (uint i = 0; i < maxI; ++i) {
             if (ToleranceMatch(series, i, window))
-                ++matchCount;
-            ++checked;
+                return (double) i / (double) maxI;
         }
 
-        return (double) matchCount / checked;
+        return 1;
     }
-
 private:
     const double tolerance;
 };
 
-#endif //FEATUREEXTRACTION_FREQUENCY_H
+#endif //FEATUREEXTRACTION_OCCPOS_H

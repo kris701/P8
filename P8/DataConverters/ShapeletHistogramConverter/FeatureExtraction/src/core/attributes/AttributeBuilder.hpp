@@ -4,11 +4,11 @@
 #include <vector>
 #include <memory>
 #include <sstream>
-#include "Attribute.h"
-#include "MinDist.h"
-#include "MaxDist.h"
-#include "Frequency.h"
-#include "OccPos.h"
+#include "Attribute.hpp"
+#include "MinDist.hpp"
+#include "MaxDist.hpp"
+#include "Frequency.hpp"
+#include "OccPos.hpp"
 
 namespace AttributeBuilder {
     static std::shared_ptr<Attribute> GenerateFrequency(const std::string &att) {

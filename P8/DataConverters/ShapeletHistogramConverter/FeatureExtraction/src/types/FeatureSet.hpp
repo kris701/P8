@@ -2,8 +2,8 @@
 #define FEATUREEXTRACTION_FEATURESET_H
 
 #include <vector>
-#include "Feature.h"
-#include "SeriesSet.h"
+#include "Feature.hpp"
+#include "SeriesSet.hpp"
 
 struct FeatureSet : public std::vector<Feature> {
     inline bool Contains(const Feature &feature) { return std::find(this->begin(), this->end(), feature) != this->end(); }
