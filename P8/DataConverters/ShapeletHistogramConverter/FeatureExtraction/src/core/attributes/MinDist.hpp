@@ -3,7 +3,7 @@
 
 #include <numeric>
 #include <string>
-#include "Attribute.h"
+#include "Attribute.hpp"
 
 class MinDist : public Attribute {
 public:

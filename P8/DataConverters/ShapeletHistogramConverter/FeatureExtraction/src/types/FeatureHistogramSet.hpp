@@ -2,7 +2,7 @@
 #define FEATUREEXTRACTION_FEATUREHISTOGRAMSET_H
 
 #include <vector>
-#include "FeatureHistogram.h"
+#include "FeatureHistogram.hpp"
 
 struct FeatureHistogramSet : public std::unordered_map<uint, std::vector<FeatureHistogram>> {
     inline operator std::unordered_map<uint, std::vector<std::vector<double>>>() const {

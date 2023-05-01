@@ -2,7 +2,7 @@
 #define FEATUREEXTRACTION_FREQUENCY_H
 
 #include <string>
-#include "Attribute.h"
+#include "Attribute.hpp"
 
 class Frequency : public Attribute {
 public:

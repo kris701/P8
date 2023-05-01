@@ -1,8 +1,8 @@
 #ifndef FEATUREEXTRACTION_FEATURE_H
 #define FEATUREEXTRACTION_FEATURE_H
 
-#include "core/attributes//Attribute.h"
-#include "misc/Constants.h"
+#include "core/attributes/Attribute.hpp"
+#include "misc/Constants.hpp"
 
 struct Feature {
     const double gain;

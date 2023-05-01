@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 #include <stdexcept>
-#include "misc/Constants.h"
+#include "misc/Constants.hpp"
 
 namespace DataSplit {
     struct Result {

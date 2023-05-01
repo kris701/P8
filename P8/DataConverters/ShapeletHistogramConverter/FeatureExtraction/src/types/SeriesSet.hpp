@@ -2,7 +2,7 @@
 #define FEATUREEXTRACTION_SERIESSET_H
 
 #include <vector>
-#include "Series.h"
+#include "Series.hpp"
 
 struct SeriesSet : public std::vector<Series> {
     [[nodiscard]] inline double Min() const {

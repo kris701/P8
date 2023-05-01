@@ -1,10 +1,10 @@
 #ifndef FEATUREEXTRACTION_WINDOWGENERATION_H
 #define FEATUREEXTRACTION_WINDOWGENERATION_H
 
-#include "misc/Constants.h"
-#include "IO/Logger.h"
-#include "types/SeriesSet.h"
-#include "types/SeriesMap.h"
+#include "misc/Constants.hpp"
+#include "IO/Logger.hpp"
+#include "types/SeriesSet.hpp"
+#include "types/SeriesMap.hpp"
 
 namespace WindowGeneration {
     /// <summary>

@@ -2,7 +2,7 @@
 #define FEATUREEXTRACTION_OCCPOS_H
 
 #include <string>
-#include "Attribute.h"
+#include "Attribute.hpp"
 
 class OccPos : public Attribute {
 public:

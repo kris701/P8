@@ -4,7 +4,7 @@
 #include <cassert>
 #include <map>
 #include <optional>
-#include "misc/Constants.h"
+#include "misc/Constants.hpp"
 
 class Attribute {
 public:

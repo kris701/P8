@@ -6,8 +6,8 @@
 #include <numeric>
 #include <exception>
 #include <stdexcept>
-#include "misc/Constants.h"
-#include "types/ValueLine.h"
+#include "misc/Constants.hpp"
+#include "types/ValueLine.hpp"
 
 namespace InformationGain {
     /// @brief Calculates the entropy between a set of classes. Based on Definition 6 in http://alumni.cs.ucr.edu/~lexiangy/Shapelet/Shapelet.pdf

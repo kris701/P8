@@ -8,17 +8,17 @@
 #include <iterator>
 #include <iostream>
 #include <vector>
-#include "misc/Constants.h"
-#include "core/InformationGain.h"
-#include "core/WindowGeneration.h"
-#include "IO/Logger.h"
-#include "types/Feature.h"
-#include "core/attributes/Attribute.h"
+#include "misc/Constants.hpp"
+#include "core/InformationGain.hpp"
+#include "core/WindowGeneration.hpp"
+#include "IO/Logger.hpp"
+#include "types/Feature.hpp"
+#include "core/attributes/Attribute.hpp"
 #include <thread>
 #include <future>
-#include "Evaluation.h"
-#include "types/FeatureSet.h"
-#include "types/SeriesMap.h"
+#include "Evaluation.hpp"
+#include "types/FeatureSet.hpp"
+#include "types/SeriesMap.hpp"
 
 namespace FeatureFinding {
     static void FindOptimalFeature(const SeriesMap &series,

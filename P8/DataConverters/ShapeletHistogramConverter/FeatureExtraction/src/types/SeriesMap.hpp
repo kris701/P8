@@ -3,10 +3,10 @@
 
 #include <unordered_map>
 #include <unordered_set>
-#include "Series.h"
-#include "misc/Constants.h"
-#include "ClassCount.h"
-#include "SeriesSet.h"
+#include "Series.hpp"
+#include "misc/Constants.hpp"
+#include "ClassCount.hpp"
+#include "SeriesSet.hpp"
 
 struct SeriesMap : public std::unordered_map<int, SeriesSet> {
     // Returns the minimum value found in any series contained in the map
