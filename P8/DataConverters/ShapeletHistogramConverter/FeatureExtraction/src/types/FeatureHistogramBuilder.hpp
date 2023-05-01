@@ -2,9 +2,9 @@
 #define FEATUREEXTRACTION_FEATUREHISTOGRAMBUILDER_H
 
 #include <unordered_map>
-#include "FeatureHistogram.h"
-#include "FeatureSet.h"
-#include "FeatureHistogramSet.h"
+#include "FeatureHistogram.hpp"
+#include "FeatureSet.hpp"
+#include "FeatureHistogramSet.hpp"
 
 class FeatureHistogramBuilder {
 public:

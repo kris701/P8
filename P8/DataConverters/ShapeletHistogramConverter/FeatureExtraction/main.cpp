@@ -1,14 +1,14 @@
 #include <string>
-#include "src/IO/FileHanding.h"
-#include "core/feature_finding/FeatureFinding.h"
-#include "src/IO/Logger.h"
-#include "src/IO/ArgumentParser.h"
-#include "core/attributes/AttributeBuilder.h"
-#include "src/preprocessing/DataAugmentation.h"
-#include "src/preprocessing/DataPurge.h"
-#include "src/preprocessing/DataSplit.h"
-#include "types/FeatureHistogramBuilder.h"
-#include "types/SeriesMap.h"
+#include "src/IO/FileHanding.hpp"
+#include "core/feature_finding/FeatureFinding.hpp"
+#include "src/IO/Logger.hpp"
+#include "src/IO/ArgumentParser.hpp"
+#include "core/attributes/AttributeBuilder.hpp"
+#include "src/preprocessing/DataAugmentation.hpp"
+#include "src/preprocessing/DataPurge.hpp"
+#include "src/preprocessing/DataSplit.hpp"
+#include "types/FeatureHistogramBuilder.hpp"
+#include "types/SeriesMap.hpp"
 
 int main(int argc, char** argv) {
     uint id = Logger::Begin("Parsing Arguments");

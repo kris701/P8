@@ -2,7 +2,7 @@
 #define FEATUREEXTRACTION_MAXDIST_H
 
 #include <string>
-#include "Attribute.h"
+#include "Attribute.hpp"
 
 class MaxDist : public Attribute {
 public:

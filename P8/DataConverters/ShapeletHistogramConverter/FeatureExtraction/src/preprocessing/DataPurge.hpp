@@ -3,9 +3,9 @@
 
 #include <unordered_map>
 #include <set>
-#include "misc/Constants.h"
-#include "core/attributes/MinDist.h"
-#include "types/SeriesMap.h"
+#include "misc/Constants.hpp"
+#include "core/attributes/MinDist.hpp"
+#include "types/SeriesMap.hpp"
 
 namespace DataPurge {
     struct Results {

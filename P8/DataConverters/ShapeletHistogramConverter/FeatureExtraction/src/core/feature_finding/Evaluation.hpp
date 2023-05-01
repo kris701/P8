@@ -5,11 +5,11 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
-#include "misc/Constants.h"
-#include "core/InformationGain.h"
-#include "core/WindowGeneration.h"
-#include "types/Feature.h"
-#include "core/attributes/Attribute.h"
+#include "misc/Constants.hpp"
+#include "core/InformationGain.hpp"
+#include "core/WindowGeneration.hpp"
+#include "types/Feature.hpp"
+#include "core/attributes/Attribute.hpp"
 
 namespace FeatureFinding::Evaluation {
     [[nodiscard]] static bool EntropyPrune(double bestScore, double priorEntropy,

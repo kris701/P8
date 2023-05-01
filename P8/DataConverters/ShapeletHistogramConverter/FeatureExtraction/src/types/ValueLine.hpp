@@ -2,7 +2,7 @@
 #define FEATUREEXTRACTION_VALUELINE_H
 
 #include <map>
-#include "ClassCount.h"
+#include "ClassCount.hpp"
 
 struct ValueLine : public std::map<double, ClassCount> {
     ValueLine() = default;

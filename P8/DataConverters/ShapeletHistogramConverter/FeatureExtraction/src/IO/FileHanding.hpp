@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <filesystem>
 #include <vector>
-#include "types/SeriesMap.h"
+#include "types/SeriesMap.hpp"
 
 namespace FileHanding {
     [[nodiscard]] static SeriesMap ReadCSV(const std::string &path, const std::string &delimiter = ",") {
