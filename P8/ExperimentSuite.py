@@ -3,8 +3,10 @@ import time
 import shutil
 import multiprocessing
 import gc
+from weakref import ref
 import matplotlib
 import traceback
+from tqdm import tqdm
 
 matplotlib.use('Agg')
 
@@ -27,15 +29,11 @@ from Helpers import CSVHelper
 
 class ExperimentSuite():
     Options : ExperimentOptions;
-    SuiteConfigPath : str = "Experiments/SuiteConfigs/";
-
-    def __init__(self, suiteConfigPath : str) -> None:
-        self.SuiteConfigPath = suiteConfigPath;
-
+    
     def CheckIfQueueIsValid(self, queue : list):
-        for item in queue:
-            configItem = os.path.join(self.SuiteConfigPath, item)
-
+        bar = tqdm(queue, colour="yellow")
+        for configItem in bar:
+            bar.set_postfix({"Checking ": configItem.replace("\\", "/").rsplit('/', 1)[-1]},refresh=True);
             # Check if queue item exist
             if not os.path.exists(configItem):
                 raise FileNotFoundError("The config queue item '" + configItem + "' was not found!")
@@ -107,15 +105,14 @@ class ExperimentSuite():
         print("Experiment Suite Queue started...")
         print("There is a total of " + str(len(queue)) + " items in the queue")
         counter : int = 1;
-        for item in queue:
+        for configItem in queue:
             print("Queue item " + str(counter) + " out of " + str(len(queue)) + " started!")
-            configItem = os.path.join(self.SuiteConfigPath, item)
+            print("Queue config: " + configItem)
             try:
                 timestamp = time.strftime("%Y%m%d-%H%M%S")
-                itemName = item.replace(".ini","")
                 options : ExperimentOptions = ExperimentOptions();
                 ReflexionHelper.ParseConfigIntoObject(configItem, "SUITEOPTIONS", options)
-                options.ExperimentResultsDir = os.path.join(options.ExperimentResultsDir, itemName + " - " + timestamp);
+                options.ExperimentResultsDir = options.ExperimentResultsDir + " - " + timestamp;
                 os.makedirs(os.path.join(options.ExperimentResultsDir))
                 self.RunExperiments(options);
             except Exception as e:
@@ -177,10 +174,10 @@ class ExperimentSuite():
                 );
             fullVisualiser = ResultsVisualiser("None");
             fullVisualiser.SaveAndClose(
-                fullVisualiser.VisualiseAccuracy(fullResults),
+                fullVisualiser.VisualiseAccuracy(fullResults, "Accuracy Pr Dataset (" + options.ExperimentName + ")"),
                 os.path.join(self.Options.ExperimentResultsDir, "accuracies.png"))
             fullVisualiser.SaveAndClose(
-                fullVisualiser.VisualiseAverageAccuracy(fullResults),
+                fullVisualiser.VisualiseAverageAccuracy(fullResults, "Accuracy Pr Method (" + options.ExperimentName + ")"),
                 os.path.join(self.Options.ExperimentResultsDir, "average_accuracies.png"))
 
         self._LogPrint("Experiments finished!")
@@ -205,7 +202,7 @@ class ExperimentSuite():
         end_time = time.time()
         time_lapsed = end_time - start_time
         
-        self._LogPrint("   === " + expName + " ended (took " + TimeHelpers.ConvertSecToTimeFormat(time_lapsed) + ") ===   ")
+        self._LogPrint("   === " + expName + " ended (took " + TimeHelpers.ConvertSecToTimeFormat(int(time_lapsed)) + ") ===   ")
 
         avrTestAcc = avrTestAcc / self.Options.ExperimentRounds;
 
@@ -231,7 +228,7 @@ class ExperimentSuite():
         return protonetOptions, protonet
 
     def _RunRound(self, expName : str, step : int, configName : str) -> tuple[float,int,int]:
-        self._LogPrint("[" + expName + "] Round " + str(step + 1) + " of " + str(self.Options.ExperimentRounds))
+        self._LogPrint("      [" + expName + "] Round " + str(step + 1) + " of " + str(self.Options.ExperimentRounds))
         roundResultDir : str = os.path.join(self.Options.ExperimentResultsDir, expName, str(step + 1));
 
         dataLoaderOptions, dataConverter = self._SetupDataConverter(configName, self.Options.BaseConfig, self.Options.DebugMode);

@@ -68,6 +68,8 @@ namespace WindowGeneration {
         std::vector<Series> windows;
         if (series.size() == 0)
             return windows;
+        if (maxLength == 0)
+            maxLength = series.begin()->second.at(0).size();
         if (minLength > maxLength)
             return windows;
 

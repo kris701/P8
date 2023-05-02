@@ -4,7 +4,7 @@ class ExperimentOptions():
     RunTest : bool = True;
 
     ExperimentConfigDir : str = "Experiments/Configs";
-    ExperimentResultsDir : str = "Experiments/Results";
+    ExperimentResultsDir : str = "Experiments/Results/Run";
     ExperimentsToRun : list = [];
     ExperimentRounds : int = 1;
     ExperimentName : str = "Ours"
