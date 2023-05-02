@@ -57,7 +57,8 @@ namespace AttributeBuilder {
                 attributes.push_back(GenerateMinDist());
             else if (name == "maxdist")
                 attributes.push_back(GenerateMaxDist());
-
+            else
+                throw std::invalid_argument("Unknown attribute");
         }
 
         return attributes;
