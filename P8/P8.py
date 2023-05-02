@@ -22,12 +22,21 @@ def main():
     purgeConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Purge/Protonet/8Shot");
 
     queueItems = noiseConfigs_6Shot + noiseConfigs_8Shot + smoothConfigs_6Shot + smoothConfigs_8Shot + purgeConfigs_6Shot + purgeConfigs_8Shot + featureCountConfigs_6Shot + featureCountConfigs_8Shot
-    queueItems = ["Experiments/SuiteConfigs/6ShotKNNFast.ini"]
+    #queueItems = ["Experiments/SuiteConfigs/6ShotKNNFast.ini"]
 
     expSuite = ExperimentSuite()
-    #expSuite.RunExperimentQueue(queueItems, True);
+    expSuite.RunExperimentQueue(queueItems, True);
 
-    # Combine all results into one file
+    CombineAllResults()
+
+def GetConfigsInDir(path : str) -> list:
+    retItems = []
+    for item in os.listdir(path):
+        if os.path.isfile(os.path.join(path, item)):
+            retItems.append(os.path.join(path, item))
+    return retItems
+
+def CombineAllResults():
     combiner = ResultsCombiner()
     combiner.CombineDatasetsIn(
         "Experiments/Results",
@@ -80,13 +89,6 @@ def main():
         ["8Shot", "Features"],
         ["Purge"],
         "Experiments/Results/8shot_Features.csv");
-
-def GetConfigsInDir(path : str) -> list:
-    retItems = []
-    for item in os.listdir(path):
-        if os.path.isfile(os.path.join(path, item)):
-            retItems.append(os.path.join(path, item))
-    return retItems
 
 if __name__ == '__main__':
     main()
