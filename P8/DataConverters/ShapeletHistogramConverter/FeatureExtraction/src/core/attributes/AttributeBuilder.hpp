@@ -9,6 +9,7 @@
 #include "MaxDist.hpp"
 #include "Frequency.hpp"
 #include "OccPos.hpp"
+#include <clocale>
 
 namespace AttributeBuilder {
     static std::shared_ptr<Attribute> GenerateFrequency(const std::string &att) {
@@ -45,16 +46,19 @@ namespace AttributeBuilder {
                     name += c;
                 else
                     break;
+            std::transform(name.begin(), name.end(), name.begin(),
+                           [](unsigned char c){ return std::tolower(c); });
 
             if (name == "freq")
                 attributes.push_back(GenerateFrequency(att));
-            else if (name == "occPos")
+            else if (name == "occpos")
                 attributes.push_back(GenerateOccPos(att));
-            else if (name == "minDist")
+            else if (name == "mindist")
                 attributes.push_back(GenerateMinDist());
-            else if (name == "maxDist")
+            else if (name == "maxdist")
                 attributes.push_back(GenerateMaxDist());
-
+            else
+                throw std::invalid_argument("Unknown attribute");
         }
 
         return attributes;
