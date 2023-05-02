@@ -165,6 +165,10 @@
     <Content Include="Datasets\readme.md" />
     <Content Include="DataVisualisers\readme.md" />
     <Content Include="Data\readme.md" />
+    <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\6Shot\FreqAllMinDist.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\6Shot\FreqAll.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\6Shot\OccPosAllMinDist.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\6Shot\OccPosAll.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\6Shot\OccPos000001.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\6Shot\OccPos00001.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\6Shot\OccPos0001.ini" />
@@ -182,6 +186,8 @@
     <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\Freq0001.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\Freq001.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\Freq01.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\FreqAll.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\FreqAllMinDist.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\MaxDist.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\MinDist.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\OccPos000001.ini" />
@@ -189,6 +195,8 @@
     <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\OccPos0001.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\OccPos001.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\OccPos01.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\OccPosAll.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Attributes\Protonet\8Shot\OccPosAllMinDist.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\BaseFeatureExtractor.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\6Shot\20Noise.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\6Shot\40Noise.ini" />
@@ -311,6 +319,10 @@
     <Content Include="Experiments\Configs\DatasetConfigs\ArrowHead.ini" />
     <Content Include="Experiments\Configs\DatasetConfigs\Wine.ini" />
     <Content Include="Experiments\readme.md" />
+    <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\6Shot\FreqAllMinDist.ini" />
+    <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\6Shot\FreqAll.ini" />
+    <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\6Shot\OccPosAllMinDist.ini" />
+    <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\6Shot\OccPosAll.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\6Shot\OccPos000001.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\6Shot\OccPos00001.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\6Shot\Freq00001.ini" />
@@ -327,6 +339,8 @@
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\Freq0001.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\Freq001.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\Freq01.ini" />
+    <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\FreqAll.ini" />
+    <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\FreqAllMinDist.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\MaxDist.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\MinDist.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\OccPos000001.ini" />
@@ -334,6 +348,8 @@
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\OccPos0001.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\OccPos001.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\OccPos01.ini" />
+    <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\OccPosAll.ini" />
+    <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\OccPosAllMinDist.ini" />
     <Content Include="Experiments\SuiteConfigs\Noise\Protonet\6Shot\90Noise.ini" />
     <Content Include="Experiments\SuiteConfigs\Noise\Protonet\6Shot\80Noise.ini" />
     <Content Include="Experiments\SuiteConfigs\Noise\Protonet\6Shot\70Noise.ini" />
