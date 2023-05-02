@@ -2,6 +2,7 @@ import multiprocessing
 import os
 
 from ExperimentSuite import ExperimentSuite
+from ResultsCombiner import ResultsCombiner
 
 def main():
     multiprocessing.freeze_support()
@@ -20,11 +21,22 @@ def main():
     purgeConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/Purge/Protonet/6Shot");
     purgeConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Purge/Protonet/8Shot");
 
-    #queueItems = ["6ShotKNNFast.ini"]
     queueItems = noiseConfigs_6Shot + noiseConfigs_8Shot + smoothConfigs_6Shot + smoothConfigs_8Shot + purgeConfigs_6Shot + purgeConfigs_8Shot + featureCountConfigs_6Shot + featureCountConfigs_8Shot
+    queueItems = ["Experiments/SuiteConfigs/6ShotKNNFast.ini"]
 
     expSuite = ExperimentSuite()
-    expSuite.RunExperimentQueue(queueItems, True);
+    #expSuite.RunExperimentQueue(queueItems, True);
+
+    # Combine all results into one file
+    combiner = ResultsCombiner()
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        "6Shot",
+        "Experiments/Results/6shotFull.csv");
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        "8Shot",
+        "Experiments/Results/8shotFull.csv");
 
 def GetConfigsInDir(path : str) -> list:
     retItems = []

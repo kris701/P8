@@ -3,7 +3,6 @@ import time
 import shutil
 import multiprocessing
 import gc
-from weakref import ref
 import matplotlib
 import traceback
 from tqdm import tqdm
@@ -170,7 +169,8 @@ class ExperimentSuite():
             fullResults = ComparisonDataHelper.CombineDictionaries(
                 self.Options.ComparisonData,
                 [{self.Options.ExperimentName: results}],
-                True
+                True,
+                ["datasetName", "NumberOfClasses"]
                 );
             fullVisualiser = ResultsVisualiser("None");
             fullVisualiser.SaveAndClose(
@@ -179,9 +179,8 @@ class ExperimentSuite():
             fullVisualiser.SaveAndClose(
                 fullVisualiser.VisualiseAverageAccuracy(fullResults, "Accuracy Pr Method (" + options.ExperimentName + ")"),
                 os.path.join(self.Options.ExperimentResultsDir, "average_accuracies.png"))
-
+            
         self._LogPrint("Experiments finished!")
-        return {self.Options.ExperimentName: results};
 
     def _RunExperiment(self, expName : str):
         self._LogPrint("   === " + expName + " started ===   ")

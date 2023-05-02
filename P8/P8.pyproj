@@ -59,6 +59,7 @@
     <Compile Include="NetTrainers\ProtoNetTrainer\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ResultsCombiner.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataConverters\DirectDataConverter\" />
