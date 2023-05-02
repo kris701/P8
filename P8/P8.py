@@ -53,7 +53,7 @@ def main():
         "Experiments/Results",
         ["6Shot", "Features"],
         ["Purge"],
-        "Experiments/Results/6shot_Noise.csv");
+        "Experiments/Results/6shot_Features.csv");
 
     combiner.CombineDatasetsIn(
         "Experiments/Results",
@@ -79,7 +79,7 @@ def main():
         "Experiments/Results",
         ["8Shot", "Features"],
         ["Purge"],
-        "Experiments/Results/8shot_Noise.csv");
+        "Experiments/Results/8shot_Features.csv");
 
 def GetConfigsInDir(path : str) -> list:
     retItems = []
