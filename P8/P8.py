@@ -31,12 +31,55 @@ def main():
     combiner = ResultsCombiner()
     combiner.CombineDatasetsIn(
         "Experiments/Results",
-        "6Shot",
-        "Experiments/Results/6shotFull.csv");
+        ["6Shot"],
+        [],
+        "Experiments/Results/6shot_Full.csv");
     combiner.CombineDatasetsIn(
         "Experiments/Results",
-        "8Shot",
-        "Experiments/Results/8shotFull.csv");
+        ["6Shot", "Smooth"],
+        [],
+        "Experiments/Results/6shot_Smooth.csv");
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["6Shot", "Noise"],
+        [],
+        "Experiments/Results/6shot_Noise.csv");
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["6Shot", "Purge"],
+        [],
+        "Experiments/Results/6shot_Purge.csv");
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["6Shot", "Features"],
+        ["Purge"],
+        "Experiments/Results/6shot_Noise.csv");
+
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["8Shot"],
+        [],
+        "Experiments/Results/8shot_Full.csv");
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["8Shot", "Smooth"],
+        [],
+        "Experiments/Results/8shot_Smooth.csv");
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["8Shot", "Noise"],
+        [],
+        "Experiments/Results/8shot_Noise.csv");
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["8Shot", "Purge"],
+        [],
+        "Experiments/Results/8shot_Purge.csv");
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["8Shot", "Features"],
+        ["Purge"],
+        "Experiments/Results/8shot_Noise.csv");
 
 def GetConfigsInDir(path : str) -> list:
     retItems = []

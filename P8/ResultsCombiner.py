@@ -3,11 +3,11 @@ from Helpers import CSVHelper
 from Helpers import ComparisonDataHelper
 
 class ResultsCombiner():
-    def CombineDatasetsIn(self, path : str, folderMatch : str, outputFile : str) -> None:
+    def CombineDatasetsIn(self, path : str, includeMatches : list, excludeMatches : list, outputFile : str) -> None:
         if os.path.exists(outputFile):
             os.remove(outputFile)
 
-        allComparableCsvs = self.GetAllResultsConfigsInDir(path, folderMatch);
+        allComparableCsvs = self.GetAllResultsConfigsInDir(path, includeMatches, excludeMatches);
         combinedData = ComparisonDataHelper.CombineDictionaries(allComparableCsvs, []);
         header = ["datasetName", "NumberOfClasses"]
         datasets = []
@@ -29,10 +29,23 @@ class ResultsCombiner():
                     line.append(0)
             CSVHelper.AppendToCSV(line, outputFile);
 
-    def GetAllResultsConfigsInDir(self, path : str, folderMatch : str) -> list:
+    def GetAllResultsConfigsInDir(self, path : str, includeMatches : list, excludeMatches : list) -> list:
         retItems = []
         for item in os.listdir(path):
-            if folderMatch in item:
+            exists : bool = True
+            if exists:
+                for name in excludeMatches:
+                    if name in item:
+                        exists = False
+                        break
+
+            if exists:
+                for name in includeMatches:
+                    if name not in item:
+                        exists = False
+                        break
+
+            if exists:
                 for comparableCSV in os.listdir(os.path.join(path, item)):
                     if comparableCSV == "comparable.csv":
                         if os.path.isfile(os.path.join(path, item, comparableCSV)):
