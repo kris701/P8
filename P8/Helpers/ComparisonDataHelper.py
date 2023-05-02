@@ -1,6 +1,6 @@
 import pandas as pd
 
-def CombineDictionaries(fileSources : list, dictSources : list, dictExclusiveCombine : bool = False) -> dict:
+def CombineDictionaries(fileSources : list, dictSources : list, dictExclusiveCombine : bool = False, ignoreHeaders : list = []) -> dict:
     fullResults = {}
     acceptedDatasets = []
 
@@ -17,7 +17,7 @@ def CombineDictionaries(fileSources : list, dictSources : list, dictExclusiveCom
         datasetIDs = csvData["datasetName"];
 
         for setValue in csvData:
-            if setValue != "datasetName" and setValue != "NumberOfClasses":
+            if setValue not in ignoreHeaders:
                 if dictExclusiveCombine is False:
                     if setValue not in fullResults:
                         fullResults[setValue] = {}
