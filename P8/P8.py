@@ -21,13 +21,17 @@ def main():
     purgeConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/Purge/Protonet/6Shot");
     purgeConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Purge/Protonet/8Shot");
 
+    attributeConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/Attributes/Protonet/6Shot");
+    attributeConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Attributes/Protonet/8Shot");
+
     #queueItems = ["6ShotKNNFast.ini"]
-    queueItems = noiseConfigs_6Shot + noiseConfigs_8Shot + smoothConfigs_6Shot + smoothConfigs_8Shot + purgeConfigs_6Shot + purgeConfigs_8Shot + featureCountConfigs_6Shot + featureCountConfigs_8Shot
+    #queueItems = noiseConfigs_6Shot + noiseConfigs_8Shot + smoothConfigs_6Shot + smoothConfigs_8Shot + purgeConfigs_6Shot + purgeConfigs_8Shot + featureCountConfigs_6Shot + featureCountConfigs_8Shot
+    queueItems = attributeConfigs_6Shot + attributeConfigs_8Shot
 
     expSuite = ExperimentSuite()
     expSuite.RunExperimentQueue(queueItems, True);
 
-    CombineAllResults()
+    CombineAttributesCSVs()
 
 def GetConfigsInDir(path : str) -> list:
     retItems = []
@@ -36,13 +40,36 @@ def GetConfigsInDir(path : str) -> list:
             retItems.append(os.path.join(path, item))
     return retItems
 
-def CombineAllResults():
+def CombineAttributesCSVs():
     combiner = ResultsCombiner()
     combiner.CombineDatasetsIn(
         "Experiments/Results",
-        ["6Shot"],
+        ["6Shot", "Attribute"],
         [],
-        "Experiments/Results/6shot_Full.csv");
+        "Experiments/Results/6shot_Features.csv");
+
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["8Shot", "Attribute"],
+        [],
+        "Experiments/Results/8shot_Features.csv");
+
+def CombineFeatureCountCSVs():
+    combiner = ResultsCombiner()
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["6Shot", "Features"],
+        ["Purge", "Freq", "MaxDist", "MinDist", "OccPoss"],
+        "Experiments/Results/6shot_Features.csv");
+
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["8Shot", "Features"],
+        ["Purge", "Freq", "MaxDist", "MinDist", "OccPoss"],
+        "Experiments/Results/8shot_Features.csv");
+
+def CombineSmoothCSVs():
+    combiner = ResultsCombiner()
     combiner.CombineDatasetsIn(
         "Experiments/Results",
         ["6Shot", "Smooth"],
@@ -50,9 +77,25 @@ def CombineAllResults():
         "Experiments/Results/6shot_Smooth.csv");
     combiner.CombineDatasetsIn(
         "Experiments/Results",
+        ["8Shot", "Smooth"],
+        [],
+        "Experiments/Results/8shot_Smooth.csv");
+
+def CombineNoiseCSVs():
+    combiner = ResultsCombiner()
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
         ["6Shot", "Noise"],
         [],
         "Experiments/Results/6shot_Noise.csv");
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["8Shot", "Noise"],
+        [],
+        "Experiments/Results/8shot_Noise.csv");
+
+def CombinePurgeCSVs():
+    combiner = ResultsCombiner()
     combiner.CombineDatasetsIn(
         "Experiments/Results",
         ["6Shot", "Purge"],
@@ -60,35 +103,9 @@ def CombineAllResults():
         "Experiments/Results/6shot_Purge.csv");
     combiner.CombineDatasetsIn(
         "Experiments/Results",
-        ["6Shot", "Features"],
-        ["Purge"],
-        "Experiments/Results/6shot_Features.csv");
-
-    combiner.CombineDatasetsIn(
-        "Experiments/Results",
-        ["8Shot"],
-        [],
-        "Experiments/Results/8shot_Full.csv");
-    combiner.CombineDatasetsIn(
-        "Experiments/Results",
-        ["8Shot", "Smooth"],
-        [],
-        "Experiments/Results/8shot_Smooth.csv");
-    combiner.CombineDatasetsIn(
-        "Experiments/Results",
-        ["8Shot", "Noise"],
-        [],
-        "Experiments/Results/8shot_Noise.csv");
-    combiner.CombineDatasetsIn(
-        "Experiments/Results",
         ["8Shot", "Purge"],
         [],
         "Experiments/Results/8shot_Purge.csv");
-    combiner.CombineDatasetsIn(
-        "Experiments/Results",
-        ["8Shot", "Features"],
-        ["Purge"],
-        "Experiments/Results/8shot_Features.csv");
-
+    
 if __name__ == '__main__':
     main()
