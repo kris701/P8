@@ -26,8 +26,8 @@ namespace DataSplit {
             std::vector<uint> chosenIndexes;
             std::sample(indexes.begin(), indexes.end(), std::back_inserter(chosenIndexes), tempSplit, g);
             // If fewer than split was chosen, chose some as duplicate
-            if (split - (uint) chosenIndexes.size() > 0)
-                std::sample(indexes.begin(), indexes.end(), std::back_inserter(chosenIndexes), split - (uint) chosenIndexes.size(), g);
+            while (split > chosenIndexes.size())
+                std::sample(indexes.begin(), indexes.end(), std::back_inserter(chosenIndexes), 1, g);
 
             std::unordered_map<uint, uint> indexCount;
             for (const auto &index : chosenIndexes)
