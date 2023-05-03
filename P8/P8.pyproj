@@ -220,8 +220,10 @@
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\8Shot\70Noise.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\8Shot\80Noise.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\8Shot\90Noise.ini" />
-    <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\6Shot\Optimal.ini" />
-    <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\8Shot\Optimal.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\6Shot\Optimal256Features.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\6Shot\Optimal32Features.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\8Shot\Optimal256Features.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\8Shot\Optimal32Features.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Smooth\Protonet\6Shot\128Smooth.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Smooth\Protonet\6Shot\64Smooth.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Smooth\Protonet\6Shot\32Smooth.ini" />
@@ -377,8 +379,10 @@
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\6Shot\Freq01.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\AttributesBase.ini" />
     <Content Include="Experiments\SuiteConfigs\Optimal\OptimalBase.ini" />
-    <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\6Shot\Optimal.ini" />
-    <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\8Shot\Optimal.ini" />
+    <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\6Shot\Optimal256Features.ini" />
+    <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\6Shot\Optimal32Features.ini" />
+    <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\8Shot\Optimal256Features.ini" />
+    <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\8Shot\Optimal32Features.ini" />
     <Content Include="Experiments\SuiteConfigs\Purge\PurgeBase.ini" />
     <Content Include="Experiments\SuiteConfigs\Purge\Protonet\8Shot\Purge.ini" />
     <Content Include="Experiments\SuiteConfigs\Purge\Protonet\6Shot\Purge.ini" />
