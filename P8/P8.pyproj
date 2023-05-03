@@ -90,8 +90,12 @@
     <Folder Include="Experiments\Configs\BaseConfigs\FeatureCount\" />
     <Folder Include="Experiments\Configs\BaseConfigs\FeatureCount\Protonet\" />
     <Folder Include="Experiments\Configs\BaseConfigs\Attributes\" />
+    <Folder Include="Experiments\Configs\BaseConfigs\Optimal\" />
     <Folder Include="Experiments\Configs\BaseConfigs\Noise\" />
     <Folder Include="Experiments\Configs\BaseConfigs\Noise\Protonet\" />
+    <Folder Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\" />
+    <Folder Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\6Shot\" />
+    <Folder Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\8Shot\" />
     <Folder Include="Experiments\Configs\BaseConfigs\FeatureCountPurge\Protonet\" />
     <Folder Include="Experiments\Configs\BaseConfigs\Purge\" />
     <Folder Include="Experiments\Configs\BaseConfigs\Purge\Protonet\" />
@@ -124,6 +128,11 @@
     <Folder Include="Experiments\SuiteConfigs\Attributes\Protonet\" />
     <Folder Include="Experiments\SuiteConfigs\Attributes\Protonet\6Shot\" />
     <Folder Include="Experiments\SuiteConfigs\Attributes\Protonet\8Shot\" />
+    <Folder Include="Experiments\SuiteConfigs\Optimal\" />
+    <Folder Include="Experiments\SuiteConfigs\Optimal\Protonet\" />
+    <Folder Include="Experiments\SuiteConfigs\Optimal\Protonet\6Shot\" />
+    <Folder Include="Experiments\SuiteConfigs\Optimal\Protonet\8Shot\" />
+    <Folder Include="Experiments\SuiteConfigs\Purge\" />
     <Folder Include="Experiments\SuiteConfigs\Noise\Protonet\" />
     <Folder Include="Experiments\SuiteConfigs\Noise\Protonet\6Shot\" />
     <Folder Include="Experiments\SuiteConfigs\Noise\Protonet\8Shot\" />
@@ -231,6 +240,10 @@
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\8Shot\4Noise.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\8Shot\64Noise.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\8Shot\8Noise.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\6Shot\Optimal256Features.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\6Shot\Optimal32Features.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\8Shot\Optimal256Features.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\8Shot\Optimal32Features.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Smooth\Protonet\6Shot\128Smooth.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Smooth\Protonet\6Shot\64Smooth.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Smooth\Protonet\6Shot\32Smooth.ini" />
@@ -391,6 +404,11 @@
     <Content Include="Experiments\SuiteConfigs\FeatureCountPurge\Protonet\8Shot\8Features.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\6Shot\Freq01.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\AttributesBase.ini" />
+    <Content Include="Experiments\SuiteConfigs\Optimal\OptimalBase.ini" />
+    <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\6Shot\Optimal256Features.ini" />
+    <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\6Shot\Optimal32Features.ini" />
+    <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\8Shot\Optimal256Features.ini" />
+    <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\8Shot\Optimal32Features.ini" />
     <Content Include="Experiments\SuiteConfigs\Noise\Protonet\8Shot\16Noise.ini" />
     <Content Include="Experiments\SuiteConfigs\Noise\Protonet\8Shot\1Noise.ini" />
     <Content Include="Experiments\SuiteConfigs\Noise\Protonet\8Shot\2Noise.ini" />
