@@ -27,13 +27,15 @@ def main():
     #queueItems = ["6ShotKNNFast.ini"]
     #queueItems = noiseConfigs_6Shot + noiseConfigs_8Shot + smoothConfigs_6Shot + smoothConfigs_8Shot + purgeConfigs_6Shot + purgeConfigs_8Shot + featureCountConfigs_6Shot + featureCountConfigs_8Shot
     #queueItems = attributeConfigs_6Shot + attributeConfigs_8Shot
-    queueItems = purgeConfigs_6Shot + purgeConfigs_8Shot
+    #queueItems = purgeConfigs_6Shot + purgeConfigs_8Shot
+    queueItems = noiseConfigs_6Shot + noiseConfigs_8Shot
 
     expSuite = ExperimentSuite()
     expSuite.RunExperimentQueue(queueItems, True);
 
     #CombineAttributesCSVs()
-    CombinePurgeCSVs()
+    #CombinePurgeCSVs()
+    CombineNoiseCSVs()
 
 def GetConfigsInDir(path : str) -> list:
     retItems = []
