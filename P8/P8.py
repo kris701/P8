@@ -24,14 +24,19 @@ def main():
     attributeConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/Attributes/Protonet/6Shot");
     attributeConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Attributes/Protonet/8Shot");
 
+    optimalConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/Optimal/Protonet/6Shot");
+    optimalConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Optimal/Protonet/8Shot");
+
     #queueItems = ["6ShotKNNFast.ini"]
     #queueItems = noiseConfigs_6Shot + noiseConfigs_8Shot + smoothConfigs_6Shot + smoothConfigs_8Shot + purgeConfigs_6Shot + purgeConfigs_8Shot + featureCountConfigs_6Shot + featureCountConfigs_8Shot
-    queueItems = attributeConfigs_6Shot + attributeConfigs_8Shot
+    #queueItems = attributeConfigs_6Shot + attributeConfigs_8Shot
+    queueItems = optimalConfigs_6Shot + optimalConfigs_8Shot
 
     expSuite = ExperimentSuite()
     expSuite.RunExperimentQueue(queueItems, True);
 
-    CombineAttributesCSVs()
+    #CombineAttributesCSVs()
+    CombineOptimalCSVs()
 
 def GetConfigsInDir(path : str) -> list:
     retItems = []
@@ -106,6 +111,19 @@ def CombinePurgeCSVs():
         ["8Shot", "Purge"],
         [],
         "Experiments/Results/8shot_Purge.csv");
+
+def CombineOptimalCSVs():
+    combiner = ResultsCombiner()
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["6Shot", "Optimal"],
+        [],
+        "Experiments/Results/6shot_Optimal.csv");
+    combiner.CombineDatasetsIn(
+        "Experiments/Results",
+        ["8Shot", "Optimal"],
+        [],
+        "Experiments/Results/8shot_Optimal.csv");
     
 if __name__ == '__main__':
     main()
