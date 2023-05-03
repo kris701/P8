@@ -18,8 +18,8 @@ def main():
     smoothConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/Smooth/Protonet/6Shot");
     smoothConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Smooth/Protonet/8Shot");
     
-    purgeConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/Purge/Protonet/6Shot");
-    purgeConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Purge/Protonet/8Shot");
+    purgeConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/FeatureCountPurge/Protonet/6Shot");
+    purgeConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/FeatureCountPurge/Protonet/8Shot");
 
     attributeConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/Attributes/Protonet/6Shot");
     attributeConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Attributes/Protonet/8Shot");
@@ -31,11 +31,15 @@ def main():
     #queueItems = noiseConfigs_6Shot + noiseConfigs_8Shot + smoothConfigs_6Shot + smoothConfigs_8Shot + purgeConfigs_6Shot + purgeConfigs_8Shot + featureCountConfigs_6Shot + featureCountConfigs_8Shot
     #queueItems = attributeConfigs_6Shot + attributeConfigs_8Shot
     queueItems = optimalConfigs_6Shot + optimalConfigs_8Shot
+    #queueItems = purgeConfigs_6Shot + purgeConfigs_8Shot
+    #queueItems = noiseConfigs_6Shot + noiseConfigs_8Shot
 
     expSuite = ExperimentSuite()
     expSuite.RunExperimentQueue(queueItems, True);
 
     #CombineAttributesCSVs()
+    #CombinePurgeCSVs()
+    #CombineNoiseCSVs()
     CombineOptimalCSVs()
 
 def GetConfigsInDir(path : str) -> list:
@@ -103,12 +107,12 @@ def CombinePurgeCSVs():
     combiner = ResultsCombiner()
     combiner.CombineDatasetsIn(
         "Experiments/Results",
-        ["6Shot", "Purge"],
+        ["6Shot", "Features", "Purge"],
         [],
         "Experiments/Results/6shot_Purge.csv");
     combiner.CombineDatasetsIn(
         "Experiments/Results",
-        ["8Shot", "Purge"],
+        ["8Shot", "Features", "Purge"],
         [],
         "Experiments/Results/8shot_Purge.csv");
 
