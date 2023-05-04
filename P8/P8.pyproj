@@ -326,7 +326,6 @@
     <Content Include="Experiments\Configs\DatasetConfigs\FaceAll.ini" />
     <Content Include="Experiments\Configs\DatasetConfigs\GunPointAgeSpan.ini" />
     <Content Include="Experiments\Configs\DatasetConfigs\Strawberry.ini" />
-    <Content Include="Experiments\Configs\DatasetConfigs\ProximalPhalanxTW.ini" />
     <Content Include="Experiments\Configs\DatasetConfigs\ProximalPhalanxOutlineCorrect.ini" />
     <Content Include="Experiments\Configs\DatasetConfigs\ProximalPhalanxOutlineAgeGroup.ini" />
     <Content Include="Experiments\Configs\DatasetConfigs\SonyAIBORobotSurface2.ini" />
