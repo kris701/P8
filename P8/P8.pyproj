@@ -94,6 +94,7 @@
     <Folder Include="Experiments\Configs\BaseConfigs\Noise\" />
     <Folder Include="Experiments\Configs\BaseConfigs\Noise\Protonet\" />
     <Folder Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\" />
+    <Folder Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\5Shot\" />
     <Folder Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\6Shot\" />
     <Folder Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\8Shot\" />
     <Folder Include="Experiments\Configs\BaseConfigs\FeatureCountPurge\Protonet\" />
@@ -132,6 +133,7 @@
     <Folder Include="Experiments\SuiteConfigs\Optimal\Protonet\" />
     <Folder Include="Experiments\SuiteConfigs\Optimal\Protonet\6Shot\" />
     <Folder Include="Experiments\SuiteConfigs\Optimal\Protonet\8Shot\" />
+    <Folder Include="Experiments\SuiteConfigs\Optimal\Protonet\5Shot\" />
     <Folder Include="Experiments\SuiteConfigs\Purge\" />
     <Folder Include="Experiments\SuiteConfigs\Noise\Protonet\" />
     <Folder Include="Experiments\SuiteConfigs\Noise\Protonet\6Shot\" />
@@ -241,6 +243,8 @@
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\8Shot\4Noise.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\8Shot\64Noise.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\8Shot\8Noise.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\5Shot\Optimal256Features.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\5Shot\Optimal32Features.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\6Shot\Optimal256Features.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\6Shot\Optimal32Features.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Optimal\Protonet\8Shot\Optimal256Features.ini" />
@@ -323,7 +327,6 @@
     <Content Include="Experiments\Configs\DatasetConfigs\FaceAll.ini" />
     <Content Include="Experiments\Configs\DatasetConfigs\GunPointAgeSpan.ini" />
     <Content Include="Experiments\Configs\DatasetConfigs\Strawberry.ini" />
-    <Content Include="Experiments\Configs\DatasetConfigs\ProximalPhalanxTW.ini" />
     <Content Include="Experiments\Configs\DatasetConfigs\ProximalPhalanxOutlineCorrect.ini" />
     <Content Include="Experiments\Configs\DatasetConfigs\ProximalPhalanxOutlineAgeGroup.ini" />
     <Content Include="Experiments\Configs\DatasetConfigs\SonyAIBORobotSurface2.ini" />
@@ -406,6 +409,8 @@
     <Content Include="Experiments\SuiteConfigs\Attributes\Protonet\6Shot\Freq01.ini" />
     <Content Include="Experiments\SuiteConfigs\Attributes\AttributesBase.ini" />
     <Content Include="Experiments\SuiteConfigs\Optimal\OptimalBase.ini" />
+    <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\5Shot\Optimal256Features.ini" />
+    <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\5Shot\Optimal32Features.ini" />
     <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\6Shot\Optimal256Features.ini" />
     <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\6Shot\Optimal32Features.ini" />
     <Content Include="Experiments\SuiteConfigs\Optimal\Protonet\8Shot\Optimal256Features.ini" />

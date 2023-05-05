@@ -24,6 +24,7 @@ def main():
     attributeConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/Attributes/Protonet/6Shot");
     attributeConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Attributes/Protonet/8Shot");
 
+    optimalConfigs_5Shot = GetConfigsInDir("Experiments/SuiteConfigs/Optimal/Protonet/5Shot");
     optimalConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/Optimal/Protonet/6Shot");
     optimalConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Optimal/Protonet/8Shot");
 
