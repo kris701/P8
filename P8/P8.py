@@ -24,13 +24,15 @@ def main():
     attributeConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/Attributes/Protonet/6Shot");
     attributeConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Attributes/Protonet/8Shot");
 
+    optimalConfigs_5Shot = GetConfigsInDir("Experiments/SuiteConfigs/Optimal/Protonet/5Shot");
     optimalConfigs_6Shot = GetConfigsInDir("Experiments/SuiteConfigs/Optimal/Protonet/6Shot");
     optimalConfigs_8Shot = GetConfigsInDir("Experiments/SuiteConfigs/Optimal/Protonet/8Shot");
 
     #queueItems = ["6ShotKNNFast.ini"]
     #queueItems = noiseConfigs_6Shot + noiseConfigs_8Shot + smoothConfigs_6Shot + smoothConfigs_8Shot + purgeConfigs_6Shot + purgeConfigs_8Shot + featureCountConfigs_6Shot + featureCountConfigs_8Shot
     #queueItems = attributeConfigs_6Shot + attributeConfigs_8Shot
-    queueItems = optimalConfigs_6Shot + optimalConfigs_8Shot
+    #queueItems = optimalConfigs_6Shot + optimalConfigs_8Shot
+    queueItems = optimalConfigs_5Shot
     #queueItems = purgeConfigs_6Shot + purgeConfigs_8Shot
     #queueItems = noiseConfigs_6Shot + noiseConfigs_8Shot
 
