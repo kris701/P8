@@ -232,6 +232,7 @@
     <Content Include="Experiments\Configs\BaseConfigs\FeatureCountPurge\Protonet\8Shot\4Features.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\FeatureCountPurge\Protonet\8Shot\64Features.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\FeatureCountPurge\Protonet\8Shot\8Features.ini" />
+    <Content Include="Experiments\Configs\BaseConfigs\Noise\baseNoise.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\6Shot\2Noise.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\6Shot\8Noise.ini" />
     <Content Include="Experiments\Configs\BaseConfigs\Noise\Protonet\6Shot\32Noise.ini" />
