@@ -47,11 +47,11 @@ struct SeriesMap : public std::unordered_map<int, SeriesSet> {
     // Moves all values into the range 0-1
     void MinMaxNormalize() {
         const auto min = Min();
-        const auto max = Max() - min;
+        const auto max = Max();
 
         Apply([min, max](auto &value) {
-            value -= min;
-            value = value / max;
+            value = (value - min) / (max - min);
+            std::clamp(value, 0.0, 1.0);
         });
     }
 
