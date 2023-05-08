@@ -51,7 +51,7 @@ struct SeriesMap : public std::unordered_map<int, SeriesSet> {
 
         Apply([min, max](auto &value) {
             value = (value - min) / (max - min);
-            std::clamp(value, 0.0, 1.0);
+            value = std::clamp(value, 0.0, 1.0);
         });
     }
 
