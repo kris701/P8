@@ -1,4 +1,4 @@
-#P8 - Feature Interpretable Feature Histograms (FISH)
+# P8 - Feature Interpretable Feature Histograms (FISH)
 This is a project about improving the accuracy of predictions within Few Shot Learning (FSL) of Time Series (TS) data. 
 The general idea is to make label classification on a dataset, with only very few datapoints (we used 6 and 8 samples).
 This project focused on the feature extraction part of this, by attempting o extract as much data as possible from these few datapoints, and giving them in a representable and interpretable format.
